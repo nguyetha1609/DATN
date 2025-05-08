@@ -1,0 +1,26 @@
+<resources>
+    <!-- App -->
+    <string name="app_name">Daak</string>
+
+    <!-- Title -->
+    <string name="title_screen1">Đơn giản &amp; Dễ sử dụng</string>
+    <string name="title_screen2">🔮 Không chỉ là kế toán</string>
+    <string name="title_screen3">💕 Siêu dễ thương</string>
+    <string name="title_screen4">💥 Nhiều tính năng mạnh mẽ</string>
+
+    <!-- Description -->
+    <string name="desc_screen1">Hỗ trợ các danh mục tùy chỉnh, sổ kế toán, tài khoản, tiền tệ, v.v., dễ vận hành, kế toán nhanh trong 3 giây</string>
+    <string name="desc_screen2">Hỗ trợ kế toán tự động, hơn 10 tiện ích máy tính để bàn hữu ích, hỗ trợ Apple Watch</string>
+    <string name="desc_screen3">Hơn 300 biểu tượng phân loại hàng ngày được vẽ tay, hơn 10 biểu tượng chủ đề ứng dụng~</string>
+    <string name="desc_screen4">Ngân sách, heo đất, thanh toán trả góp, danh sách đặt hàng trước, vay/cho mượn, hoàn tiền/hoàn trả, khóa mật khẩu, chức năng cộng tác nhiều người</string>
+
+    <!-- Button -->
+    <string name="btn_continue">Tiếp tục</string>
+    <string name="btn_start_trial">Bắt đầu dùng thử</string>
+
+<!--    menu-->
+    <string name="menu_home">Trang chủ </string>
+    <string name="menu_chart">Tài sản </string>
+    <string name="menu_database">Heo đất </string>
+    <string name="menu_more">Cài đặt </string>
+</resources>
