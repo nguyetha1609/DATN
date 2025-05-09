@@ -4,10 +4,38 @@
     <color name="black">#000000</color>
     <color name="gray">#888888</color>
     <color name="white">#FFFFFF</color>
+    <color name="moccasin">#ffe4b5</color>
+    <color name="darkGrey">#a9a9a9</color>
+    <color name="blue">#2196F3</color>
+    <color name="colorBackground">#c5c5c5</color>
 
     <!-- Button background colors -->
     <color name="button_blue">#2196F3</color> <!-- Tiếp tục -->
     <color name="gradient_start">#FF4081</color> <!-- Bắt đầu dùng thử gradient -->
     <color name="gradient_end">#7C4DFF</color>
 
+    <color name="background">#FFFFFF</color>
+    <!-- text chính đậm -->
+    <color name="text_primary">#212121</color>
+    <!-- text phụ / disabled -->
+    <color name="text_secondary">#9E9E9E</color>
+    <!-- màu xanh dương cho link, số dư -->
+    <color name="blue_link">#2962FF</color>
+    <!-- màu đỏ thẻ Chi tiêu -->
+    <color name="expense_red">#FF5252</color>
+    <!-- màu xanh lá thẻ Thu nhập -->
+    <color name="income_green">#4CAF50</color>
+    <!-- màu xám cho bottom bar background -->
+    <color name="bottom_bar">#F5F5F5</color>
+    <!-- màu viền / separator -->
+    <color name="divider">#E0E0E0</color>
+
+    <color name="calendar_today_bg">#FFCDD2</color>   <!-- highlight ngày hôm nay -->
+    <color name="calendar_header_text">#212121</color>
+    <color name="calendar_cell_text">#424242</color>
+
+    <!-- Nền trắng -->
+    <color name="colorTextPrimary">#212121</color>
+    <color name="colorLink">#1976D2</color>              <!-- Liên kết có màu xanh dương -->
+    <color name="colorInputBackground">#F5F5F5</color>
 </resources>
