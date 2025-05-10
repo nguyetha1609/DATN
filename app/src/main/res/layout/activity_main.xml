@@ -2,178 +2,243 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/coordinator"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground">
 
-<!--    &lt;!&ndash; AppBar: toolbar + month selector + chevron &ndash;&gt;-->
-<!--    <com.google.android.material.appbar.AppBarLayout-->
+    <!-- FragmentContainerView chứa HomeFragment -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+<!--    &lt;!&ndash; Content chính cuộn được &ndash;&gt;-->
+<!--    <ScrollView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginBottom="72dp"-->
+<!--        app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+<!--        android:layout_marginTop="112dp">-->
+<!--    &lt;!&ndash; 2) Tabs ngày/tháng/năm/etc &ndash;&gt;-->
+<!--    <com.google.android.material.tabs.TabLayout-->
+<!--        android:id="@+id/tabPeriod"-->
 <!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content">-->
-
-<!--        <androidx.appcompat.widget.Toolbar-->
-<!--            android:id="@+id/toolbar"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="?attr/actionBarSize"-->
-<!--            app:titleTextAppearance="@style/TitleLarge"-->
-<!--            android:background="@android:color/white"/>-->
-
-<!--        &lt;!&ndash; Month selector + prev/next &ndash;&gt;-->
-<!--        <LinearLayout-->
-<!--            android:id="@+id/lnMonthSelector"-->
-<!--            android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="56dp"-->
+<!--        app:tabMode="scrollable"-->
+<!--        app:tabIndicatorColor="@color/blue_link"-->
+<!--        app:tabSelectedTextColor="@color/blue_link"-->
+<!--        app:tabTextColor="@color/text_secondary">-->
+<!--        <com.google.android.material.tabs.TabItem-->
+<!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal"-->
-<!--            android:padding="16dp"-->
-<!--            android:gravity="center_vertical">-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tvMonth"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_weight="1"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                style="@style/TitleLarge"/>-->
-<!--            <ImageButton-->
-<!--                android:id="@+id/btnPrevMonth"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:src="@drawable/ic_chevron_left"/>-->
-<!--            <ImageButton-->
-<!--                android:id="@+id/btnNextMonth"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:src="@drawable/ic_chevron_right"/>-->
-<!--        </LinearLayout>-->
-
-<!--        &lt;!&ndash; TabRow: Ngày / Tháng / Năm / Tất cả / Tùy chỉnh &ndash;&gt;-->
-<!--        <com.google.android.material.tabs.TabLayout-->
-<!--            android:id="@+id/tabPeriod"-->
-<!--            android:layout_width="match_parent"-->
+<!--            android:text="@string/tab_ngay" />-->
+<!--        <com.google.android.material.tabs.TabItem-->
+<!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            app:tabMode="scrollable"/>-->
-<!--    </com.google.android.material.appbar.AppBarLayout>-->
+<!--            android:text="@string/tab_thang" />-->
+<!--        <com.google.android.material.tabs.TabItem-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/tab_nam" />-->
+<!--        <com.google.android.material.tabs.TabItem-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/tab_tatca" />-->
+<!--        <com.google.android.material.tabs.TabItem-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/tab_tuychon" />-->
+<!--    </com.google.android.material.tabs.TabLayout>-->
 
-<!--    &lt;!&ndash; Nội dung cuộn chính &ndash;&gt;-->
-<!--    <androidx.core.widget.NestedScrollView-->
-<!--        android:id="@+id/scrollView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
+
 
 <!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
 <!--            android:orientation="vertical"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
 <!--            android:padding="16dp">-->
 
-<!--            &lt;!&ndash; Card Ngân sách &ndash;&gt;-->
-<!--            <com.google.android.material.card.MaterialCardView-->
-<!--                android:id="@+id/cardBudget"-->
+<!--            &lt;!&ndash; 3) Budget Card &ndash;&gt;-->
+<!--            <androidx.cardview.widget.CardView-->
 <!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="16dp"-->
-<!--                app:cardCornerRadius="12dp">-->
+<!--                android:layout_height="100dp"-->
+<!--                app:cardCornerRadius="8dp"-->
+<!--                app:cardElevation="2dp">-->
 
-<!--                &lt;!&ndash; bạn có thể custom nội dung bên trong &ndash;&gt;-->
 <!--                <LinearLayout-->
-<!--                    android:orientation="vertical"-->
-<!--                    android:padding="16dp"-->
 <!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content">-->
-<!--                    <TextView-->
-<!--                        android:text="Ngân sách"-->
-<!--                        style="@style/BodyMedium"/>-->
-<!--                    <TextView-->
-<!--                        android:id="@+id/tvBudgetAmount"-->
-<!--                        text="0 ₫"-->
-<!--                        style="@style/HeadlineSmall"/>-->
-<!--                    <TextView-->
-<!--                        android:text="Còn lại"-->
-<!--                        style="@style/BodySmall"/>-->
-<!--                    <TextView-->
-<!--                        android:id="@+id/tvBudgetRemain"-->
-<!--                        text="0 ₫"-->
-<!--                        style="@style/BodySmall"/>-->
-<!--                </LinearLayout>-->
-<!--            </com.google.android.material.card.MaterialCardView>-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:padding="12dp">-->
 
-<!--            &lt;!&ndash; Row Chi tiêu / Thu nhập &ndash;&gt;-->
+<!--                    &lt;!&ndash; CircleProgress (giả sử custom view) &ndash;&gt;-->
+<!--                    <com.yourpackage.CircleProgress-->
+<!--                        android:layout_width="64dp"-->
+<!--                        android:layout_height="64dp"-->
+<!--                        app:progress="0"-->
+<!--                        app:strokeWidth="6dp"/>-->
+
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:orientation="vertical"-->
+<!--                        android:paddingStart="12dp">-->
+
+<!--                        <TextView-->
+<!--                            android:text="@string/budget"-->
+<!--                            android:textSize="14sp"-->
+<!--                            android:textColor="@color/text_secondary"/>-->
+<!--                        <TextView-->
+<!--                            android:id="@+id/tvBudgetAmount"-->
+<!--                            android:text="0 đ"-->
+<!--                            android:textSize="16sp"-->
+<!--                            android:textColor="@color/text_primary"/>-->
+<!--                        <TextView-->
+<!--                            android:text="@string/remaining"-->
+<!--                            android:textSize="14sp"-->
+<!--                            android:textColor="@color/text_secondary"-->
+<!--                            android:layout_marginTop="4dp"/>-->
+<!--                        <TextView-->
+<!--                            android:id="@+id/tvRemainingAmount"-->
+<!--                            android:text="0 đ"-->
+<!--                            android:textSize="16sp"-->
+<!--                            android:textColor="@color/text_primary"/>-->
+<!--                    </LinearLayout>-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/tvBudgetMonth"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="@string/month_format"-->
+<!--                        android:textColor="@color/blue_link"-->
+<!--                        android:layout_gravity="center"/>-->
+<!--                </LinearLayout>-->
+<!--            </androidx.cardview.widget.CardView>-->
+
+<!--            &lt;!&ndash; 4) Chi tiêu & Thu nhập &ndash;&gt;-->
 <!--            <LinearLayout-->
-<!--                android:orientation="horizontal"-->
 <!--                android:layout_width="match_parent"-->
 <!--                android:layout_height="wrap_content"-->
-<!--                android:weightSum="2"-->
-<!--                android:layout_marginBottom="16dp">-->
-<!--                <com.google.android.material.card.MaterialCardView-->
-<!--                    android:layout_weight="1"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:layout_marginTop="12dp"-->
+<!--                android:weightSum="2">-->
+
+<!--                <androidx.cardview.widget.CardView-->
 <!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginEnd="8dp">-->
-<!--                    <LinearLayout-->
-<!--                        android:padding="16dp"-->
-<!--                        android:orientation="vertical"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content">-->
-<!--                        <TextView text="Chi tiêu" style="@style/BodyMedium"/>-->
-<!--                        <TextView id="@+id/tvExpense" text="0 ₫" style="@style/HeadlineSmall"/>-->
-<!--                    </LinearLayout>-->
-<!--                </com.google.android.material.card.MaterialCardView>-->
-<!--                <com.google.android.material.card.MaterialCardView-->
+<!--                    android:layout_height="80dp"-->
 <!--                    android:layout_weight="1"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginStart="8dp">-->
+<!--                    app:cardCornerRadius="8dp"-->
+<!--                    app:cardElevation="2dp"-->
+<!--                    android:background="@color/expense_red">-->
+
 <!--                    <LinearLayout-->
-<!--                        android:padding="16dp"-->
-<!--                        android:orientation="vertical"-->
 <!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content">-->
-<!--                        <TextView text="Thu nhập" style="@style/BodyMedium"/>-->
-<!--                        <TextView id="@+id/tvIncome" text="0 ₫" style="@style/HeadlineSmall"/>-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:orientation="vertical"-->
+<!--                        android:gravity="center">-->
+
+<!--                        <TextView-->
+<!--                            android:text="@string/chi_tieu"-->
+<!--                            android:textSize="14sp"-->
+<!--                            android:textColor="@color/background"/>-->
+<!--                        <TextView-->
+<!--                            android:id="@+id/tvExpense"-->
+<!--                            android:text="0 đ"-->
+<!--                            android:textSize="16sp"-->
+<!--                            android:textColor="@color/background"/>-->
 <!--                    </LinearLayout>-->
-<!--                </com.google.android.material.card.MaterialCardView>-->
+<!--                </androidx.cardview.widget.CardView>-->
+
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="80dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    app:cardCornerRadius="8dp"-->
+<!--                    app:cardElevation="2dp"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:background="@color/income_green">-->
+
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:orientation="vertical"-->
+<!--                        android:gravity="center">-->
+
+<!--                        <TextView-->
+<!--                            android:text="@string/thu_nhap"-->
+<!--                            android:textSize="14sp"-->
+<!--                            android:textColor="@color/background"/>-->
+<!--                        <TextView-->
+<!--                            android:id="@+id/tvIncome"-->
+<!--                            android:text="0 đ"-->
+<!--                            android:textSize="16sp"-->
+<!--                            android:textColor="@color/background"/>-->
+<!--                    </LinearLayout>-->
+<!--                </androidx.cardview.widget.CardView>-->
 <!--            </LinearLayout>-->
 
-<!--            &lt;!&ndash; Số dư &ndash;&gt;-->
+<!--            &lt;!&ndash; 5) Số dư &ndash;&gt;-->
 <!--            <TextView-->
 <!--                android:id="@+id/tvBalance"-->
 <!--                android:layout_width="wrap_content"-->
 <!--                android:layout_height="wrap_content"-->
-<!--                text="Số dư: 0 ₫"-->
-<!--                style="@style/HeadlineSmall"-->
-<!--                android:layout_gravity="center"/>-->
+<!--                android:text="@string/so_du"-->
+<!--                android:textSize="16sp"-->
+<!--                android:textColor="@color/blue_link"-->
+<!--                android:layout_marginTop="12dp"/>-->
 
-<!--            &lt;!&ndash; Tab Hóa đơn / Thống kê &ndash;&gt;-->
+<!--            &lt;!&ndash; 6) Tabs Hóa đơn / Thống kê &ndash;&gt;-->
 <!--            <com.google.android.material.tabs.TabLayout-->
-<!--                android:id="@+id/tabContent"-->
+<!--                android:id="@+id/tabInvoiceStats"-->
 <!--                android:layout_width="match_parent"-->
 <!--                android:layout_height="wrap_content"-->
-<!--                app:tabMode="fixed"-->
-<!--                android:layout_marginTop="16dp"/>-->
+<!--                app:tabIndicatorColor="@color/blue_link"-->
+<!--                app:tabSelectedTextColor="@color/blue_link"-->
+<!--                app:tabTextColor="@color/text_secondary"-->
+<!--                android:layout_marginTop="12dp">-->
+<!--                <com.google.android.material.tabs.TabItem android:text="@string/tab_hoadon"/>-->
+<!--                <com.google.android.material.tabs.TabItem android:text="@string/tab_thongke"/>-->
+<!--            </com.google.android.material.tabs.TabLayout>-->
 
-<!--            &lt;!&ndash; Container cho từng tab (Hóa đơn / Thống kê) &ndash;&gt;-->
-<!--            <androidx.viewpager2.widget.ViewPager2-->
-<!--                android:id="@+id/vpContent"-->
+<!--            &lt;!&ndash; 7) Placeholder content &ndash;&gt;-->
+<!--            <TextView-->
+<!--                android:id="@+id/tvNoData"-->
 <!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="80dp"/>-->
+<!--                android:layout_height="200dp"-->
+<!--                android:text="@string/no_data"-->
+<!--                android:gravity="center"-->
+<!--                android:textColor="@color/text_secondary"/>-->
 <!--        </LinearLayout>-->
-<!--    </androidx.core.widget.NestedScrollView>-->
+<!--        &lt;!&ndash; Floating “Thêm” button &ndash;&gt;-->
+<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--            android:id="@+id/fabAdd"-->
+<!--            android:layout_width="64dp"-->
+<!--            android:layout_height="64dp"-->
+<!--            android:layout_gravity="bottom|center"-->
+<!--            android:layout_marginBottom="28dp"-->
+<!--            app:backgroundTint="@color/blue_link"/>-->
 
-<!--    &lt;!&ndash; FloatingActionButton Thêm &ndash;&gt;-->
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/fabAdd"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_anchor="@id/coordinator"-->
-<!--        app:layout_anchorGravity="bottom|center"-->
-<!--        android:src="@drawable/ic_add"/>-->
+<!--        &lt;!&ndash; Quick-add lightning &ndash;&gt;-->
+<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--            android:id="@+id/fabQuick"-->
+<!--            android:layout_width="48dp"-->
+<!--            android:layout_height="48dp"-->
+<!--            android:layout_gravity="bottom|end"-->
+<!--            android:layout_margin="16dp"-->
+<!--            android:src="@drawable/ic_thunder"-->
+<!--            app:backgroundTint="@color/expense_red"/>-->
+<!--    </ScrollView>-->
 
-<!--    &lt;!&ndash; BottomNavigationView &ndash;&gt;-->
-<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
-<!--        android:id="@+id/bottomNav"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="56dp"-->
-<!--        android:layout_gravity="bottom"-->
-<!--        app:menu="@menu/bottom_nav_menu"/>-->
+    <!-- BottomNavigationView -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/white"
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="@color/custom_color_bottom_nav_bar"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

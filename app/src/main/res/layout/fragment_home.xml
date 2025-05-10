@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <!-- Tiêu đề ngày, ban đầu hiển thị "Hôm nay, dd/MM/yyyy" -->
+        <TextView
+            android:id="@+id/tvDateTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawableEnd="@drawable/ic_arrow_down"
+            android:drawablePadding="6dp"
+            android:focusable="true"
+            android:fontFamily="@font/sf_pro_text_semibold"
+            android:text="@string/today"
+            android:textSize="15sp" />
+        <!-- … bạn có thể thêm các view khác của HomeFragment ở đây … -->
+
+        <!-- Nút Quay Lại, ban đầu ẩn -->
+        <Button
+            android:id="@+id/btnReset"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:background="@drawable/bg_onboarding_button"
+            android:text="@string/back_to_today"
+            android:textColor="@color/blue"
+            android:textSize="10sp"
+            android:visibility="gone" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/btnPrev"
+            android:layout_width="35dp"
+            android:layout_height="20dp"
+            android:background="@color/colorBackground"
+            android:src="@drawable/ic_arrow_left" />
+
+        <ImageButton
+            android:id="@+id/btnNext"
+            android:layout_width="35dp"
+            android:layout_height="20dp"
+            android:background="@color/colorBackground"
+            android:src="@drawable/ic_arrow_right" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,9 +18,53 @@
     <string name="btn_continue">Tiếp tục</string>
     <string name="btn_start_trial">Bắt đầu dùng thử</string>
 
+    <!-- Đăng nhập -->
+    <string name="login_title">Đăng Nhập</string>
+    <string name="hint_username">Tên tài khoản</string>
+    <string name="hint_password">Mật khẩu</string>
+    <string name="remember_me">Lưu mật khẩu</string>
+    <string name="button_login">Đăng nhập</string>
+    <string name="link_register">Đăng ký</string>
+    <string name="link_forgot_password">Quên mật khẩu?</string>
+
+    <!-- Đăng ký -->
+    <string name="register_title">Đăng Ký</string>
+    <string name="hint_register_username">Tên tài khoản</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_register_password">Mật khẩu</string>
+    <string name="hint_confirm_password">Nhập lại mật khẩu</string>
+    <string name="agree_terms">Tôi đồng ý với Điều khoản sử dụng</string>
+    <string name="button_register">Đăng ký</string>
+
+    <!-- Quên mật khẩu -->
+    <string name="forgot_title">Quên Mật Khẩu</string>
+    <string name="hint_enter_email">Nhập Gmail của bạn</string>
+    <string name="button_reset_password">Gửi yêu cầu khôi phục</string>
+
 <!--    menu-->
     <string name="menu_home">Trang chủ </string>
     <string name="menu_chart">Tài sản </string>
     <string name="menu_database">Heo đất </string>
     <string name="menu_more">Cài đặt </string>
+
+    <string name="today">Hôm nay</string>
+    <string name="today_label"> %1$d/%2$d/%3$d</string>
+    <string name="choose_date">Chọn ngày</string>
+    <string name="btn_prev_desc">Tháng trước</string>
+    <string name="btn_next_desc">Tháng sau</string>
+    <string name="back_to_today">Quay lại</string>
+
+    <!-- budget card -->
+    <string name="budget">Ngân sách</string>
+    <string name="remaining">Còn lại</string>
+    <!-- summary cards -->
+    <string name="chi_tieu">Chi tiêu</string>
+    <string name="thu_nhap">Thu nhập</string>
+    <string name="so_du">Số dư: %1$.0f đ</string>
+    <!-- hóa đơn / thống kê -->
+    <string name="tab_hoadon">Hóa đơn</string>
+    <string name="tab_thongke">Thống kê</string>
+    <string name="no_data">Chưa có dữ liệu</string>
+    <!-- bottom -->
+    <string name="btn_add">Thêm</string>
 </resources>
