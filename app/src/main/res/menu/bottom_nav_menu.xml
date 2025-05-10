@@ -15,7 +15,7 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/nav_stats"
+        android:id="@+id/nav_stats2"
         android:icon="@drawable/ic_piechart"
         android:title=""
         app:showAsAction="always" />
