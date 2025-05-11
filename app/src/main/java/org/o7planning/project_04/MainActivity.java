@@ -2,18 +2,12 @@ package org.o7planning.project_04;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.database.sqlite.SQLiteDatabase;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import android.app.Application;
 import com.jakewharton.threetenabp.AndroidThreeTen;
+
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -84,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 //            return false;
 //        });
     public void onBackPressed(){
+        super.onBackPressed();
         //Tạo Dialog
         new AlertDialog.Builder(this)
                 .setTitle("Thoát ứng dụng")

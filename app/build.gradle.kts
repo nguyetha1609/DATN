@@ -43,12 +43,16 @@ dependencies {
     implementation ("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
     implementation ("androidx.core:core-ktx:1.10.1")
     implementation ("com.jakewharton.threetenabp:threetenabp:1.4.6")
+    implementation ("com.jakewharton:butterknife:10.2.3")
+    implementation ("com.jakewharton.threetenabp:threetenabp:1.3.1")
 
+
+    implementation(libs.activity)
     implementation(libs.appcompat)
     implementation(libs.material)
-    implementation(libs.activity)
     implementation(libs.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
 }
