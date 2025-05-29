@@ -11,7 +11,7 @@ import java.io.OutputStream;
 
 public class PrepopulatedDBHelper {
 
-    private static final String DB_NAME = "Project04.db";
+    private static final String DB_NAME = "Do_An.db";
     private final Context context;
 
     public PrepopulatedDBHelper(Context context) {

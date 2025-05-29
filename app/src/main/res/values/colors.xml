@@ -31,11 +31,13 @@
     <color name="divider">#E0E0E0</color>
 
     <color name="calendar_today_bg">#FFCDD2</color>   <!-- highlight ngày hôm nay -->
-    <color name="calendar_header_text">#212121</color>
+    <color name="calendar_header_text">#CDDC39</color>
     <color name="calendar_cell_text">#424242</color>
 
     <!-- Nền trắng -->
     <color name="colorTextPrimary">#212121</color>
     <color name="colorLink">#1976D2</color>              <!-- Liên kết có màu xanh dương -->
     <color name="colorInputBackground">#F5F5F5</color>
+
+    <color name="grey_200">#EEEEEE</color>
 </resources>

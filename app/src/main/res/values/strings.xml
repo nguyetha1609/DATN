@@ -1,6 +1,6 @@
 <resources>
     <!-- App -->
-    <string name="app_name">Daak</string>
+    <string name="app_name">Quản lý chi tiêu</string>
 
     <!-- Title -->
     <string name="title_screen1">Đơn giản &amp; Dễ sử dụng</string>
@@ -10,9 +10,9 @@
 
     <!-- Description -->
     <string name="desc_screen1">Hỗ trợ các danh mục tùy chỉnh, sổ kế toán, tài khoản, tiền tệ, v.v., dễ vận hành, kế toán nhanh trong 3 giây</string>
-    <string name="desc_screen2">Hỗ trợ kế toán tự động, hơn 10 tiện ích máy tính để bàn hữu ích, hỗ trợ Apple Watch</string>
+    <string name="desc_screen2">Hỗ trợ kế toán tự động, hơn 10 tiện ích máy tính để bàn hữu ích</string>
     <string name="desc_screen3">Hơn 300 biểu tượng phân loại hàng ngày được vẽ tay, hơn 10 biểu tượng chủ đề ứng dụng~</string>
-    <string name="desc_screen4">Ngân sách, heo đất, thanh toán trả góp, danh sách đặt hàng trước, vay/cho mượn, hoàn tiền/hoàn trả, khóa mật khẩu, chức năng cộng tác nhiều người</string>
+    <string name="desc_screen4">Ngân sách, heo đất, danh sách đặt hàng trước, vay/cho mượn, hoàn tiền/hoàn trả, khóa mật khẩu, chức năng cộng tác nhiều người</string>
 
     <!-- Button -->
     <string name="btn_continue">Tiếp tục</string>
@@ -41,6 +41,11 @@
     <string name="hint_enter_email">Nhập Gmail của bạn</string>
     <string name="button_reset_password">Gửi yêu cầu khôi phục</string>
 
+    <!-- Đổi mật khẩu -->
+    <string name="enter_password">Mật khẩu cũ</string>
+    <string name="enter_new_password">Mật khẩu mới</string>
+    <string name="button_confirm_change">Đổi mật khẩu</string>
+
 <!--    menu-->
     <string name="menu_home">Trang chủ </string>
     <string name="menu_chart">Tài sản </string>
@@ -67,4 +72,6 @@
     <string name="no_data">Chưa có dữ liệu</string>
     <!-- bottom -->
     <string name="btn_add">Thêm</string>
+    <!--Tài khoản-->
+    <string name="account">Tài khoản</string>
 </resources>
