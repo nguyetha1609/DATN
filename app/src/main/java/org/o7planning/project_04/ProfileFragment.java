@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.Glide; // Thư viện để tải ảnh, bạn cần thêm dependency
+import com.bumptech.glide.Glide; // Thư viện để tải ảnh
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.materialswitch.MaterialSwitch; // Import cho MaterialSwitch
 public class ProfileFragment extends Fragment{
@@ -114,16 +114,16 @@ public class ProfileFragment extends Fragment{
                 // Sử dụng Glide để tải ảnh từ URI
                 Glide.with(this)
                         .load(Uri.parse(avatarUriString))
-                        .placeholder(R.drawable.default_avatar) // Ảnh mặc định khi đang tải hoặc lỗi
-                        .error(R.drawable.default_avatar) // Ảnh mặc định khi có lỗi
+                        .placeholder(R.drawable.baseline_account_circle) // Ảnh mặc định khi đang tải hoặc lỗi
+                        .error(R.drawable.baseline_account_circle) // Ảnh mặc định khi có lỗi
                         .into(imageAvatar);
             } else {
-                imageAvatar.setImageResource(R.drawable.default_avatar);
+                imageAvatar.setImageResource(R.drawable.baseline_account_circle);
             }
         } else {
             // Ẩn thông tin người dùng nếu chưa đăng nhập
             textUserName.setText("Khách"); // Hoặc một thông báo khác
-            imageAvatar.setImageResource(R.drawable.default_avatar); // Ảnh mặc định
+            imageAvatar.setImageResource(R.drawable.baseline_account_circle); // Ảnh mặc định
             textMonthlyAmount.setText("0 VND"); // Hoặc ẩn nó đi
             // Có thể ẩn cả các mục cài đặt liên quan đến tài khoản nếu muốn
             itemAccount.setVisibility(View.GONE);

@@ -46,6 +46,7 @@ dependencies {
     implementation ("com.jakewharton:butterknife:10.2.3")
     implementation ("com.jakewharton.threetenabp:threetenabp:1.3.1")
     implementation ("com.google.android.material:material:1.11.0")
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
 
 
 
