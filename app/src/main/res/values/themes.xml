@@ -11,4 +11,11 @@
 
     <!-- App Theme -->
     <style name="Theme.Project_04" parent="Base.Theme.Project_04" />
+
+    <!-- Theme overlay dùng cho MaterialDatePicker -->
+    <style name="ThemeOverlay.MaterialComponents.DatePickerOnly" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="materialCalendarTheme">@style/Widget.MaterialComponents.MaterialCalendar</item>
+        <item name="materialCalendarFullscreenTheme">@style/Theme.MaterialComponents.DayNight</item>
+    </style>
+
 </resources>

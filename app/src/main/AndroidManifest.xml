@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
+    <uses-sdk
+        android:minSdkVersion="21"
+        android:targetSdkVersion="34" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,6 +18,8 @@
         android:theme="@style/Theme.Project_04"
         tools:targetApi="31">
 
+
+
         <activity
             android:name=".OnboardingActivity"
             android:exported="true">
@@ -23,6 +30,21 @@
         </activity>
         <!-- Màn hình chính chính thức của ứng dụng -->
         <activity android:name=".MainActivity"/>
+        <!--Man hinh them danh muc-->
+        <activity android:name=".activities.AddCategoryActivity" />
+        <!--Man hinh sua/xoa danh muc-->
+        <activity android:name=".activities.EditCategoryActivity" />
+        <!-- Man hinh them han muc -->
+        <activity android:name=".activities.activity_add_spendinglimit"/>
+        <!-- man hinh chon danh muc trong them han muc -->
+        <activity android:name=".activities.CategoryMultiSelectActivity"/>
+        <!-- man hinh chi tiet han muc -->
+        <activity android:name=".activities.LimitDetailActivity"/>
+        <!-- man hinh sua han muc -->
+        <activity android:name=".activities.EditLimitActivity"/>
+<!--        man hinh chi tiet cac khoan chi-->
+        <activity android:name=".activities.spendingList_Activity" />
+
     </application>
 
 </manifest>

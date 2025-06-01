@@ -10,4 +10,34 @@
     <color name="gradient_start">#FF4081</color> <!-- Bắt đầu dùng thử gradient -->
     <color name="gradient_end">#7C4DFF</color>
 
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorGray">#E0E0E0</color>
+<!-- button cateory -->
+    <color name="green_income">#008000</color>
+    <color name="red_expense">#FF0000</color>
+<!--addcate-->
+    <color name="teal_700">#018786</color>
+    <color name="btn_addcate">#0088ff</color>
+
+    <!--stats-->
+    <color name="Primary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="teal">#27B3B3</color>
+    <color name="purple_200">#BB86FC</color>
+
+
+    <color name="grey">#888888</color>
+    <color name="red">#FF0000</color>
+    <color name="green">#00C853</color> <color name="chart_color_1">#4CAF50</color>
+    <color name="chart_color_2">#2196F3</color>
+    <color name="chart_color_3">#FFC107</color>
+    <color name="chart_color_4">#9C27B0</color>
+    <color name="chart_color_5">#F44336</color>
+    <color name="chart_color_6">#607D8B</color>
+
+    <color name="switch_thumb_color">#FFFFFF</color>
+    <color name="switch_track_color">#C8C8C8</color> <color name="switch_track_color_on">#03DAC5</color>
+
+
 </resources>

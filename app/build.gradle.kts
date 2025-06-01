@@ -14,6 +14,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        vectorDrawables.useSupportLibrary = true
+
     }
 
     buildTypes {
@@ -26,14 +29,36 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+        isCoreLibraryDesugaringEnabled = true
+
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        eachDependency {
+            if (requested.group == "com.kizitonwose.calendar") {
+                useVersion("2.2.0")
+            }
+        }
     }
 }
 
 dependencies {
+    coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:2.0.4")
+
+    implementation ("com.kizitonwose.calendar:view:2.2.0")
+
+
+    implementation("androidx.core:core:1.10.1")
+
+    implementation ("androidx.core:core-ktx:1.10.1")
     implementation ("androidx.viewpager2:viewpager2:1.0.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
+    //implementation(libs.constraintlayout)
+    implementation(libs.mpandroidchart)
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
