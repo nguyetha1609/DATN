@@ -4,13 +4,18 @@
     <color name="black">#000000</color>
     <color name="gray">#888888</color>
     <color name="white">#FFFFFF</color>
+    <color name="moccasin">#ffe4b5</color>
+    <color name="darkGrey">#a9a9a9</color>
+    <color name="blue">#2196F3</color>
+    <color name="colorBackground">#c5c5c5</color>
 
     <!-- Button background colors -->
     <color name="button_blue">#2196F3</color> <!-- Tiếp tục -->
     <color name="gradient_start">#FF4081</color> <!-- Bắt đầu dùng thử gradient -->
     <color name="gradient_end">#7C4DFF</color>
 
-    <color name="colorPrimary">#3F51B5</color>
+
+    <color name="colorPrimaryy">#3F51B5</color>
     <color name="colorGray">#E0E0E0</color>
 <!-- button cateory -->
     <color name="green_income">#008000</color>
@@ -19,10 +24,8 @@
     <color name="teal_700">#018786</color>
     <color name="btn_addcate">#0088ff</color>
 
-    <!--stats-->
+
     <color name="Primary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
     <color name="teal">#27B3B3</color>
     <color name="purple_200">#BB86FC</color>
 
@@ -38,6 +41,56 @@
 
     <color name="switch_thumb_color">#FFFFFF</color>
     <color name="switch_track_color">#C8C8C8</color> <color name="switch_track_color_on">#03DAC5</color>
+
+
+    <color name="background">#FFFFFF</color>
+    <!-- text chính đậm -->
+    <color name="text_primary">#212121</color>
+    <!-- text phụ / disabled -->
+    <color name="text_secondary">#9E9E9E</color>
+    <!-- màu xanh dương cho link, số dư -->
+    <color name="blue_link">#2962FF</color>
+    <!-- màu đỏ thẻ Chi tiêu -->
+    <color name="expense_red">#FF5252</color>
+    <!-- màu xanh lá thẻ Thu nhập -->
+    <color name="income_green">#4CAF50</color>
+    <!-- màu xám cho bottom bar background -->
+    <color name="bottom_bar">#F5F5F5</color>
+    <!-- màu viền / separator -->
+    <color name="divider">#E0E0E0</color>
+
+    <color name="calendar_today_bg">#FFCDD2</color>   <!-- highlight ngày hôm nay -->
+    <color name="calendar_header_text">#CDDC39</color>
+    <color name="calendar_cell_text">#424242</color>
+
+    <!-- Nền trắng -->
+    <color name="colorTextPrimary">#212121</color>
+    <color name="colorLink">#1976D2</color>              <!-- Liên kết có màu xanh dương -->
+    <color name="colorInputBackground">#F5F5F5</color>
+
+    <color name="grey_200">#EEEEEE</color>
+
+        <!-- Màu chủ đạo của App -->
+        <color name="colorPrimary">#6200EE</color>
+        <color name="colorPrimaryDark">#3700B3</color>
+        <color name="colorAccent">#03DAC5</color>
+
+        <!-- Màu nền chung -->
+
+        <color name="gray_light">#E0E0E0</color>
+        <color name="gray_medium">#9E9E9E</color>
+
+        <!-- Màu text -->
+        <color name="textPrimary">#212121</color>
+        <color name="textSecondary">#757575</color>
+        <color name="textHint">#9E9E9E</color>
+
+        <!-- Màu cho các icon và divider -->
+        <color name="iconColor">#616161</color>
+        <color name="dividerColor">#BDBDBD</color>
+
+        <!-- Màu riêng cho mỗi mục (nếu cần) -->
+        <color name="cardBackground">#FFFFFF</color>
 
 
 </resources>

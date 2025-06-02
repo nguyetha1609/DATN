@@ -28,6 +28,7 @@
         </activity>
         <!-- Màn hình chính chính thức của ứng dụng -->
         <activity android:name=".MainActivity"/>
+
         <!--Man hinh them danh muc-->
         <activity android:name=".activities.AddCategoryActivity" />
         <!--Man hinh sua/xoa danh muc-->
@@ -43,6 +44,7 @@
 <!--        man hinh chi tiet cac khoan chi-->
         <activity android:name=".activities.spendingList_Activity" />
 
-    </application>
 
+        <activity android:name=".AddExpenseActivity"/>
+    </application>
 </manifest>

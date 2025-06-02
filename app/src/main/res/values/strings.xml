@@ -1,6 +1,6 @@
 <resources>
     <!-- App -->
-    <string name="app_name">Daak</string>
+    <string name="app_name">Quản lý chi tiêu</string>
 
     <!-- Title -->
     <string name="title_screen1">Đơn giản &amp; Dễ sử dụng</string>
@@ -10,17 +10,136 @@
 
     <!-- Description -->
     <string name="desc_screen1">Hỗ trợ các danh mục tùy chỉnh, sổ kế toán, tài khoản, tiền tệ, v.v., dễ vận hành, kế toán nhanh trong 3 giây</string>
-    <string name="desc_screen2">Hỗ trợ kế toán tự động, hơn 10 tiện ích máy tính để bàn hữu ích, hỗ trợ Apple Watch</string>
+    <string name="desc_screen2">Hỗ trợ kế toán tự động, hơn 10 tiện ích máy tính để bàn hữu ích</string>
     <string name="desc_screen3">Hơn 300 biểu tượng phân loại hàng ngày được vẽ tay, hơn 10 biểu tượng chủ đề ứng dụng~</string>
-    <string name="desc_screen4">Ngân sách, heo đất, thanh toán trả góp, danh sách đặt hàng trước, vay/cho mượn, hoàn tiền/hoàn trả, khóa mật khẩu, chức năng cộng tác nhiều người</string>
+    <string name="desc_screen4">Ngân sách, heo đất, danh sách đặt hàng trước, vay/cho mượn, hoàn tiền/hoàn trả, khóa mật khẩu, chức năng cộng tác nhiều người</string>
 
     <!-- Button -->
     <string name="btn_continue">Tiếp tục</string>
     <string name="btn_start_trial">Bắt đầu dùng thử</string>
+
+    <!-- Đăng nhập -->
+    <string name="login_title">Đăng Nhập</string>
+    <string name="hint_username">Tên tài khoản</string>
+    <string name="hint_password">Mật khẩu</string>
+    <string name="remember_me">Lưu mật khẩu</string>
+    <string name="button_login">Đăng nhập</string>
+    <string name="link_register">Đăng ký</string>
+    <string name="link_forgot_password">Quên mật khẩu?</string>
+
+    <!-- Đăng ký -->
+    <string name="register_title">Đăng Ký</string>
+    <string name="hint_register_username">Tên tài khoản</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_register_password">Mật khẩu</string>
+    <string name="hint_confirm_password">Nhập lại mật khẩu</string>
+    <string name="agree_terms">Tôi đồng ý với Điều khoản sử dụng</string>
+    <string name="button_register">Đăng ký</string>
+
+    <!--Đăng xuất-->
+    <string name="logout">Đăng xuất</string>
+
+    <!-- Quên mật khẩu -->
+    <string name="forgot_title">Quên Mật Khẩu</string>
+    <string name="hint_enter_email">Nhập Gmail của bạn</string>
+    <string name="button_reset_password">Gửi yêu cầu khôi phục</string>
+
+    <!-- Đổi mật khẩu -->
+    <string name="enter_password">Mật khẩu cũ</string>
+    <string name="enter_new_password">Mật khẩu mới</string>
+    <string name="button_confirm_change">Đổi mật khẩu</string>
 
 <!--    menu-->
     <string name="menu_home">Trang chủ </string>
     <string name="menu_chart">Tài sản </string>
     <string name="menu_database">Heo đất </string>
     <string name="menu_more">Cài đặt </string>
+
+    <string name="today">Hôm nay</string>
+    <string name="today_label"> %1$d/%2$d/%3$d</string>
+    <string name="choose_date">Chọn ngày</string>
+    <string name="btn_prev_desc">Tháng trước</string>
+    <string name="btn_next_desc">Tháng sau</string>
+    <string name="back_to_today">Quay lại</string>
+
+    <!-- budget card -->
+    <string name="budget">Ngân sách</string>
+    <string name="remaining">Còn lại</string>
+    <!-- summary cards -->
+    <string name="chi_tieu">Chi tiêu</string>
+    <string name="thu_nhap">Thu nhập</string>
+    <string name="so_du">Số dư: %1$.0f đ</string>
+    <!-- hóa đơn / thống kê -->
+    <string name="tab_hoadon">Hóa đơn</string>
+    <string name="tab_thongke">Thống kê</string>
+    <string name="no_data">Chưa có dữ liệu</string>
+    <!-- bottom -->
+    <string name="btn_add">Thêm</string>
+    <!--Tài khoản-->
+    <string name="account">Tài khoản</string>
+
+    <!-- Tiêu đề màn hình -->
+    <string name="profile_title">Thông Tin Cá Nhân</string>
+
+    <!-- Tên người dùng và tiền hàng tháng -->
+    <string name="user_name">Trần Ngọc Tiến</string>
+    <string name="monthly_income">Tiền hàng tháng</string>
+    <string name="amount">30.000.000 VND</string>
+
+    <!-- Các mục trong menu -->
+    <string name="menu_account">Tài Khoản</string>
+    <string name="menu_change_password">Đổi Mật Khẩu</string>
+    <string name="menu_language">Ngôn Ngữ</string>
+    <string name="menu_dark_mode">Chế Độ Tối</string>
+    <string name="menu_history">Lịch sử</string>
+    <string name="menu_export_csv">Xuất CSV</string>
+    <string name="menu_exchange_rate">Tỷ Giá Tiền Tệ</string>
+
+    <!-- Tiêu đề màn hình và nút Lưu -->
+    <string name="title_add_expense">Thêm Chi Tiêu</string>
+    <string name="save">Lưu</string>
+    <string name="close">Đóng</string>
+
+    <!-- Placeholder và label -->
+    <string name="hint_amount">100.000 VND</string>
+    <string name="label_type">Loại</string>
+    <string name="label_date">02/12/2022</string>
+    <string name="label_time">09:24</string>
+    <string name="hint_note">Ghi Chú</string>
+    <string name="label_location">Vị Trí</string>
+    <string name="label_friends">Bạn bè</string>
+
+    <!-- Dưới cùng -->
+    <string name="option_gallery">Thêm ảnh từ Thư viện</string>
+    <string name="option_camera">Chụp ảnh</string>
+    <string name="hide_more">Ẩn bớt</string>
+
+    <!-- Các bộ lọc Ngày/Tháng/Năm/Tất cả -->
+    <string name="tab_all">Tất cả</string>
+    <string name="tab_calendar">Lịch</string>
+    <string name="filter_day">Ngày</string>
+    <string name="filter_month">Tháng</string>
+    <string name="filter_year">Năm</string>
+    <string name="filter_all">Tất cả</string>
+
+    <!-- Phần Ngân sách -->
+    <string name="budget_label">Ngân sách</string>
+    <string name="budget_amount">0 đ</string>
+    <string name="over_spent_prefix">Vượt chi</string>
+    <string name="over_spent_amount">556 đ</string>
+    <string name="frequency_daily">Hằng ngày</string>
+
+    <!-- Các thẻ Chi tiêu / Thu nhập -->
+    <string name="expense_card_label">Chi tiêu</string>
+    <string name="expense_card_amount">556 đ</string>
+    <string name="income_card_label">Thu nhập</string>
+    <string name="income_card_amount">0 đ</string>
+
+    <!-- Số dư -->
+    <string name="balance_prefix">Số dư: </string>
+    <string name="balance_amount">-556 đ</string>
+
+    <!--chi tiêu, thu nhập-->
+    <string name="expense">Chi tiêu</string>
+    <string name="income">Thu nhập</string>
 </resources>
