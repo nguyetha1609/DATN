@@ -189,3 +189,4 @@
         android:background="@android:color/white"
         app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="@color/custom_color_bottom_nav_bar" />
+</LinearLayout>
