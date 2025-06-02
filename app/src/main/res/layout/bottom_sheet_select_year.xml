@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvYearList"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/tvSelectedYear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Đã chọn: "
+        android:textSize="16sp"
+        android:textColor="#000000"
+        android:gravity="center"
+        android:padding="8dp" />
+
+
+
+    <Button
+        android:id="@+id/btnDoneYear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Xong"
+        android:backgroundTint="@color/gradient_start"
+        android:background="@drawable/bg_onboarding_button_final"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="8dp"/>
+</LinearLayout>

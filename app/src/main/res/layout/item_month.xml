@@ -1,0 +1,10 @@
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tvMonth"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:gravity="center"
+    android:text="Tháng 5\n2025"
+    android:textSize="16sp"
+    android:background="@drawable/bg_month_default"
+    android:textColor="@color/black"
+    android:layout_margin="4dp"/>
