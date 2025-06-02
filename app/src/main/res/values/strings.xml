@@ -36,6 +36,9 @@
     <string name="agree_terms">Tôi đồng ý với Điều khoản sử dụng</string>
     <string name="button_register">Đăng ký</string>
 
+    <!--Đăng xuất-->
+    <string name="logout">Đăng xuất</string>
+
     <!-- Quên mật khẩu -->
     <string name="forgot_title">Quên Mật Khẩu</string>
     <string name="hint_enter_email">Nhập Gmail của bạn</string>
@@ -74,4 +77,69 @@
     <string name="btn_add">Thêm</string>
     <!--Tài khoản-->
     <string name="account">Tài khoản</string>
+
+    <!-- Tiêu đề màn hình -->
+    <string name="profile_title">Thông Tin Cá Nhân</string>
+
+    <!-- Tên người dùng và tiền hàng tháng -->
+    <string name="user_name">Trần Ngọc Tiến</string>
+    <string name="monthly_income">Tiền hàng tháng</string>
+    <string name="amount">30.000.000 VND</string>
+
+    <!-- Các mục trong menu -->
+    <string name="menu_account">Tài Khoản</string>
+    <string name="menu_change_password">Đổi Mật Khẩu</string>
+    <string name="menu_language">Ngôn Ngữ</string>
+    <string name="menu_dark_mode">Chế Độ Tối</string>
+    <string name="menu_history">Lịch sử</string>
+    <string name="menu_export_csv">Xuất CSV</string>
+    <string name="menu_exchange_rate">Tỷ Giá Tiền Tệ</string>
+
+    <!-- Tiêu đề màn hình và nút Lưu -->
+    <string name="title_add_expense">Thêm Chi Tiêu</string>
+    <string name="save">Lưu</string>
+    <string name="close">Đóng</string>
+
+    <!-- Placeholder và label -->
+    <string name="hint_amount">100.000 VND</string>
+    <string name="label_type">Loại</string>
+    <string name="label_date">02/12/2022</string>
+    <string name="label_time">09:24</string>
+    <string name="hint_note">Ghi Chú</string>
+    <string name="label_location">Vị Trí</string>
+    <string name="label_friends">Bạn bè</string>
+
+    <!-- Dưới cùng -->
+    <string name="option_gallery">Thêm ảnh từ Thư viện</string>
+    <string name="option_camera">Chụp ảnh</string>
+    <string name="hide_more">Ẩn bớt</string>
+
+    <!-- Các bộ lọc Ngày/Tháng/Năm/Tất cả -->
+    <string name="tab_all">Tất cả</string>
+    <string name="tab_calendar">Lịch</string>
+    <string name="filter_day">Ngày</string>
+    <string name="filter_month">Tháng</string>
+    <string name="filter_year">Năm</string>
+    <string name="filter_all">Tất cả</string>
+
+    <!-- Phần Ngân sách -->
+    <string name="budget_label">Ngân sách</string>
+    <string name="budget_amount">0 đ</string>
+    <string name="over_spent_prefix">Vượt chi</string>
+    <string name="over_spent_amount">556 đ</string>
+    <string name="frequency_daily">Hằng ngày</string>
+
+    <!-- Các thẻ Chi tiêu / Thu nhập -->
+    <string name="expense_card_label">Chi tiêu</string>
+    <string name="expense_card_amount">556 đ</string>
+    <string name="income_card_label">Thu nhập</string>
+    <string name="income_card_amount">0 đ</string>
+
+    <!-- Số dư -->
+    <string name="balance_prefix">Số dư: </string>
+    <string name="balance_amount">-556 đ</string>
+
+    <!--chi tiêu, thu nhập-->
+    <string name="expense">Chi tiêu</string>
+    <string name="income">Thu nhập</string>
 </resources>

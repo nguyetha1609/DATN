@@ -27,21 +27,21 @@ public class HomeFragment extends Fragment {
 
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle b) {
         tvDateTitle = view.findViewById(R.id.tvDateTitle);
-        btnReset   = view.findViewById(R.id.btnReset);
+
 
         // 1. Ban đầu: chỉ “Hôm nay”, nút reset ẩn
         selectedDate = null;
         tvDateTitle.setText(R.string.today);
-        btnReset.setVisibility(View.GONE);
+//        btnReset.setVisibility(View.GONE);
 
         tvDateTitle.setOnClickListener(v -> openCalendar());
 
-        btnReset.setOnClickListener(v -> {
-            // reset về Today
-            selectedDate = null;
-            tvDateTitle.setText(R.string.today);
-            btnReset.setVisibility(View.GONE);
-        });
+//        btnReset.setOnClickListener(v -> {
+//            // reset về Today
+//            selectedDate = null;
+//            tvDateTitle.setText(R.string.today);
+//            btnReset.setVisibility(View.GONE);
+//        });
     }
 
     private void openCalendar() {
@@ -55,7 +55,7 @@ public class HomeFragment extends Fragment {
                             + date.getYear();
                     tvDateTitle.setText(txt);
                     // hiện nút Quay Lại
-                    btnReset.setVisibility(View.VISIBLE);
+//                    btnReset.setVisibility(View.VISIBLE);
                 });
         sheet.show(getChildFragmentManager(), "CALENDAR_SHEET");
     }
