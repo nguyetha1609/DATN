@@ -15,7 +15,6 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.o7planning.project_04.databases.DBHelper;
-import org.o7planning.project_04.fragments.HomeFragment;
 import org.o7planning.project_04.fragments.categoryfragment;
 import org.o7planning.project_04.fragments.spending_limit_fragment;
 import org.o7planning.project_04.fragments.statfragment;
