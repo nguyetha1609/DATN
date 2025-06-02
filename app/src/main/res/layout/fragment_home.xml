@@ -16,11 +16,11 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:drawableEnd="@drawable/ic_arrow_down"
-            android:drawablePadding="6dp"
+            android:drawablePadding="5dp"
             android:focusable="true"
-            android:fontFamily="@font/sf_pro_text_semibold"
-            android:text="@string/today"
-            android:textSize="15sp" />
+            android:text="Hôm nay"
+            android:textSize="17sp"
+            android:textStyle="bold"/>
         <!-- … bạn có thể thêm các view khác của HomeFragment ở đây … -->
 
         <!-- Nút Quay Lại, ban đầu ẩn -->
@@ -43,14 +43,12 @@
             android:id="@+id/btnPrev"
             android:layout_width="35dp"
             android:layout_height="20dp"
-            android:background="@color/colorBackground"
             android:src="@drawable/ic_arrow_left" />
 
         <ImageButton
             android:id="@+id/btnNext"
             android:layout_width="35dp"
             android:layout_height="20dp"
-            android:background="@color/colorBackground"
             android:src="@drawable/ic_arrow_right" />
     </LinearLayout>
 
