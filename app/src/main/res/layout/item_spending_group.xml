@@ -56,7 +56,7 @@
             android:id="@+id/imgToggleArrow"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:src="@drawable/ic_arrow_down"
+            android:src="@drawable/ic_arrow_downn"
             android:contentDescription="Toggle Arrow" />
     </LinearLayout>
 
