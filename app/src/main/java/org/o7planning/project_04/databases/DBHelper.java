@@ -29,7 +29,7 @@ import java.util.Random;
 import javax.xml.transform.sax.SAXResult;
 
 public class DBHelper extends SQLiteOpenHelper {
-    private static final String DB_NAME = "Do_An.db";
+    private static final String DB_NAME = "QLCT.db";
     private static final int DB_VERSION = 1;
 
     private final Context context;
@@ -162,7 +162,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void insertDefaultCategoriesIfNeeded() {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM DanhMuc WHERE DMmacdinh = 1", null);
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM DANHMUC WHERE DMmacdinh = 1", null);
         if (cursor.moveToFirst()) {
             int count = cursor.getInt(0);
             if (count == 0) {
