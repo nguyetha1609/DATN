@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/spending_limit_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <!-- Toolbar nằm sát status bar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar_spending_limit"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/teal"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        app:title="Hạn mức chi"
+        app:titleCentered="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ScrollView để nội dung cuộn được nếu dài -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_spending_limit"
+        app:layout_constraintBottom_toTopOf="@id/btn_add_spending"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Danh sách hạn mức chi  -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewSpendingLimit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="false" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Nút thêm -->
+    <Button
+        android:id="@+id/btn_add_spending"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+ Thêm"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:background="@drawable/bg_round_button"
+        android:paddingLeft="36dp"
+        android:paddingRight="36dp"
+        android:paddingTop="18dp"
+        android:paddingBottom="18dp"
+        android:elevation="8dp"
+        android:layout_marginBottom="72dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

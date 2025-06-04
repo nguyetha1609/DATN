@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:drawableEnd="@drawable/ic_arrow_down"
+            android:drawableEnd="@drawable/ic_arrow_downn"
             android:drawablePadding="5dp"
             android:focusable="true"
             android:text="Hôm nay"

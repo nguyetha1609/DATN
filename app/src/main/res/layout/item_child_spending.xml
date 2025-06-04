@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp"
+    android:background="?attr/selectableItemBackground">
+
+    <!-- Tên khoản chi -->
+    <TextView
+        android:id="@+id/tv_child_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="5/5/2025"
+        android:textSize="15sp"
+        android:textColor="#000000" />
+
+    <!-- Số tiền -->
+    <TextView
+        android:id="@+id/tv_child_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="25.000 đ"
+        android:textSize="15sp"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold" />
+</LinearLayout>

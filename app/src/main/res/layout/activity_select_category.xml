@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Toolbar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        app:navigationIcon="@drawable/ic_chevron_left"
+        android:background="@color/teal"
+        app:titleCentered="true"
+
+        app:title="Chọn danh mục"
+        app:titleTextColor="@android:color/white"
+        app:menu="@menu/menu_category_multi_select" />
+
+    <!-- Nội dung -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="8dp">
+
+            <!-- Icon -->
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_check_list"
+            android:layout_marginEnd="8dp" />
+
+            <!-- Text -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Chọn tất cả danh mục"
+                android:textSize="16sp" />
+
+            <!-- Switch -->
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_select_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- RecyclerView danh mục -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_categories"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingTop="8dp" />
+    </LinearLayout>
+</LinearLayout>

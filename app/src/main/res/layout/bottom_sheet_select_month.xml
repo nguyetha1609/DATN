@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/monthPickerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Năm + mũi tên chuyển năm -->
+    <LinearLayout
+        android:id="@+id/layoutYearNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/btnPreviousYear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_left"
+            android:contentDescription="Previous year"
+            android:padding="8dp" />
+
+        <TextView
+            android:id="@+id/tvYear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2025"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginHorizontal="24dp" />
+
+        <ImageView
+            android:id="@+id/btnNextYear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_chevron_right"
+            android:contentDescription="Next year"
+            android:padding="8dp" />
+    </LinearLayout>
+
+    <!-- Grid các tháng -->
+    <GridLayout
+        android:id="@+id/monthGrid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:rowCount="4"
+        android:alignmentMode="alignMargins"
+        android:paddingTop="12dp"
+        android:useDefaultMargins="true" />
+
+    <!-- Nút Xong -->
+    <Button
+        android:id="@+id/btnDone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Xong"
+        android:textAllCaps="false"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/gradient_start"
+        android:background="@drawable/bg_onboarding_button_final"
+        android:textColor="@android:color/white" />
+</LinearLayout>
