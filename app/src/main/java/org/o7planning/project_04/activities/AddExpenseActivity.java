@@ -1,9 +1,7 @@
-package org.o7planning.project_04;
+package org.o7planning.project_04.activities;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar; // Import Toolbar
 
 import com.google.android.material.textfield.TextInputEditText;
+
+import org.o7planning.project_04.R;
 
 public class AddExpenseActivity extends AppCompatActivity {
 

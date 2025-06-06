@@ -1,4 +1,4 @@
-package org.o7planning.project_04;
+package org.o7planning.project_04.fragments;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import org.o7planning.project_04.R;
 import org.threeten.bp.LocalDate;
 
 public class HomeFragment extends Fragment {

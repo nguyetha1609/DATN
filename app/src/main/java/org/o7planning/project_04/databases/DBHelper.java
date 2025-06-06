@@ -528,4 +528,46 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
+    // Lấy email theo ID
+    public String getEmailById(long userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT Email FROM TAIKHOAN WHERE ID_TK = ?", new String[]{String.valueOf(userId)});
+        String email = "";
+        if (cursor.moveToFirst()) {
+            email = cursor.getString(0);
+        }
+        cursor.close();
+        return email;
+    }
+
+    // Cập nhật thông tin người dùng
+    public boolean updateUserInformation(long userId, String newEmail, String oldPassword, String newPassword) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT password FROM users WHERE id = ?", new String[]{String.valueOf(userId)});
+        if (cursor.moveToFirst()) {
+            String currentPassword = cursor.getString(0);
+            if (!currentPassword.equals(oldPassword)) {
+                cursor.close();
+                return false;
+            }
+        } else {
+            cursor.close();
+            return false;
+        }
+        cursor.close();
+
+        ContentValues values = new ContentValues();
+        values.put("email", newEmail);
+        if (!newPassword.isEmpty()) {
+            values.put("password", newPassword);
+        }
+
+        int rows = db.update("users", values, "id = ?", new String[]{String.valueOf(userId)});
+        db.close();
+        return rows > 0;
+    }
+
+
+
 }

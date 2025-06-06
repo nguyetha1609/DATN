@@ -49,6 +49,10 @@
     <string name="enter_new_password">Mật khẩu mới</string>
     <string name="button_confirm_change">Đổi mật khẩu</string>
 
+    <!-- Chỉnh sửa tài khoản -->
+    <string name="button_save">Lưu thay đổi</string>
+    <string name="button_exit">Thoát chỉnh sửa</string>
+
 <!--    menu-->
     <string name="menu_home">Trang chủ </string>
     <string name="menu_chart">Tài sản </string>
