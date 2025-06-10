@@ -11,7 +11,7 @@ import java.io.OutputStream;
 
 public class PrepopulatedDBHelper {
 
-    private static final String DB_NAME = "Do_An.db";
+    private static final String DB_NAME = "QLCT.db";
     private final Context context;
 
     public PrepopulatedDBHelper(Context context) {

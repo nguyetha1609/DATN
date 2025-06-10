@@ -43,6 +43,9 @@
     <string name="forgot_title">Quên Mật Khẩu</string>
     <string name="hint_enter_email">Nhập Gmail của bạn</string>
     <string name="button_reset_password">Gửi yêu cầu khôi phục</string>
+    <string name="close">Thoát</string>
+    <string name="new_password">Mật khẩu mới</string>
+    <string name="confirm_password">Xác nhận mật khẩu</string>
 
     <!-- Đổi mật khẩu -->
     <string name="enter_password">Mật khẩu cũ</string>
@@ -102,7 +105,6 @@
     <!-- Tiêu đề màn hình và nút Lưu -->
     <string name="title_add_expense">Thêm Chi Tiêu</string>
     <string name="save">Lưu</string>
-    <string name="close">Đóng</string>
 
     <!-- Placeholder và label -->
     <string name="hint_amount">100.000 VND</string>
@@ -146,4 +148,13 @@
     <!--chi tiêu, thu nhập-->
     <string name="expense">Chi tiêu</string>
     <string name="income">Thu nhập</string>
+
+
+    <string-array name="income_type_array">
+        <item>Tiền hàng ngày</item>
+        <item>Tiền hàng tháng</item>
+        <item>Tiền hàng năm</item>
+    </string-array>
+
+
 </resources>
