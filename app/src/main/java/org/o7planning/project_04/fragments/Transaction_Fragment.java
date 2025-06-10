@@ -12,8 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import org.o7planning.project_04.AddExpenseActivity;
-import org.o7planning.project_04.MainActivity;
+import org.o7planning.project_04.activities.AddExpenseActivity;
 import org.o7planning.project_04.R;
 
 public class Transaction_Fragment extends Fragment {

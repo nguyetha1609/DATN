@@ -47,6 +47,6 @@
         <activity android:name=".activities.spendingList_Activity" />
 
 
-        <activity android:name=".AddExpenseActivity" android:theme="@style/Theme.Project_04"/>
+        <activity android:name=".activities.AddExpenseActivity" android:theme="@style/Theme.Project_04"/>
     </application>
 </manifest>

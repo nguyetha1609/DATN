@@ -1,4 +1,4 @@
-package org.o7planning.project_04;
+package org.o7planning.project_04.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import org.o7planning.project_04.Adapter.DayAdapter;
+import org.o7planning.project_04.R;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.YearMonth;
 
