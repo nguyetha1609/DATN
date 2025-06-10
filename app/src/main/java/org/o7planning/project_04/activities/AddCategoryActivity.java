@@ -1,95 +1,121 @@
 package org.o7planning.project_04.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.appbar.MaterialToolbar;
+
 import org.o7planning.project_04.R;
+import org.o7planning.project_04.databases.CategoryDAO;
 import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.model.category;
+
+import java.util.List;
 
 
 public class AddCategoryActivity extends AppCompatActivity {
     private static final int REQUEST_ICON_PICKER = 1001;
     private int selectedIconResId = R.drawable.ic_default;
-    private String selectedIconName = "ic_default";
+
+    private String iconName = "ic_default";
     private ImageView imgSelectedIcon;
     private EditText edtCatename;
-    private Spinner spinnerLoaiDM;
+    private String loaiDM ="ChiTieu";
+    private int selectedParentId = -1;
+    CategoryDAO db;
+    LinearLayout tabParentContainer;
+    private Button btnSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_categoryactivity);
+        db = new CategoryDAO(this);
 
         edtCatename = findViewById(R.id.edt_category_name);
-        spinnerLoaiDM=findViewById(R.id.spinner_loai_dm);
         imgSelectedIcon= findViewById(R.id.selected_icon);
+        btnSave = findViewById(R.id.btn_save);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                new String[]{"-- Loại danh mục --", "Chi tiêu", "Thu nhập"}
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerLoaiDM.setAdapter(adapter);
+        loaiDM = getIntent().getStringExtra("LoaiDM");
+        if(loaiDM == null) loaiDM ="ChiTieu";
 
-        //Nút hủy
-        TextView btn_cancel = findViewById(R.id.btn_cancel);
-        btn_cancel.setOnClickListener(v -> {
-            finish();
-        });
-        // nut chon icon
-        findViewById(R.id.btn_choose_icon).setOnClickListener(v -> {
-            IconPickerBottomSheet bottomSheet = new IconPickerBottomSheet();
-            bottomSheet.setIconSelectedListener((iconName, resId) -> {
-                selectedIconName = iconName;
-                selectedIconResId = resId;
-                imgSelectedIcon.setImageResource(resId);
-            });
-            bottomSheet.show(getSupportFragmentManager(), "IconPicker");
 
-        });
-        //nut them
-        findViewById(R.id.btn_save).setOnClickListener(v -> {
-            String tenDM=edtCatename.getText().toString().trim();
-            String loaiDM= spinnerLoaiDM.getSelectedItem().toString();
-
-            if(tenDM.isEmpty()){
-                Toast.makeText(this, "Tên danh mục không được để trống", Toast.LENGTH_SHORT).show();
-                 return;
+        // nút quay lại
+        MaterialToolbar toolbar = findViewById(R.id.toolbar_add_category);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
-            if(loaiDM.equals("-- Loại danh mục --")){
-                Toast.makeText(this,"Vui lòng chọn lọai danh mục",Toast.LENGTH_SHORT).show();
+        });
+
+        // nut chon icon
+        imgSelectedIcon.setOnClickListener(v -> openIconPicker());
+
+        //nut them
+        btnSave.setOnClickListener(v -> {
+            String tenDM = edtCatename.getText().toString().trim();
+
+            if (tenDM.isEmpty()) {
+                Toast.makeText(this, "Tên danh mục không được để trống", Toast.LENGTH_SHORT).show();
                 return;
             }
-            // chuyen doi chon danh muc
-            String loai = loaiDM.equals("Chi tiêu")? "ChiTieu":"ThuNhap";
+            if (db.isCateNameExists(tenDM, loaiDM)) {
+                Toast.makeText(this, "Tên danh mục đã tồn tại", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            // them vao csdl
-            category cate = new category(tenDM,loai,selectedIconName,2);
-            DBHelper db = new DBHelper(this);
-            db.addcate(cate);
+            category newCate = new category();
+            newCate.setTenDM(tenDM);
+            newCate.setLoaiDM(loaiDM);
+            newCate.setHinhAnh(iconName);
+            newCate.setDMMacDinh(2); // 2 là danh mục do người dùng thêm
 
-            Toast.makeText(this, "Thêm danh mục thành công", Toast.LENGTH_SHORT).show();
-
-            setResult(RESULT_OK);
-            finish();
+            try {
+                db.addcate(newCate);
+                Toast.makeText(this, "Đã thêm danh mục", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_OK);
+                finish();
+            } catch (Exception e) {
+                Toast.makeText(this, "Lỗi khi thêm danh mục", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
         });
+
     }
+    private void openIconPicker() {
+        IconPickerBottomSheet picker = new IconPickerBottomSheet();
+
+        picker.setIconSelectedListener((selectedIconName, resId) -> {
+            this.iconName = selectedIconName;
+            imgSelectedIcon.setImageResource(resId);
+        });
+
+        picker.show(getSupportFragmentManager(), picker.getTag());
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_ICON_PICKER && resultCode == RESULT_OK && data != null) {
             selectedIconResId = data.getIntExtra("iconResId", R.drawable.ic_default);
-            selectedIconName = data.getStringExtra("iconName");
+            iconName = data.getStringExtra("iconName");
             imgSelectedIcon.setImageResource(selectedIconResId);
         }
     }

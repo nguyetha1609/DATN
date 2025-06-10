@@ -23,6 +23,7 @@ import com.google.android.material.imageview.ShapeableImageView;
 import org.o7planning.project_04.R;
 import org.o7planning.project_04.activities.LimitDetailActivity;
 import org.o7planning.project_04.databases.DBHelper;
+import org.o7planning.project_04.databases.LimitDAO;
 import org.o7planning.project_04.model.Limit;
 import org.o7planning.project_04.model.category;
 
@@ -38,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 public class LimitAdapter extends RecyclerView.Adapter<LimitAdapter.LimitViewHolder> {
     private List<Limit> limitList;
     private Context context;
+    private LimitDAO dblimit;
     public  LimitAdapter (List<Limit> limitList){
         this.limitList= limitList;
     }
@@ -166,8 +168,8 @@ holder.itemView.setOnClickListener(v -> {
         return String.format("%,d", amount);
     }
     private Drawable getIconDrawable(Limit limit) {
-        DBHelper db = new DBHelper(context);
-        List<category> categories = db.getCategoriesForLimit(limit.getID_HM());
+         dblimit = new LimitDAO(context);
+        List<category> categories = dblimit.getCategoriesForLimit(limit.getID_HM());
 
         if (categories == null || categories.isEmpty()) {
             return context.getResources().getDrawable(R.drawable.ic_default);

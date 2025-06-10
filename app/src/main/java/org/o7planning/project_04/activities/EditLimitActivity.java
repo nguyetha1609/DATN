@@ -17,7 +17,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import org.o7planning.project_04.R;
+import org.o7planning.project_04.databases.CategoryDAO;
 import org.o7planning.project_04.databases.DBHelper;
+import org.o7planning.project_04.databases.LimitDAO;
 import org.o7planning.project_04.fragments.spending_limit_fragment;
 import org.o7planning.project_04.model.Limit;
 import org.o7planning.project_04.model.category;
@@ -39,12 +41,15 @@ public class EditLimitActivity extends AppCompatActivity {
     private  int limiId;
     private LinearLayout ll_category;
     private Button btn_save_limit , btn_delete_limit;
+    private CategoryDAO dbcate;
+    private LimitDAO dblimit;
     private ArrayList<Integer> selectedCategoryIds = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_limit);
+        dblimit = new LimitDAO(this);
 
         // anh xa cac view
         edtAmount= findViewById(R.id.et_amount);
@@ -90,7 +95,7 @@ public class EditLimitActivity extends AppCompatActivity {
                     .setMessage("Bạn có chắc chắn muốn xóa hạn mức này không?")
                     .setPositiveButton("Xóa", (dialog, which) -> {
                         DBHelper db = new DBHelper(this);
-                        db.deleteLimit(limiId);
+                        dblimit.deleteLimit(limiId);
                         Toast.makeText(this, "Đã xóa hạn mức", Toast.LENGTH_SHORT).show();
 
                         // Quay lại màn hình SpendingLimitActivity
@@ -110,7 +115,7 @@ public class EditLimitActivity extends AppCompatActivity {
     }
     private void loadLimitData(int id){
         DBHelper db = new DBHelper(this);
-        Limit limit = db.getLimitById(id);
+        Limit limit = dblimit.getLimitById(id);
 
         if(limit == null){
             Toast.makeText(this,"Khong tim thay han muc",Toast.LENGTH_SHORT).show();
@@ -184,7 +189,7 @@ public class EditLimitActivity extends AppCompatActivity {
         limit.setListDanhMuc(selectedCategoryIds);
 
         DBHelper db = new DBHelper(this);
-        boolean success = db.updateLimit(limit);
+        boolean success = dblimit.updateLimit(limit);
 
         if (success) {
             Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
@@ -197,7 +202,7 @@ public class EditLimitActivity extends AppCompatActivity {
 
     private void loadSelectedCategories(int limiId){
         DBHelper db = new DBHelper(this);
-        selectedCategoryIds =db.getCategoryIdsByLimitId(limiId);
+        selectedCategoryIds =dblimit.getCategoryIdsByLimitId(limiId);
     }
     @Override
     protected  void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
@@ -219,11 +224,11 @@ public class EditLimitActivity extends AppCompatActivity {
                 if (size == 0) {
                     tv_category.setText("Không có danh mục nào");
                 } else if (size == 1) {
-                    category cate = db.getCategoryById(selectedCategoryIds.get(0));
+                    category cate = dbcate.getCategoryById(selectedCategoryIds.get(0));
                     tv_category.setText(cate.getTenDM());
                 } else {
                     // Lấy tên danh mục đầu tiên
-                    category firstCate = db.getCategoryById(selectedCategoryIds.get(0));
+                    category firstCate = dbcate.getCategoryById(selectedCategoryIds.get(0));
                     String firstName = firstCate != null ? firstCate.getTenDM() : "";
 
                     int othersCount = size - 1;
@@ -253,14 +258,14 @@ public class EditLimitActivity extends AppCompatActivity {
         if (size == 0) {
             tv_category.setText("Không có danh mục nào");
         } else if (size == 1) {
-            category cate = db.getCategoryById(selectedCategoryIds.get(0));
+            category cate = dbcate.getCategoryById(selectedCategoryIds.get(0));
             if (cate != null) {
                 tv_category.setText(cate.getTenDM());
             } else {
                 tv_category.setText("Danh mục không tồn tại");
             }
         } else {
-            category firstCate = db.getCategoryById(selectedCategoryIds.get(0));
+            category firstCate = dbcate.getCategoryById(selectedCategoryIds.get(0));
             String firstName = (firstCate != null) ? firstCate.getTenDM() : "Danh mục";
 
             int othersCount = size - 1;

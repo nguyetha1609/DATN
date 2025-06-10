@@ -13,6 +13,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import org.o7planning.project_04.Adapter.CategoryCheckboxAdapter;
 import org.o7planning.project_04.Adapter.IconAdapter;
 import org.o7planning.project_04.R;
+import org.o7planning.project_04.databases.CategoryDAO;
 import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.model.category;
 
@@ -27,6 +28,7 @@ public class CategoryMultiSelectActivity extends AppCompatActivity {
     private SwitchCompat switchSelectAll;
     private List<category> allCategories = new ArrayList<>();
     private Set<Integer> selectedId = new HashSet<>();
+    private CategoryDAO dbcate;
 
     @Override
     protected  void onCreate(Bundle savedInstanceState){
@@ -76,9 +78,9 @@ public class CategoryMultiSelectActivity extends AppCompatActivity {
         });
     }
     private void loadCategories(){
-        DBHelper db = new DBHelper(this);
+        CategoryDAO dbcate = new CategoryDAO(this);
         allCategories.clear();
-        allCategories.addAll(db.getAllCategories("ChiTieu"));
+        allCategories.addAll(dbcate.getAllCategories("ChiTieu"));
         if (adapter != null) {
             adapter.notifyDataSetChanged();
         }

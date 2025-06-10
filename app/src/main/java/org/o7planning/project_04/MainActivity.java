@@ -16,22 +16,18 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.o7planning.project_04.activities.activity_category;
+import org.o7planning.project_04.databases.CategoryDAO;
 import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.fragments.Transaction_Fragment;
-import org.o7planning.project_04.fragments.categoryfragment;
 import org.o7planning.project_04.fragments.spending_limit_fragment;
 import org.o7planning.project_04.fragments.statfragment;
 
 
 import com.jakewharton.threetenabp.AndroidThreeTen; // Đảm bảo đã thêm thư viện này vào build.gradle
 
-import com.google.android.material.bottomnavigation.BottomNavigationView; // Import BottomNavigationView
-import android.view.MenuItem; // Import MenuItem
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull; // Import NonNull
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -47,12 +43,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        //Tao danh muc mac dinh
-        DBHelper db = new DBHelper(this);
+        //Tao danh muc mac dinh khi mo app
+        CategoryDAO db = new CategoryDAO(this);
         db.insertDefaultCategoriesIfNeeded();
-
-
-
 
         // Khởi tạo và sao chép database (nếu cần)
         PrepopulatedDBHelper dbHelper = new PrepopulatedDBHelper(this);
@@ -73,16 +66,15 @@ public class MainActivity extends AppCompatActivity {
 
                 if (itemId == R.id.nav_home) {
                     selectedFragment = new Transaction_Fragment();
-                } else if (itemId == R.id.nav_category) {
-                    categoryfragment fragment = new categoryfragment();
-                    Bundle args = new Bundle();
-                    args.putString("loaiDM", "chi tiêu");
-                    fragment.setArguments(args);
-                    selectedFragment = fragment;
+
                 } else if (itemId == R.id.nav_stats) {
                     selectedFragment = new statfragment();
                 } else if (itemId == R.id.nav_more) {
                     selectedFragment = new spending_limit_fragment();
+                }    else if (itemId == R.id.nav_category) { // gia dinh de test
+                  Intent intent = new Intent(MainActivity.this, activity_category.class);
+                    startActivity(intent);
+                    return true;
                 }
 
                 if (selectedFragment != null) {
@@ -91,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
                             .commit();
                     return true;
                 }
+
+
                 return false;
             }
         });

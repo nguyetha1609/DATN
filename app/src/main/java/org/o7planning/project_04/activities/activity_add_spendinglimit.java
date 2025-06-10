@@ -21,7 +21,9 @@ import com.google.android.material.appbar.MaterialToolbar;
 
 import org.o7planning.project_04.Adapter.LimitAdapter;
 import org.o7planning.project_04.R;
+import org.o7planning.project_04.databases.CategoryDAO;
 import org.o7planning.project_04.databases.DBHelper;
+import org.o7planning.project_04.databases.LimitDAO;
 import org.o7planning.project_04.model.Limit;
 import org.o7planning.project_04.model.category;
 import org.o7planning.project_04.Adapter.CategoryCheckboxAdapter;
@@ -43,7 +45,8 @@ public class activity_add_spendinglimit extends AppCompatActivity {
     private DBHelper db;
     private Button btn_save_limit;
     private EditText et_limit_name,et_amount;
-
+private CategoryDAO dbcate;
+private LimitDAO dblimit;
 
     Calendar calendar = Calendar.getInstance();
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -54,6 +57,8 @@ public class activity_add_spendinglimit extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_spendinglimit);
+        dbcate = new CategoryDAO(this);
+        dblimit = new LimitDAO(this);
 
         llCategory = findViewById(R.id.ll_category);
         tvCategory = findViewById(R.id.tv_category);
@@ -137,7 +142,7 @@ public class activity_add_spendinglimit extends AppCompatActivity {
             limit.setListDanhMuc(listDM);
 
             DBHelper db = new DBHelper(this);
-            boolean result = db.insertLimit(limit);
+            boolean result = dblimit.insertLimit(limit);
             if(result){
                 Toast.makeText(this,"Them han muc thanh cong",Toast.LENGTH_SHORT).show();
                 setResult(Activity.RESULT_OK);
@@ -167,11 +172,11 @@ public class activity_add_spendinglimit extends AppCompatActivity {
                 if (size == 0) {
                     tvCategory.setText("Không có danh mục nào");
                 } else if (size == 1) {
-                    category cate = db.getCategoryById(selectedCategoryId.get(0));
+                    category cate = dbcate.getCategoryById(selectedCategoryId.get(0));
                     tvCategory.setText(cate.getTenDM());
                 } else {
                     // Lấy tên danh mục đầu tiên
-                    category firstCate = db.getCategoryById(selectedCategoryId.get(0));
+                    category firstCate = dbcate.getCategoryById(selectedCategoryId.get(0));
                     String firstName = firstCate != null ? firstCate.getTenDM() : "";
 
                     int othersCount = size - 1;

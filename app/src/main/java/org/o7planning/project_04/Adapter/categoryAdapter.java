@@ -14,39 +14,88 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.zerobranch.layout.SwipeLayout;
+
 import org.o7planning.project_04.R;
 
 import java.util.List;
 
-public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.CategoryViewHolder> {
-    private Context cont;
+public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.ViewHolder> {
+    private Context context;
     private List<category> categoryList;
+    private boolean isEditMode = false;
+
+    public interface OnItemActionListener{
+        void onDelete(category cat);
+        void onEdit (category cat);
+    }
+    private OnItemActionListener actionListener;
+
+    public void setOnItemActionListener(OnItemActionListener listener){
+        this.actionListener = listener;
+    }
 
     public categoryAdapter(Context cont, List<category> categoryList){
-        this.cont= cont;
+        this.context= cont;
         this.categoryList= categoryList;
 
     }
+
     @NonNull
     @Override
-    public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent,int viewType){
-        View view= LayoutInflater.from(cont).inflate(R.layout.item_category,parent,false);
-        return new CategoryViewHolder(view);
+    public categoryAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_category, parent, false);
+        return new ViewHolder(view);
     }
+
     @Override
-    public void onBindViewHolder(@NonNull CategoryViewHolder holder,int position){
-        category cate = categoryList.get(position);
-        holder.txtname.setText(cate.getTenDM());
-        int iconResId = cont.getResources().getIdentifier(cate.getHinhAnh(),"drawable",cont.getPackageName());
+    public void onBindViewHolder(@NonNull categoryAdapter.ViewHolder holder, int position) {
+        category cat = categoryList.get(position);
+        holder.txtName.setText(cat.getTenDM());
+
+        // Giả định bạn có method lấy id resource icon từ tên
+        int iconResId = context.getResources().getIdentifier(cat.getHinhAnh(),"drawable",context.getPackageName());
         holder.imgIcon.setImageResource(iconResId !=0? iconResId :R.drawable.ic_default);
 
-        holder.imgIcon.setOnClickListener(v -> {
-            Intent intent = new Intent(cont, EditCategoryActivity.class);
-            intent.putExtra("ID_DM",cate.getID());
-            cont.startActivity(intent);
+        if (isEditMode) {
+            holder.imgEdit.setVisibility(View.VISIBLE);
+            holder.imgDelete.setVisibility(View.VISIBLE);
+        } else {
+            holder.imgEdit.setVisibility(View.GONE);
+            holder.imgDelete.setVisibility(View.GONE);
+            holder.swipeLayout.close();
+        }
+
+        holder.imgDelete.setOnClickListener(v -> {
+            holder.swipeLayout.openRight();
         });
 
+        holder.btnDelete.setOnClickListener(v -> {
+            if (actionListener != null) {
+                actionListener.onDelete(cat);
+            }
+        });
+
+        holder.imgEdit.setOnClickListener(v -> {
+            if (actionListener != null) {
+                actionListener.onEdit(cat);
+            }
+        });
     }
+//    @Override
+//    public void onBindViewHolder(@NonNull CategoryViewHolder holder,int position){
+//        category cate = categoryList.get(position);
+//        holder.txtname.setText(cate.getTenDM());
+//        int iconResId = cont.getResources().getIdentifier(cate.getHinhAnh(),"drawable",cont.getPackageName());
+//        holder.imgIcon.setImageResource(iconResId !=0? iconResId :R.drawable.ic_default);
+//
+//        holder.imgIcon.setOnClickListener(v -> {
+//            Intent intent = new Intent(cont, EditCategoryActivity.class);
+//            intent.putExtra("ID_DM",cate.getID());
+//            cont.startActivity(intent);
+//        });
+//
+//    }
     @Override
     public int getItemCount(){
         return categoryList.size();
@@ -54,14 +103,23 @@ public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.Catego
     public void setData(List<category> newList) {
         this.categoryList = newList;
     }
-public class CategoryViewHolder extends RecyclerView.ViewHolder{
-        ImageView imgIcon;
-        TextView txtname;
+    public void setEditMode(boolean editMode){
+        this.isEditMode =editMode;
+    }
+public static class ViewHolder extends RecyclerView.ViewHolder{
+    SwipeLayout swipeLayout;
+        ImageView imgIcon,imgEdit, imgDelete;
+        TextView txtName;
+        TextView btnDelete;
 
-        public CategoryViewHolder(@NonNull View itemView){
+        public ViewHolder(@NonNull View itemView){
             super(itemView);
-            imgIcon= itemView.findViewById(R.id.img_icon);
-            txtname = itemView.findViewById(R.id.txt_name);
+            swipeLayout = itemView.findViewById(R.id.swipe_layout);
+            imgIcon = itemView.findViewById(R.id.img_icon);
+            imgEdit = itemView.findViewById(R.id.img_edit);
+            imgDelete = itemView.findViewById(R.id.img_delete);
+            txtName= itemView.findViewById(R.id.txt_name);
+            btnDelete = itemView.findViewById(R.id.btn_delete);
         }
 }
 }

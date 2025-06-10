@@ -18,6 +18,7 @@ import org.o7planning.project_04.Adapter.LimitAdapter;
 import org.o7planning.project_04.R;
 import org.o7planning.project_04.activities.activity_add_spendinglimit;
 import org.o7planning.project_04.databases.DBHelper;
+import org.o7planning.project_04.databases.LimitDAO;
 import org.o7planning.project_04.model.Limit;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class spending_limit_fragment extends Fragment {
     private RecyclerView recyclerView;
     private LimitAdapter limitAdapter;
     private DBHelper db;
+    private LimitDAO dblimit;
     private final ActivityResultLauncher<Intent> addLimitLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                     result ->{
@@ -52,7 +54,8 @@ public class spending_limit_fragment extends Fragment {
         return view;
     }
     private void loadLimitList() {
-        List<Limit> limitList = db.getAllLimits();
+        dblimit = new LimitDAO(getContext());
+        List<Limit> limitList = dblimit.getAllLimits();
         if (limitAdapter == null) {
             limitAdapter = new LimitAdapter(getContext(), limitList);
             recyclerView.setAdapter(limitAdapter);

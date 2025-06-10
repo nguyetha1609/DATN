@@ -28,11 +28,13 @@
         </activity>
         <!-- Màn hình chính chính thức của ứng dụng -->
         <activity android:name=".MainActivity"/>
-
+        <activity android:name=".activities.activity_category" android:theme="@style/Base.Theme.Project_04"/>
         <!--Man hinh them danh muc-->
         <activity android:name=".activities.AddCategoryActivity" />
         <!--Man hinh sua/xoa danh muc-->
         <activity android:name=".activities.EditCategoryActivity" />
+<!--        Man hinh danh muc cha-->
+        <activity android:name=".activities.Activity_ParentCategory"/>
         <!-- Man hinh them han muc -->
         <activity android:name=".activities.activity_add_spendinglimit"/>
         <!-- man hinh chon danh muc trong them han muc -->

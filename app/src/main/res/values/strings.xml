@@ -142,4 +142,7 @@
     <!--chi tiêu, thu nhập-->
     <string name="expense">Chi tiêu</string>
     <string name="income">Thu nhập</string>
+
+    <!-- biểu tượng danh mục -->
+    <string name="category_icon" >Biểu tượng danh mục</string>
 </resources>

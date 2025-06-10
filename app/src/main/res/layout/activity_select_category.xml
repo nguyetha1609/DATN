@@ -11,12 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-        app:navigationIcon="@drawable/ic_chevron_left"
-        android:background="@color/teal"
+        app:navigationIcon="@drawable/ic_arrow_left"
+        android:background="@color/white"
         app:titleCentered="true"
-
         app:title="Chọn danh mục"
-        app:titleTextColor="@android:color/white"
+        app:titleTextColor="@android:color/black"
         app:menu="@menu/menu_category_multi_select" />
 
     <!-- Nội dung -->
