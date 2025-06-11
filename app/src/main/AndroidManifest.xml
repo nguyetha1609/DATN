@@ -2,9 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <uses-sdk
         android:minSdkVersion="21"
         android:targetSdkVersion="34" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -43,6 +46,15 @@
         <activity android:name=".activities.EditLimitActivity"/>
 <!--        man hinh chi tiet cac khoan chi-->
         <activity android:name=".activities.spendingList_Activity" />
+
+        <activity android:name=".activities.AccountActivity" />
+        <activity android:name=".activities.ActivityAccountInfor" />
+        <activity android:name=".activities.ActivityChangePassword" />
+        <activity android:name=".activities.ActivityForgotPassword" />
+        <activity android:name=".activities.ActivityVerificationCode" />
+        <activity android:name=".activities.LoginActivity" />
+        <activity android:name=".activities.RegisterActivity" />
+        <activity android:name=".activities.NotLoginActivity" />
 
 
         <activity android:name=".activities.AddExpenseActivity" android:theme="@style/Theme.Project_04"/>

@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+
 }
 
 android {
@@ -34,10 +35,23 @@ android {
         isCoreLibraryDesugaringEnabled = true
 
     }
+
+// Thêm để xử lý lỗi META-INF
+    packagingOptions {
+        resources.excludes.add("META-INF/*")
+        resources.excludes.add("META-INF/NOTICE.md")
+        resources.excludes.add("META-INF/LICENSE.md")
+        resources.excludes.add("META-INF/versions/9/previous-compilation-data.bin")
+    }
 }
 
 configurations.all {
     resolutionStrategy {
+        // Giải quyết xung đột phiên bản
+        force("androidx.core:core-ktx:1.10.1")
+        force("com.google.android.material:material:1.9.0")
+        force("androidx.appcompat:appcompat:1.6.1")
+
         eachDependency {
             if (requested.group == "com.kizitonwose.calendar") {
                 useVersion("2.2.0")
@@ -59,8 +73,7 @@ dependencies {
     //implementation(libs.constraintlayout)
     implementation(libs.mpandroidchart)
 
-
-    implementation("com.google.android.material:material:1.12.0")
+    
     implementation("androidx.recyclerview:recyclerview:1.4.0")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
@@ -76,13 +89,16 @@ dependencies {
    // implementation ("com.google.android.material:material:1.11.0")
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     implementation ("de.hdodenhof:circleimageview:3.1.0")
-
-
+    implementation ("com.sun.mail:android-mail:1.6.7")
+    implementation ("com.sun.mail:android-activation:1.6.7")
+    implementation ("com.google.android.material:material:1.9.0")
 
     implementation(libs.activity)
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
