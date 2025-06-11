@@ -33,8 +33,6 @@
         <activity android:name=".activities.AddCategoryActivity" />
         <!--Man hinh sua/xoa danh muc-->
         <activity android:name=".activities.EditCategoryActivity" />
-<!--        Man hinh danh muc cha-->
-        <activity android:name=".activities.Activity_ParentCategory"/>
         <!-- Man hinh them han muc -->
         <activity android:name=".activities.activity_add_spendinglimit"/>
         <!-- man hinh chon danh muc trong them han muc -->
