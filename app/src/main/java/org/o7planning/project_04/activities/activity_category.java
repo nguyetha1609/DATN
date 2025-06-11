@@ -1,6 +1,7 @@
 package org.o7planning.project_04.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 
 import androidx.appcompat.app.AlertDialog;
@@ -42,11 +44,13 @@ public class activity_category extends AppCompatActivity {
     private MaterialButton btnExpense, btnIncome;
     private int selectedParentId =-1;
     private int currentParentId = -1;
+    private int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category); // dùng layout mới
+
 
         recyclerView = findViewById(R.id.recyclerViewCategory);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -59,6 +63,13 @@ public class activity_category extends AppCompatActivity {
         db.createDatabaseIfNone();
 
         dbHelper = new CategoryDAO(this);
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        userId = sharedPreferences.getInt("ID_TK", -1);
+        if (userId == -1) {
+            Toast.makeText(this, "Lỗi: chưa đăng nhập", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         if (getIntent() != null) {
             loaiDM = getIntent().getStringExtra("LoaiDM");
@@ -151,7 +162,7 @@ public class activity_category extends AppCompatActivity {
     }
 
     private void loadCategoryList() {
-        List<category> list = dbHelper.getAllCategories(loaiDM);
+        List<category> list = dbHelper.getAllCategories(loaiDM,userId);
         if (adapter == null) {
             adapter = new categoryAdapter(this, list);
             adapter.setEditMode(isEditMode);
@@ -191,7 +202,7 @@ public class activity_category extends AppCompatActivity {
                 .setTitle("Xác nhận xóa")
                 .setMessage("Bạn có chắc muốn xóa danh mục \"" + cat.getTenDM() + "\" không?")
                 .setPositiveButton("Xóa", (dialog, which) -> {
-                    boolean success = dbHelper.deleteCategory(cat.getID(), this);
+                    boolean success = dbHelper.deleteCategory(cat.getID(), userId);
                     if (success) {
                         loadCategoryList();
                     }

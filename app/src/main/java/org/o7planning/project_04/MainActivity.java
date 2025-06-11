@@ -47,12 +47,14 @@ public class MainActivity extends AppCompatActivity {
         AndroidThreeTen.init(this); // Initialize ThreeTenABP
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        //Lay ID TK
+        SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
+        int userId = prefs.getInt("ID_TK", -1);
 
-
-
-        //Tao danh muc mac dinh khi mo app
-        CategoryDAO db = new CategoryDAO(this);
-        db.insertDefaultCategoriesIfNeeded();
+       if (userId != -1) {
+            CategoryDAO db = new CategoryDAO(this);
+            db.insertDefaultCategoriesIfNeeded(userId);
+        }
 
         // Khởi tạo và sao chép database (nếu cần)
 

@@ -2,6 +2,7 @@ package org.o7planning.project_04.activities;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +33,7 @@ public class EditCategoryActivity extends AppCompatActivity {
    private String loaiDM ;
    private CategoryDAO dbHelper;
    private category currentCategory;
+    private int userId;
 
    @Override
     protected  void onCreate(Bundle savedInstanceState){
@@ -52,6 +54,17 @@ public class EditCategoryActivity extends AppCompatActivity {
 
        //Lay id tu intent
        ID= getIntent().getIntExtra("ID_DM",-1);
+       // Lấy ID_TK từ SharedPreferences
+       SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+       userId = prefs.getInt("ID_TK", -1);
+
+       if (userId == -1) {
+           Toast.makeText(this, "Lỗi: Chưa đăng nhập", Toast.LENGTH_SHORT).show();
+           finish();
+           return;
+       }
+
+
        if(ID ==-1){
            Toast.makeText(this,"Khong tim thay danh muc",Toast.LENGTH_SHORT).show();
            finish();
@@ -88,9 +101,9 @@ public class EditCategoryActivity extends AppCompatActivity {
            }
            currentCategory.setTenDM(newName);
            currentCategory.setLoaiDM(loaiDM);
-           currentCategory.setHinhAnh(selectedIconName);  // cập nhật icon mới
+           currentCategory.setHinhAnh(selectedIconName);
 
-           dbHelper.updateCategory(currentCategory);
+           dbHelper.updateCategory(currentCategory,userId);
            Toast.makeText(this,"Đã lưu danh mục",Toast.LENGTH_SHORT).show();
            setResult(RESULT_OK);
            finish();

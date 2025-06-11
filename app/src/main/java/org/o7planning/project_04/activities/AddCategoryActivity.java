@@ -1,6 +1,7 @@
 package org.o7planning.project_04.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -46,10 +47,19 @@ public class AddCategoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_categoryactivity);
         db = new CategoryDAO(this);
+        //Lấy ID_TK
+        SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
+        int idTK = prefs.getInt("ID_TK", -1);
 
         edtCatename = findViewById(R.id.edt_category_name);
         imgSelectedIcon= findViewById(R.id.selected_icon);
         btnSave = findViewById(R.id.btn_save);
+
+        if (idTK == -1) {
+            Toast.makeText(this, "Không lấy được ID_TK!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         loaiDM = getIntent().getStringExtra("LoaiDM");
         if(loaiDM == null) loaiDM ="ChiTieu";
@@ -75,7 +85,7 @@ public class AddCategoryActivity extends AppCompatActivity {
                 Toast.makeText(this, "Tên danh mục không được để trống", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (db.isCateNameExists(tenDM, loaiDM)) {
+            if (db.isCateNameExists(tenDM, loaiDM, idTK)) {
                 Toast.makeText(this, "Tên danh mục đã tồn tại", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -84,10 +94,11 @@ public class AddCategoryActivity extends AppCompatActivity {
             newCate.setTenDM(tenDM);
             newCate.setLoaiDM(loaiDM);
             newCate.setHinhAnh(iconName);
-            newCate.setDMMacDinh(2); // 2 là danh mục do người dùng thêm
+            newCate.setDMMacDinh(2);   // 2 = danh mục người dùng tạo
+            newCate.setID_TK(idTK);
 
             try {
-                db.addcate(newCate);
+                db.addcate(newCate, idTK);
                 Toast.makeText(this, "Đã thêm danh mục", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_OK);
                 finish();

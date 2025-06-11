@@ -44,31 +44,32 @@ public class CategoryDAO {
         return (usedInTransactions > 0 || usedInLimits > 0);
     }
     //Kiem tra xem ten danh muc da ton taij chua
-    public  boolean isCateNameExists(String name, String loaiDm){
+    public boolean isCateNameExists(String name, String loaiDm, int id_tk) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(
-                "Select * from DANHMUC where TenDM =? And LoaiDM =?",
-                new String[]{name,loaiDm}
+                "SELECT * FROM DANHMUC WHERE TenDM = ? AND LoaiDM = ? AND ID_TK = ?",
+                new String[]{name, loaiDm, String.valueOf(id_tk)}
         );
         boolean exists = cursor.moveToFirst();
         cursor.close();
         return exists;
     }
-    public List<category> getAllCategories(String LoaiDM) {
+    public List<category> getAllCategories(String loaiDM, int id_tk) {
         List<category> categoryList = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM DANHMUC WHERE LoaiDM=?", new String[]{LoaiDM});
+        Cursor cursor = db.rawQuery("SELECT * FROM DANHMUC WHERE LoaiDM = ? AND ID_TK = ?",
+                new String[]{loaiDM, String.valueOf(id_tk)});
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 int ID_DM = cursor.getInt(cursor.getColumnIndexOrThrow("ID_DM"));
                 String TenDM = cursor.getString(cursor.getColumnIndexOrThrow("TenDM"));
-                String loaiDM = cursor.getString(cursor.getColumnIndexOrThrow("LoaiDM"));
+                String LoaiDM = cursor.getString(cursor.getColumnIndexOrThrow("LoaiDM"));
                 String HinhAnh = cursor.getString(cursor.getColumnIndexOrThrow("HinhAnh"));
                 int DMMacDinh = cursor.getInt(cursor.getColumnIndexOrThrow("DMMacDinh"));
 
-                category cate = new category(ID_DM, TenDM, loaiDM, HinhAnh, DMMacDinh);
+                category cate = new category(ID_DM, TenDM, LoaiDM, HinhAnh, DMMacDinh);
                 categoryList.add(cate);
             } while (cursor.moveToNext());
             cursor.close();
@@ -77,6 +78,7 @@ public class CategoryDAO {
         db.close();
         return categoryList;
     }
+
     //getcatebyID
     public category getCategoryById(int id) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -95,54 +97,58 @@ public class CategoryDAO {
         return cate;
     }
     //addcate
-    public void addcate(category cate) {
+    public void addcate(category cate, int id_tk) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put("TenDM", cate.getTenDM());
         values.put("LoaiDM", cate.getLoaiDM());
-        values.put("HinhAnh", cate.getHinhAnh()); // lưu tên icon
+        values.put("HinhAnh", cate.getHinhAnh());
         values.put("DMmacdinh", cate.getDMMacDinh());
+        values.put("ID_TK", id_tk); // Thêm ID_TK
 
         db.insert("DANHMUC", null, values);
         db.close();
     }
 
-    public void insertDefaultCategoriesIfNeeded() {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+    public void insertDefaultCategoriesIfNeeded(int id_tk) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM DANHMUC WHERE DMmacdinh = 1", null);
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM DANHMUC WHERE DMmacdinh = 1 AND ID_TK = ?",
+                new String[]{String.valueOf(id_tk)});
         if (cursor.moveToFirst()) {
             int count = cursor.getInt(0);
             if (count == 0) {
-                // Chi tiêu
-                addcate(new category("Ăn uống", "ChiTieu", "cate_food", 1));
-                addcate(new category("Đi lại", "ChiTieu", "cate_grab", 1));
-                addcate(new category("Giải trí", "ChiTieu", "cate_entertaiment", 1));
-
-
-                // Thu nhập
-                addcate(new category("Lương", "ThuNhap", "cate_salary", 1));
-                addcate(new category("Thưởng", "ThuNhap", "cate_certificate", 1));
+                addcate(new category("Ăn uống", "ChiTieu", "cate_food", 1), id_tk);
+                addcate(new category("Đi lại", "ChiTieu", "cate_grab", 1), id_tk);
+                addcate(new category("Giải trí", "ChiTieu", "cate_entertaiment", 1), id_tk);
+                addcate(new category("Lương", "ThuNhap", "cate_salary", 1), id_tk);
+                addcate(new category("Thưởng", "ThuNhap", "cate_certificate", 1), id_tk);
             }
         }
         cursor.close();
-
+        db.close();
     }
     //updatecate
-    public void updateCategory(category cate) {
+    public boolean updateCategory(category cate, int id_tk) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("TenDM", cate.getTenDM());
         values.put("LoaiDM", cate.getLoaiDM());
         values.put("HinhAnh", cate.getHinhAnh());
-        db.update("DANHMUC", values, "ID_DM= ?", new String[]{String.valueOf(cate.getID())});
+
+        int rows = db.update("DANHMUC", values, "ID_DM = ? AND ID_TK = ?",
+                new String[]{String.valueOf(cate.getID()), String.valueOf(id_tk)});
+        db.close();
+        return rows > 0;
     }
-    // delete cate
-    public boolean deleteCategory(int id, Context context) {
+    //delete cate
+    public boolean deleteCategory(int id_dm, int id_tk) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete("DANHMUC", "ID_DM= ?", new String[]{String.valueOf(id)});
-        return true;
+        int rows = db.delete("DANHMUC", "ID_DM = ? AND ID_TK = ?",
+                new String[]{String.valueOf(id_dm), String.valueOf(id_tk)});
+        db.close();
+        return rows > 0;
     }
 
 

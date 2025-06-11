@@ -1,6 +1,7 @@
 package org.o7planning.project_04.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -78,11 +79,16 @@ public class CategoryMultiSelectActivity extends AppCompatActivity {
         });
     }
     private void loadCategories(){
+        int currentUserId = getCurrentUserId();
         CategoryDAO dbcate = new CategoryDAO(this);
         allCategories.clear();
-        allCategories.addAll(dbcate.getAllCategories("ChiTieu"));
+        allCategories.addAll(dbcate.getAllCategories("ChiTieu",currentUserId));
         if (adapter != null) {
             adapter.notifyDataSetChanged();
         }
+    }
+    private int getCurrentUserId() {
+        SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        return prefs.getInt("ID_TK", -1); // -1 nếu chưa đăng nhập
     }
 }
