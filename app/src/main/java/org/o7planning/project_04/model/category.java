@@ -1,7 +1,6 @@
 package org.o7planning.project_04.model;
 
-import java.net.CacheRequest;
-import java.util.Locale;
+
 
 public class category {
     private int ID_DM;
@@ -9,13 +8,26 @@ public class category {
     private String LoaiDM;
     private String HinhAnh;
     private int DMMacDinh;
+    private int ID_TK;
 
-    public category(int ID_DM,String TenDM,String LoaiDM, String HinhAnh,int DMMacDinh){
+    public category() {
+    }
+
+    public category(int ID_DM, String tenDM, String loaiDM, String hinhAnh, int DMMacDinh) {
         this.ID_DM = ID_DM;
-        this.TenDM=TenDM;
-        this.LoaiDM= LoaiDM;
-        this.HinhAnh=HinhAnh;
-        this.DMMacDinh=DMMacDinh;
+        TenDM = tenDM;
+        LoaiDM = loaiDM;
+        HinhAnh = hinhAnh;
+        this.DMMacDinh = DMMacDinh;
+    }
+
+    public category(int ID_DM, String tenDM, String loaiDM, String hinhAnh, int DMMacDinh, int ID_TK) {
+        this.ID_DM = ID_DM;
+        TenDM = tenDM;
+        LoaiDM = loaiDM;
+        HinhAnh = hinhAnh;
+        this.DMMacDinh = DMMacDinh;
+        this.ID_TK = ID_TK;
     }
 
     public category(int ID_DM, String tenDM, String hinhAnh) {
@@ -31,6 +43,7 @@ public class category {
         this.DMMacDinh=i;
     }
 
+
     public int getID(){return ID_DM;}
     public  String getTenDM(){
         return TenDM;
@@ -45,4 +58,11 @@ public class category {
     public void setHinhAnh(String HinhAnh){this.HinhAnh=HinhAnh;}
     public void setDMMacDinh(int DMMacDinh){this.DMMacDinh=DMMacDinh;}
 
+    public int getID_TK() {
+        return ID_TK;
+    }
+
+    public void setID_TK(int ID_TK) {
+        this.ID_TK = ID_TK;
+    }
 }

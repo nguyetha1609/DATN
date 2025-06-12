@@ -149,6 +149,11 @@
     <string name="expense">Chi tiêu</string>
     <string name="income">Thu nhập</string>
 
+<<<<<<< HEAD
+    <!-- biểu tượng danh mục -->
+    <string name="category_icon" >Biểu tượng danh mục</string>
+</resources>
+=======
 
     <string-array name="income_type_array">
         <item>Tiền hàng ngày</item>
@@ -158,3 +163,4 @@
 
 
 </resources>
+>>>>>>> origin/chuc_nang_dang_nham

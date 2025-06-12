@@ -18,10 +18,16 @@ import org.o7planning.project_04.activities.ActivityAccountInfor; // Import đã
 import org.o7planning.project_04.activities.ActivityChangePassword;
 import org.o7planning.project_04.activities.activity_add_spendinglimit;
 import org.o7planning.project_04.databases.DBHelper;
+import org.o7planning.project_04.databases.LimitDAO;
+import org.o7planning.project_04.model.Limit;
+
+import java.util.List;
+
 
 public class spending_limit_fragment extends Fragment {
     public spending_limit_fragment(){};
     private DBHelper db;
+    private LimitDAO dblimit;
     private final ActivityResultLauncher<Intent> addLimitLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                     result ->{
@@ -51,4 +57,22 @@ public class spending_limit_fragment extends Fragment {
         }
         return view;
     }
+
+//    private void loadLimitList() {
+//        dblimit = new LimitDAO(getContext());
+//        List<Limit> limitList = dblimit.getAllLimits();
+//        if (limitAdapter == null) {
+//            limitAdapter = new LimitAdapter(getContext(), limitList);
+//            recyclerView.setAdapter(limitAdapter);
+//        } else {
+//            limitAdapter.updateData(limitList);
+//        }
+//    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        loadLimitList();
+//    }
 }
+
+

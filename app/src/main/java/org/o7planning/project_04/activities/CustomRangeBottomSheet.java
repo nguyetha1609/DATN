@@ -129,16 +129,16 @@ public class CustomRangeBottomSheet extends BottomSheetDialogFragment {
                 if (!day.getDate().isBefore(startDate.getDate()) &&
                         !day.getDate().isAfter(endDate.getDate())) {
                     dayContainer.setBackgroundResource(R.drawable.range_middle);
-                    dayText.setTextColor(Color.WHITE);
+                    dayText.setTextColor(Color.BLACK);
                 }
             }
 
             if (startDate != null && day.getDate().equals(startDate.getDate())) {
                 dayContainer.setBackgroundResource(R.drawable.range_start_end);
-                dayText.setTextColor(Color.WHITE);
+                dayText.setTextColor(Color.BLACK);
             } else if (endDate != null && day.getDate().equals(endDate.getDate())) {
                 dayContainer.setBackgroundResource(R.drawable.range_start_end);
-                dayText.setTextColor(Color.WHITE);
+                dayText.setTextColor(Color.BLACK);
             }
 
 

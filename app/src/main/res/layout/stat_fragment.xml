@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorGray"
+    android:background="#F6F6F6"
     android:scrollbars="none"
     android:overScrollMode="ifContentScrolls"
     android:padding="16dp"
@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Thống kê"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
@@ -128,7 +128,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Chi Tiêu"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textStyle="bold" />
 
                 <TextView
@@ -139,7 +139,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Thu Nhập"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/black" />
             </LinearLayout>
 
             <View

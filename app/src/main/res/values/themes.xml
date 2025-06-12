@@ -1,22 +1,20 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Base application theme -->
-    <style name="Base.Theme.Project_04" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <!-- Customize thêm màu chính nếu cần -->
-        <!-- Ví dụ thêm màu nền, màu nút... -->
-        <!--
-        <item name="colorPrimary">@color/primary_color</item>
-        <item name="colorOnPrimary">@color/on_primary_color</item>
-        -->
-
+    <style name="Base.Theme.Project_04" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <!-- App Theme -->
-<!--    <style name="Theme.Project_04" parent="Base.Theme.Project_04" />-->
 
     <!-- Theme overlay dùng cho MaterialDatePicker -->
     <style name="ThemeOverlay.MaterialComponents.DatePickerOnly" parent="Theme.MaterialComponents.DayNight.Dialog">
         <item name="materialCalendarTheme">@style/Widget.MaterialComponents.MaterialCalendar</item>
         <item name="materialCalendarFullscreenTheme">@style/Theme.MaterialComponents.DayNight</item>
     </style>
+
+
 
 </resources>

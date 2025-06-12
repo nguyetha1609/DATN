@@ -16,11 +16,23 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.o7planning.project_04.activities.activity_category;
+import org.o7planning.project_04.databases.CategoryDAO;
+import org.o7planning.project_04.databases.DBHelper;
+import org.o7planning.project_04.fragments.Transaction_Fragment;
+import org.o7planning.project_04.fragments.spending_limit_fragment;
+import org.o7planning.project_04.fragments.statfragment;
+
+
+import com.jakewharton.threetenabp.AndroidThreeTen; // Đảm bảo đã thêm thư viện này vào build.gradle
+
+
+
+
 import org.o7planning.project_04.activities.AccountActivity;
 import org.o7planning.project_04.activities.NotLoginActivity;
 import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.fragments.Transaction_Fragment;
-import org.o7planning.project_04.fragments.categoryfragment;
 import org.o7planning.project_04.fragments.statfragment;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
@@ -35,10 +47,17 @@ public class MainActivity extends AppCompatActivity {
         AndroidThreeTen.init(this); // Initialize ThreeTenABP
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        //Lay ID TK
+        SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
+        int userId = prefs.getInt("ID_TK", -1);
 
-        // Create default categories
-        DBHelper db = new DBHelper(this);
-        db.insertDefaultCategoriesIfNeeded();
+       if (userId != -1) {
+            CategoryDAO db = new CategoryDAO(this);
+            db.insertDefaultCategoriesIfNeeded(userId);
+        }
+
+        // Khởi tạo và sao chép database (nếu cần)
+
 
         // Initialize and copy database (if needed)
         PrepopulatedDBHelper dbHelper = new PrepopulatedDBHelper(this);
@@ -61,15 +80,18 @@ public class MainActivity extends AppCompatActivity {
 
                 if (itemId == R.id.nav_home) {
                     selectedFragment = new Transaction_Fragment();
-                } else if (itemId == R.id.nav_category) {
-                    categoryfragment fragment = new categoryfragment();
-                    Bundle args = new Bundle();
-                    args.putString("loaiDM", "chi tiêu");
-                    fragment.setArguments(args);
-                    selectedFragment = fragment;
+
                 } else if (itemId == R.id.nav_stats) {
                     selectedFragment = new statfragment();
+
+                }    else if (itemId == R.id.nav_category) { // gia dinh de test thoi, xóa khi gọi từ trang them giao dịch
+                  Intent intent = new Intent(MainActivity.this, activity_category.class);
+                    startActivity(intent);
+                    return true;
                 } else if (itemId == R.id.nav_more) {
+
+                   // selectedFragment = new spending_limit_fragment(); trang tai khoan hien tai
+
                     // Check login state using SharedPreferences
                     SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
                     boolean isLoggedIn = prefs.getBoolean("REMEMBER", false);
@@ -94,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                             .commit();
                     return true;
                 }
+
 
                 return false;
             }

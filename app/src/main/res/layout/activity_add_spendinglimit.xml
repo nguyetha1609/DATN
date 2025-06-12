@@ -11,12 +11,11 @@
         android:id="@+id/toolbar_add_limit"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/teal"
-        app:navigationIcon="@drawable/ic_chevron_left"
-        app:navigationIconTint="@android:color/white"
+        android:background="@color/white"
+        app:navigationIcon="@drawable/ic_arrow_left"
         android:gravity="center"
         app:title="Thêm hạn mức chi"
-        app:titleTextColor="@android:color/white"
+        app:titleTextColor="@color/textPrimary"
         app:titleCentered="true" />
 
     <!-- Nội dung -->
@@ -156,7 +155,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_calendarr"
+                    android:src="@drawable/ic_calendar"
                     android:layout_marginEnd="12dp" />
 
                 <TextView

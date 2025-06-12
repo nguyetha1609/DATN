@@ -10,12 +10,11 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar_limit_detail"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/teal"
-        android:title="Chi tiết hạn mức"
-        app:titleTextColor="@android:color/white"
-        app:navigationIconTint="@android:color/white"
-        app:navigationIcon="@drawable/ic_chevron_left"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:title ="Chi tiết hạn mức"
+        app:titleTextColor="@android:color/black"
+        app:navigationIcon="@drawable/ic_arrow_left"
         app:titleCentered="true"
         app:menu="@menu/menu_limit_detail" />
 
