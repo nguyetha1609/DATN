@@ -26,6 +26,9 @@ import org.o7planning.project_04.fragments.statfragment;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String LOGIN_PREF = "LOGIN_PREF";
+    public static final String KEY_REMEMBER = "REMEMBER";
     private PrepopulatedDBHelper database;
     private BottomNavigationView bottomNav;
 
@@ -52,49 +55,34 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.fragment_container, new Transaction_Fragment())
                 .commit();
 
-        // Handle navigation item selection
-        bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment selectedFragment = null;
-                int itemId = item.getItemId();
+        SharedPreferences prefs = getSharedPreferences(LOGIN_PREF, MODE_PRIVATE);
+        boolean isLoggedIn = prefs.getBoolean(KEY_REMEMBER, false);
+        if (!isLoggedIn) {
+            // chưa login → qua NotLoginActivity
+            startActivity(new Intent(this, NotLoginActivity.class));
+            finish();
+            return;
+        }
 
-                if (itemId == R.id.nav_home) {
-                    selectedFragment = new Transaction_Fragment();
-                } else if (itemId == R.id.nav_category) {
-                    categoryfragment fragment = new categoryfragment();
-                    Bundle args = new Bundle();
-                    args.putString("loaiDM", "chi tiêu");
-                    fragment.setArguments(args);
-                    selectedFragment = fragment;
-                } else if (itemId == R.id.nav_stats) {
-                    selectedFragment = new statfragment();
-                } else if (itemId == R.id.nav_more) {
-                    // Check login state using SharedPreferences
-                    SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
-                    boolean isLoggedIn = prefs.getBoolean("REMEMBER", false);
-                    String username = prefs.getString("USERNAME", "");
-
-                    if (isLoggedIn && !username.isEmpty()) {
-                        // User is logged in, navigate to AccountActivity
-                        Intent intent = new Intent(MainActivity.this, AccountActivity.class);
-                        startActivity(intent);
-                    } else {
-                        // User is not logged in, navigate to NotLoginActivity
-                        Intent intent = new Intent(MainActivity.this, NotLoginActivity.class);
-                        startActivity(intent);
-                    }
-                    return true; // Return true to indicate the event is handled
+        // 2. Thiết lập BottomNavigationView
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
+        bottomNav.setSelectedItemId(R.id.nav_home);
+        bottomNav.setOnItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.nav_home:
+                        // đang ở đây
+                        return true;
+                    case R.id.nav_category:
+                        startActivity(new Intent(MainActivity.this, categoryfragment.class));
+                        return true;
+                    case R.id.nav_stats:
+                        startActivity(new Intent(MainActivity.this, statfragment.class));
+                        return true;
+                    case R.id.nav_more:
+                        startActivity(new Intent(MainActivity.this, AccountActivity.class));
+                        return true;
                 }
-
-                // Load the selected fragment if not null
-                if (selectedFragment != null) {
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, selectedFragment)
-                            .commit();
-                    return true;
-                }
-
                 return false;
             }
         });

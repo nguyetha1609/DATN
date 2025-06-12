@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Khởi tạo helper và SharedPreferences
         dbHelper    = new PrepopulatedDBHelper(getApplicationContext());
-        sharedPrefs = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+            sharedPrefs = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
 
         // Nếu đã lưu trước đó thì điền vào ô
         checkRememberedAccount();

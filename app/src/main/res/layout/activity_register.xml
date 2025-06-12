@@ -18,93 +18,61 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Tên tài khoản -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilRegUsername"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
+    <EditText
+        android:id="@+id/etRegUsername"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:boxBackgroundColor="@color/colorInputBackground"
-        app:layout_constraintTop_toBottomOf="@id/ivLogoRegister"
+        android:layout_marginTop="12dp"
+        android:drawableStart="@drawable/ic_lock"
+        android:drawablePadding="8dp"
+        android:hint="@string/hint_register_username"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/ivLogoRegister" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etRegUsername"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_register_username"
-            android:drawableStart="@drawable/ic_person"
-            android:drawablePadding="8dp"
-            android:inputType="textPersonName"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Email -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilEmail"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:boxBackgroundColor="@color/colorInputBackground"
-        app:layout_constraintTop_toBottomOf="@id/tilRegUsername"
+        android:layout_marginTop="12dp"
+        android:drawableStart="@drawable/ic_lock"
+        android:drawablePadding="8dp"
+        android:hint="@string/hint_email"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/etRegUsername" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_email"
-            android:drawableStart="@drawable/ic_email"
-            android:drawablePadding="8dp"
-            android:inputType="textEmailAddress"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Mật khẩu -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilRegPassword"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
+    <EditText
+        android:id="@+id/etRegPassword"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:boxBackgroundColor="@color/colorInputBackground"
-        app:layout_constraintTop_toBottomOf="@id/tilEmail"
+        android:layout_marginTop="12dp"
+        android:drawableStart="@drawable/ic_lock"
+        android:drawablePadding="8dp"
+        android:hint="@string/hint_register_password"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/etEmail" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etRegPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_register_password"
-            android:drawableStart="@drawable/ic_lock"
-            android:drawablePadding="8dp"
-            android:inputType="textPassword"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Nhập lại mật khẩu -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilConfirmPassword"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
+    <EditText
+        android:id="@+id/etConfirmPassword"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:boxBackgroundColor="@color/colorInputBackground"
-        app:layout_constraintTop_toBottomOf="@id/tilRegPassword"
+        android:layout_marginTop="12dp"
+        android:drawableStart="@drawable/ic_lock"
+        android:drawablePadding="8dp"
+        android:hint="@string/hint_confirm_password"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etConfirmPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_confirm_password"
-            android:drawableStart="@drawable/ic_lock"
-            android:drawablePadding="8dp"
-            android:inputType="textPassword"/>
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintTop_toBottomOf="@+id/etRegPassword" />
 
     <!-- Checkbox Đồng ý Điều khoản -->
     <CheckBox
@@ -113,8 +81,8 @@
         android:layout_height="wrap_content"
         android:text="@string/agree_terms"
         android:textColor="@color/colorTextPrimary"
-        app:layout_constraintTop_toBottomOf="@id/tilConfirmPassword"
-        app:layout_constraintStart_toStartOf="@id/tilConfirmPassword"
+        app:layout_constraintTop_toBottomOf="@id/etConfirmPassword"
+        app:layout_constraintStart_toStartOf="@id/etConfirmPassword"
         android:layout_marginTop="8dp"/>
 
     <!-- Button Đăng ký -->
