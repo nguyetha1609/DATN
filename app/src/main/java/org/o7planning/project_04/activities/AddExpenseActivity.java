@@ -33,8 +33,6 @@ public class AddExpenseActivity extends AppCompatActivity {
         itemDate = findViewById(R.id.item_date); // Khởi tạo LinearLayout cho ngày
         itemTime = findViewById(R.id.item_time); // Khởi tạo LinearLayout cho giờ
         itemNote = findViewById(R.id.item_note); // Khởi tạo LinearLayout cho ghi chú
-        btnGallery = findViewById(R.id.btnGallery); // Khởi tạo LinearLayout cho nút gallery
-        btnCamera = findViewById(R.id.btnCamera); // Khởi tạo LinearLayout cho nút camera
         toolbarSave = findViewById(R.id.toolbar_save); // Khởi tạo TextView cho nút lưu trên toolbar
 
         // Thiết lập Toolbar

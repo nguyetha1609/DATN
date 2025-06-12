@@ -567,7 +567,4 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
         return rows > 0;
     }
-
-
-
 }

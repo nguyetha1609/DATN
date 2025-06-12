@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         // Show a confirmation dialog before exiting
         new AlertDialog.Builder(this)
                 .setTitle("Thoát ứng dụng")

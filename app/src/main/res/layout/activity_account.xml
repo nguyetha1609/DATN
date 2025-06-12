@@ -11,7 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/calendar_header_text"
+        android:background="@color/teal"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:title="@string/profile_title" />
 
@@ -106,12 +106,6 @@
                 android:paddingEnd="16dp"
                 android:background="?attr/selectableItemBackground">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_arrow_right"
-                    android:tint="@color/textSecondary" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -119,6 +113,11 @@
                     android:textSize="16sp"
                     android:textColor="@color/textPrimary"
                     android:layout_marginStart="12dp" />
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_right"
+                    app:tint="@color/textSecondary" />
             </LinearLayout>
 
             <!-- 4. Mục Đổi Mật Khẩu (click chuyển sang ChangePasswordActivity) -->
@@ -133,12 +132,6 @@
                 android:background="?attr/selectableItemBackground"
                 android:layout_marginTop="8dp">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_arrow_right"
-                    android:tint="@color/textSecondary" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -146,6 +139,11 @@
                     android:textSize="16sp"
                     android:textColor="@color/textPrimary"
                     android:layout_marginStart="12dp" />
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_right"
+                    app:tint="@color/textSecondary" />
             </LinearLayout>
 
             <!-- Các mục khác (nếu có) … -->

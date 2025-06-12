@@ -258,59 +258,6 @@
             </com.google.android.material.card.MaterialCardView>
 
             <!-- 4. Hai nút thêm ảnh (Gallery + Camera) -->
-            <LinearLayout
-                android:id="@+id/layout_photo_options"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:orientation="horizontal"
-                android:background="@color/cardBackground"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="8dp"
-                android:clipToPadding="false"
-                android:clipToOutline="false">
-
-                <!-- Nút Gallery -->
-                <LinearLayout
-                    android:id="@+id/btnGallery"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/ic_gallery"
-                        app:tint="@color/iconColor" />
-                </LinearLayout>
-
-                <!-- Vertical Divider -->
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/dividerColor" />
-
-                <!-- Nút Camera -->
-                <LinearLayout
-                    android:id="@+id/btnCamera"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/ic_camera"
-                        app:tint="@color/iconColor" />
-                </LinearLayout>
-            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
