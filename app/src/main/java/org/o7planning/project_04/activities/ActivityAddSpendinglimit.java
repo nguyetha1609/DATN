@@ -6,7 +6,6 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -14,19 +13,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
-import org.o7planning.project_04.Adapter.LimitAdapter;
 import org.o7planning.project_04.R;
 import org.o7planning.project_04.databases.CategoryDAO;
 import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.databases.LimitDAO;
 import org.o7planning.project_04.model.Limit;
-import org.o7planning.project_04.model.category;
-import org.o7planning.project_04.Adapter.CategoryCheckboxAdapter;
+import org.o7planning.project_04.model.Category;
 
 
 import java.text.ParseException;
@@ -37,7 +32,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class activity_add_spendinglimit extends AppCompatActivity {
+public class ActivityAddSpendinglimit extends AppCompatActivity {
 
     private static final int REQUEST_SELECT_CATEGORY =1001;
     private LinearLayout llCategory;
@@ -172,11 +167,11 @@ private LimitDAO dblimit;
                 if (size == 0) {
                     tvCategory.setText("Không có danh mục nào");
                 } else if (size == 1) {
-                    category cate = dbcate.getCategoryById(selectedCategoryId.get(0));
+                    Category cate = dbcate.getCategoryById(selectedCategoryId.get(0));
                     tvCategory.setText(cate.getTenDM());
                 } else {
                     // Lấy tên danh mục đầu tiên
-                    category firstCate = dbcate.getCategoryById(selectedCategoryId.get(0));
+                    Category firstCate = dbcate.getCategoryById(selectedCategoryId.get(0));
                     String firstName = firstCate != null ? firstCate.getTenDM() : "";
 
                     int othersCount = size - 1;

@@ -6,12 +6,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
-import org.o7planning.project_04.model.category;
+import org.o7planning.project_04.model.Category;
 
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
 
 public class CategoryDAO {
@@ -54,8 +52,8 @@ public class CategoryDAO {
         cursor.close();
         return exists;
     }
-    public List<category> getAllCategories(String loaiDM, int id_tk) {
-        List<category> categoryList = new ArrayList<>();
+    public List<Category> getAllCategories(String loaiDM, int id_tk) {
+        List<Category> categoryList = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         Cursor cursor = db.rawQuery("SELECT * FROM DANHMUC WHERE LoaiDM = ? AND ID_TK = ?",
@@ -69,7 +67,7 @@ public class CategoryDAO {
                 String HinhAnh = cursor.getString(cursor.getColumnIndexOrThrow("HinhAnh"));
                 int DMMacDinh = cursor.getInt(cursor.getColumnIndexOrThrow("DMMacDinh"));
 
-                category cate = new category(ID_DM, TenDM, LoaiDM, HinhAnh, DMMacDinh);
+                Category cate = new Category(ID_DM, TenDM, LoaiDM, HinhAnh, DMMacDinh);
                 categoryList.add(cate);
             } while (cursor.moveToNext());
             cursor.close();
@@ -80,9 +78,9 @@ public class CategoryDAO {
     }
 
     //getcatebyID
-    public category getCategoryById(int id) {
+    public Category getCategoryById(int id) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        category cate = null;
+        Category cate = null;
         Cursor cursor = db.rawQuery("select * from DANHMUC where ID_DM=?", new String[]{String.valueOf(id)});
         if (cursor.moveToFirst()) {
             int ID_DM = cursor.getInt(cursor.getColumnIndexOrThrow("ID_DM"));
@@ -90,14 +88,14 @@ public class CategoryDAO {
             String LoaiDM = cursor.getString(cursor.getColumnIndexOrThrow("LoaiDM"));
             String HinhAnh = cursor.getString(cursor.getColumnIndexOrThrow("HinhAnh"));
             int DMMacDinh = cursor.getInt(cursor.getColumnIndexOrThrow("DMMacDinh"));
-            cate = new category(ID_DM, TenDM, LoaiDM, HinhAnh, DMMacDinh);
+            cate = new Category(ID_DM, TenDM, LoaiDM, HinhAnh, DMMacDinh);
 
         }
         cursor.close();
         return cate;
     }
     //addcate
-    public void addcate(category cate, int id_tk) {
+    public void addcate(Category cate, int id_tk) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -119,18 +117,18 @@ public class CategoryDAO {
         if (cursor.moveToFirst()) {
             int count = cursor.getInt(0);
             if (count == 0) {
-                addcate(new category("Ăn uống", "ChiTieu", "cate_food", 1), id_tk);
-                addcate(new category("Đi lại", "ChiTieu", "cate_grab", 1), id_tk);
-                addcate(new category("Giải trí", "ChiTieu", "cate_entertaiment", 1), id_tk);
-                addcate(new category("Lương", "ThuNhap", "cate_salary", 1), id_tk);
-                addcate(new category("Thưởng", "ThuNhap", "cate_certificate", 1), id_tk);
+                addcate(new Category("Ăn uống", "ChiTieu", "cate_food", 1), id_tk);
+                addcate(new Category("Đi lại", "ChiTieu", "cate_grab", 1), id_tk);
+                addcate(new Category("Giải trí", "ChiTieu", "cate_entertaiment", 1), id_tk);
+                addcate(new Category("Lương", "ThuNhap", "cate_salary", 1), id_tk);
+                addcate(new Category("Thưởng", "ThuNhap", "cate_certificate", 1), id_tk);
             }
         }
         cursor.close();
         db.close();
     }
     //updatecate
-    public boolean updateCategory(category cate, int id_tk) {
+    public boolean updateCategory(Category cate, int id_tk) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("TenDM", cate.getTenDM());

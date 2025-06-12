@@ -20,9 +20,8 @@ import org.o7planning.project_04.R;
 import org.o7planning.project_04.databases.CategoryDAO;
 import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.databases.LimitDAO;
-import org.o7planning.project_04.fragments.spending_limit_fragment;
 import org.o7planning.project_04.model.Limit;
-import org.o7planning.project_04.model.category;
+import org.o7planning.project_04.model.Category;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -224,11 +223,11 @@ public class EditLimitActivity extends AppCompatActivity {
                 if (size == 0) {
                     tv_category.setText("Không có danh mục nào");
                 } else if (size == 1) {
-                    category cate = dbcate.getCategoryById(selectedCategoryIds.get(0));
+                    Category cate = dbcate.getCategoryById(selectedCategoryIds.get(0));
                     tv_category.setText(cate.getTenDM());
                 } else {
                     // Lấy tên danh mục đầu tiên
-                    category firstCate = dbcate.getCategoryById(selectedCategoryIds.get(0));
+                    Category firstCate = dbcate.getCategoryById(selectedCategoryIds.get(0));
                     String firstName = firstCate != null ? firstCate.getTenDM() : "";
 
                     int othersCount = size - 1;
@@ -258,14 +257,14 @@ public class EditLimitActivity extends AppCompatActivity {
         if (size == 0) {
             tv_category.setText("Không có danh mục nào");
         } else if (size == 1) {
-            category cate = dbcate.getCategoryById(selectedCategoryIds.get(0));
+            Category cate = dbcate.getCategoryById(selectedCategoryIds.get(0));
             if (cate != null) {
                 tv_category.setText(cate.getTenDM());
             } else {
                 tv_category.setText("Danh mục không tồn tại");
             }
         } else {
-            category firstCate = dbcate.getCategoryById(selectedCategoryIds.get(0));
+            Category firstCate = dbcate.getCategoryById(selectedCategoryIds.get(0));
             String firstName = (firstCate != null) ? firstCate.getTenDM() : "Danh mục";
 
             int othersCount = size - 1;

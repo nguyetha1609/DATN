@@ -1,7 +1,6 @@
 package org.o7planning.project_04.activities;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -59,7 +58,7 @@ public class LimitDetailActivity extends AppCompatActivity {
         tv_expired = findViewById(R.id.tv_status_expired);
 
         ll_SpendingList.setOnClickListener(v -> {
-            Intent intent =new Intent(this, spendingList_Activity.class);
+            Intent intent =new Intent(this, SpendingListActivity.class);
             intent.putExtra(EXTRA_LIMIT_ID,limitId);
             startActivity(intent);
         });

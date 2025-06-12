@@ -33,21 +33,18 @@ import org.o7planning.project_04.activities.MonthPickerBottomSheet;
 import org.o7planning.project_04.activities.WeekPickerBottomSheet;
 import org.o7planning.project_04.activities.YearPickerBottomSheet;
 import org.o7planning.project_04.databases.DBHelper;
-import org.o7planning.project_04.model.categoryStat;
+import org.o7planning.project_04.model.CategoryStat;
 
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
-public class statfragment extends Fragment {
-    public statfragment() {
+public class StatFragment extends Fragment {
+    public StatFragment() {
     }
 
     private View tabIndicator;
@@ -324,14 +321,14 @@ public class statfragment extends Fragment {
         String start = startDate.format(formatter);
         String end = endDate.format(formatter);
 
-        List<categoryStat> catestat = db.getStatsByDateRange(loai,start,end);
+        List<CategoryStat> catestat = db.getStatsByDateRange(loai,start,end);
 
 
 
         List<PieEntry> entries = new ArrayList<>();
         List<Integer> colors = new ArrayList<>();
 
-        for(categoryStat stat :catestat){
+        for(CategoryStat stat :catestat){
             entries.add(new PieEntry(stat.getAmount(),stat.getCateName()));
             colors.add(stat.getColor());
         }
@@ -372,7 +369,7 @@ public class statfragment extends Fragment {
         String start = startDate.format(formatter);
         String end = endDate.format(formatter);
 
-        List<categoryStat> catestat= db.getStatsByDateRange(loai,start,end);
+        List<CategoryStat> catestat= db.getStatsByDateRange(loai,start,end);
 
 
         List<BarEntry> entries = new ArrayList<>();
@@ -380,7 +377,7 @@ public class statfragment extends Fragment {
         List<Integer> colors = new ArrayList<>();
 
         for(int i= 0; i<catestat.size();i++){
-            categoryStat stat = catestat.get(i);
+            CategoryStat stat = catestat.get(i);
             entries.add(new BarEntry(i,stat.getAmount()));
             labels.add(stat.getCateName());
             colors.add(stat.getColor());
@@ -440,15 +437,15 @@ public class statfragment extends Fragment {
     private  void updateSummary(String startDate,String endDate){
         DBHelper dbHelper = new DBHelper(getContext());
 
-        List<categoryStat> chiTieuList =dbHelper.getStatsByDateRange("ChiTieu",startDate,endDate);
-        List<categoryStat> thuNhapList= dbHelper.getStatsByDateRange("ThuNhap",startDate,endDate);
+        List<CategoryStat> chiTieuList =dbHelper.getStatsByDateRange("ChiTieu",startDate,endDate);
+        List<CategoryStat> thuNhapList= dbHelper.getStatsByDateRange("ThuNhap",startDate,endDate);
 
         float tongChiTieu = 0f;
-        for(categoryStat item :chiTieuList){
+        for(CategoryStat item :chiTieuList){
             tongChiTieu +=item.getAmount();
         }
         float tongThuNhap =0f;
-        for(categoryStat item:thuNhapList){
+        for(CategoryStat item:thuNhapList){
             tongThuNhap +=item.getAmount();
         }
         NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi","VN"));

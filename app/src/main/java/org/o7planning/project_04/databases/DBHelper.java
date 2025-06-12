@@ -6,27 +6,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.os.CpuUsageInfo;
-import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
-import org.o7planning.project_04.model.GIAODICH;
-import org.o7planning.project_04.model.Limit;
-import org.o7planning.project_04.model.category;
-import org.o7planning.project_04.model.categoryStat;
-import org.o7planning.project_04.model.spendingsummary;
+import org.o7planning.project_04.model.CategoryStat;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
-import javax.xml.transform.sax.SAXResult;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "QLCT.db";
@@ -86,8 +76,8 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     // Truy vấn giao dich theo nhóm danh mục vex bieu do thong ke
-    public List<categoryStat> getStatsByDateRange(String loaiDM, String startDate, String endDate) {
-        List<categoryStat> stats = new ArrayList<>();
+    public List<CategoryStat> getStatsByDateRange(String loaiDM, String startDate, String endDate) {
+        List<CategoryStat> stats = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 //Ktra lai dịnh dạng ThoiGian trong bảng GiaoDịch khi truy vấn
         String query = "Select DANHMUC.TenDM,SUM(GIAODICH.SoTien) as TongTien " +
@@ -100,7 +90,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             int color = getRandomColor();
 
-            stats.add(new categoryStat(tenDM, tongtien, color));
+            stats.add(new CategoryStat(tenDM, tongtien, color));
         }
         cursor.close();
         return stats;

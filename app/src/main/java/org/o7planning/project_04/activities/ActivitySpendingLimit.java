@@ -19,7 +19,7 @@ import org.o7planning.project_04.model.Limit;
 
 import java.util.List;
 
-public class Activity_SpendingLimit extends AppCompatActivity {
+public class ActivitySpendingLimit extends AppCompatActivity {
     private RecyclerView recyclerView;
     private LimitAdapter limitAdapter;
     private DBHelper db;
@@ -44,7 +44,7 @@ public class Activity_SpendingLimit extends AppCompatActivity {
 
         Button btn_add = findViewById(R.id.btn_add_spending);
         btn_add.setOnClickListener(v -> {
-            Intent intent = new Intent(this, activity_add_spendinglimit.class);
+            Intent intent = new Intent(this, ActivityAddSpendinglimit.class);
             addLimitLauncher.launch(intent);
         });
 

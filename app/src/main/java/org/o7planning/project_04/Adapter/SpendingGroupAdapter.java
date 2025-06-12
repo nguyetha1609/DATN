@@ -12,7 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.o7planning.project_04.model.GIAODICH;
+import org.o7planning.project_04.model.Transaction;
 import org.o7planning.project_04.model.SpendingGroup;
 
 import java.util.List;
@@ -68,7 +68,7 @@ public class SpendingGroupAdapter extends RecyclerView.Adapter<SpendingGroupAdap
         holder.layoutChildContainer.removeAllViews();
 
         LayoutInflater inflater = LayoutInflater.from(holder.itemView.getContext());
-        for(GIAODICH gd : group.getGiaodichList()){
+        for(Transaction gd : group.getGiaodichList()){
             View childView = inflater.inflate(R.layout.item_child_spending,holder.layoutChildContainer,false);
 
             TextView txtDate = childView.findViewById(R.id.tv_child_date);

@@ -6,10 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import org.o7planning.project_04.model.GIAODICH;
+import org.o7planning.project_04.model.Transaction;
 import org.o7planning.project_04.model.Limit;
-import org.o7planning.project_04.model.category;
-import org.o7planning.project_04.model.spendingsummary;
+import org.o7planning.project_04.model.Category;
+import org.o7planning.project_04.model.Spendingsummary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -227,8 +227,8 @@ public class LimitDAO {
         cursor.close();
         return categoryIds;
     }
-    public List<category> getCategoriesForLimit(int idHM) {
-        List<category> categories = new ArrayList<>();
+    public List<Category> getCategoriesForLimit(int idHM) {
+        List<Category> categories = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         String query = "SELECT dm.ID_DM, dm.TenDM, dm.HinhAnh " +
@@ -244,7 +244,7 @@ public class LimitDAO {
                 String name = cursor.getString(cursor.getColumnIndexOrThrow("TenDM"));
                 String iconName = cursor.getString(cursor.getColumnIndexOrThrow("HinhAnh"));
 
-                category cate = new category(id, name, iconName);
+                Category cate = new Category(id, name, iconName);
                 categories.add(cate);
             }
             cursor.close();
@@ -254,8 +254,8 @@ public class LimitDAO {
 
     //truy vấn các khaonr chi tiêu thuộc hạn mức
 
-    public List<spendingsummary> getSpendingsByLimit(int limitID, String startDate, String endDate) {
-        List<spendingsummary> list = new ArrayList<>();
+    public List<Spendingsummary> getSpendingsByLimit(int limitID, String startDate, String endDate) {
+        List<Spendingsummary> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         String sql = "SELECT dm.ID_DM AS ID_DM, dm.TenDM,dm.HinhAnh,  IFNULL(SUM(gd.SoTien), 0) AS TongChi " +
@@ -273,7 +273,7 @@ public class LimitDAO {
         });
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                spendingsummary summary = new spendingsummary();
+                Spendingsummary summary = new Spendingsummary();
                 summary.setIdDM(cursor.getInt(cursor.getColumnIndexOrThrow("ID_DM")));
                 summary.setTenDM(cursor.getString(cursor.getColumnIndexOrThrow("TenDM")));
                 summary.setTongChi(cursor.getLong(cursor.getColumnIndexOrThrow("TongChi")));
@@ -285,8 +285,8 @@ public class LimitDAO {
         }
         return list;
     }
-    public List<GIAODICH> getTransactionsByCategoryAndLimit(int categoryId, String startDate, String endDate, int limitId) {
-        List<GIAODICH> list = new ArrayList<>();
+    public List<Transaction> getTransactionsByCategoryAndLimit(int categoryId, String startDate, String endDate, int limitId) {
+        List<Transaction> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         String sql = "SELECT gd.* FROM GIAODICH gd " +
@@ -301,7 +301,7 @@ public class LimitDAO {
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                GIAODICH g = new GIAODICH();
+                Transaction g = new Transaction();
                 g.setID_GD(cursor.getInt(cursor.getColumnIndexOrThrow("ID_GD")));
                 g.setID_DM(cursor.getInt(cursor.getColumnIndexOrThrow("ID_DM")));
                 g.setSoTien(cursor.getLong(cursor.getColumnIndexOrThrow("SoTien")));

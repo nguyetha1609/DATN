@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 import org.o7planning.project_04.activities.AddExpenseActivity;
 import org.o7planning.project_04.R;
 
-public class Transaction_Fragment extends Fragment {
+public class TransactionFragment extends Fragment {
     private Button btnAdd, btnChiTieu, btnThuNhap;
     private TextView tabExpense, tabIncome, filterDay, filterMonth, filterYear, filterAll;
 

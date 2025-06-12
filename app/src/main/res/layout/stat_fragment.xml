@@ -8,7 +8,7 @@
     android:scrollbars="none"
     android:overScrollMode="ifContentScrolls"
     android:padding="16dp"
-    tools:context="org.o7planning.project_04.fragments.statfragment">
+    tools:context="org.o7planning.project_04.fragments.StatFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

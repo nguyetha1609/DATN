@@ -1,7 +1,6 @@
 package org.o7planning.project_04.activities;
 
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
@@ -10,16 +9,13 @@ import android.widget.ImageView;
 
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
 import org.o7planning.project_04.R;
 import org.o7planning.project_04.databases.CategoryDAO;
-import org.o7planning.project_04.model.category;
-
-import org.o7planning.project_04.databases.DBHelper;
+import org.o7planning.project_04.model.Category;
 
 
 public class EditCategoryActivity extends AppCompatActivity {
@@ -32,7 +28,7 @@ public class EditCategoryActivity extends AppCompatActivity {
    private int ID;
    private String loaiDM ;
    private CategoryDAO dbHelper;
-   private category currentCategory;
+   private Category currentCategory;
     private int userId;
 
    @Override

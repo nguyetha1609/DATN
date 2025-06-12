@@ -14,17 +14,16 @@ import com.google.android.material.appbar.MaterialToolbar;
 
 import org.o7planning.project_04.Adapter.SpendingGroupAdapter;
 import org.o7planning.project_04.R;
-import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.databases.LimitDAO;
-import org.o7planning.project_04.model.GIAODICH;
+import org.o7planning.project_04.model.Transaction;
 import org.o7planning.project_04.model.Limit;
 import org.o7planning.project_04.model.SpendingGroup;
-import org.o7planning.project_04.model.spendingsummary;
+import org.o7planning.project_04.model.Spendingsummary;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class spendingList_Activity extends AppCompatActivity {
+public class SpendingListActivity extends AppCompatActivity {
     private int limitId;
     private LimitDAO dblimit;
 
@@ -69,12 +68,12 @@ public class spendingList_Activity extends AppCompatActivity {
         String endDate = limit.getNgayKetThuc();
 
         List<Integer> listDmId = limit.getListDanhMuc();
-        List<spendingsummary> summaryList = dblimit.getSpendingsByLimit(limitId,startDate,endDate);
+        List<Spendingsummary> summaryList = dblimit.getSpendingsByLimit(limitId,startDate,endDate);
 
         List<SpendingGroup> spendingGroups = new ArrayList<>();
 
-        for(spendingsummary summary : summaryList){
-            List<GIAODICH> giaodichList = dblimit.getTransactionsByCategoryAndLimit(summary.getIdDM(),startDate,endDate,limitId);
+        for(Spendingsummary summary : summaryList){
+            List<Transaction> giaodichList = dblimit.getTransactionsByCategoryAndLimit(summary.getIdDM(),startDate,endDate,limitId);
             SpendingGroup group = new SpendingGroup(summary.getIdDM(),summary.getTenDM(),summary.getTongChi(),summary.getHinhAnh(),giaodichList);
             spendingGroups.add(group);
         }
@@ -84,7 +83,7 @@ public class spendingList_Activity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         long total =0;
-        for(spendingsummary s : summaryList){
+        for(Spendingsummary s : summaryList){
             total +=s.getTongChi();
         }
         TextView txtTotalSpending = findViewById(R.id.txtTotalSpending);

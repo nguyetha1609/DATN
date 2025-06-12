@@ -25,11 +25,11 @@ import org.o7planning.project_04.Adapter.categoryAdapter;
 import org.o7planning.project_04.R;
 import org.o7planning.project_04.databases.CategoryDAO;
 import org.o7planning.project_04.databases.DBHelper;
-import org.o7planning.project_04.model.category;
+import org.o7planning.project_04.model.Category;
 
 import java.util.List;
 
-public class activity_category extends AppCompatActivity {
+public class ActivityCategory extends AppCompatActivity {
     private String loaiDM = "ChiTieu";
     private CategoryDAO dbHelper;
     private DBHelper db;
@@ -162,7 +162,7 @@ public class activity_category extends AppCompatActivity {
     }
 
     private void loadCategoryList() {
-        List<category> list = dbHelper.getAllCategories(loaiDM,userId);
+        List<Category> list = dbHelper.getAllCategories(loaiDM,userId);
         if (adapter == null) {
             adapter = new categoryAdapter(this, list);
             adapter.setEditMode(isEditMode);
@@ -170,13 +170,13 @@ public class activity_category extends AppCompatActivity {
             // Gán listener xử lý xóa và sửa
             adapter.setOnItemActionListener(new categoryAdapter.OnItemActionListener() {
                 @Override
-                public void onDelete(category cat) {
+                public void onDelete(Category cat) {
                     showConfirmDeleteDialog(cat);
                 }
 
                 @Override
-                public void onEdit(category cat) {
-                    Intent intent = new Intent(activity_category.this, EditCategoryActivity.class);
+                public void onEdit(Category cat) {
+                    Intent intent = new Intent(ActivityCategory.this, EditCategoryActivity.class);
                     intent.putExtra("ID_DM", cat.getID());
                     startActivityForResult(intent, REQUEST_EDIT_CATEGORY);
                 }
@@ -188,7 +188,7 @@ public class activity_category extends AppCompatActivity {
             adapter.notifyDataSetChanged();
         }
     }
-    private void showConfirmDeleteDialog(category cat) {
+    private void showConfirmDeleteDialog(Category cat) {
         if (dbHelper.isCategoryUsedAnywhere(cat.getID())) {
             new AlertDialog.Builder(this)
                     .setTitle("Không thể xóa")

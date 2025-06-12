@@ -8,16 +8,16 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.o7planning.project_04.R;
-import org.o7planning.project_04.model.categoryStat;
+import org.o7planning.project_04.model.CategoryStat;
 
 import java.util.List;
 import java.util.Locale;
 
 public class CategoryDetailAdapter extends RecyclerView.Adapter<CategoryDetailAdapter.ViewHolder> {
 
-    public List<categoryStat> categoryList;
+    public List<CategoryStat> categoryList;
 
-    public CategoryDetailAdapter(List<categoryStat> categoryList) {
+    public CategoryDetailAdapter(List<CategoryStat> categoryList) {
         this.categoryList = categoryList;
     }
 
@@ -41,7 +41,7 @@ public class CategoryDetailAdapter extends RecyclerView.Adapter<CategoryDetailAd
 
     @Override
     public void onBindViewHolder(CategoryDetailAdapter.ViewHolder holder, int position) {
-        categoryStat item = categoryList.get(position);
+        CategoryStat item = categoryList.get(position);
         holder.tvCateName.setText(item.getCateName());
         holder.tvAmount.setText(String.format(Locale.getDefault(), "%,.0f", item.getAmount()));
 

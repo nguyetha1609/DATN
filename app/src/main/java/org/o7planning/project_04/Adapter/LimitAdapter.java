@@ -1,16 +1,12 @@
 package org.o7planning.project_04.Adapter;
 
-import static androidx.core.util.TypedValueCompat.dpToPx;
-
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,14 +14,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.imageview.ShapeableImageView;
-
 import org.o7planning.project_04.R;
 import org.o7planning.project_04.activities.LimitDetailActivity;
-import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.databases.LimitDAO;
 import org.o7planning.project_04.model.Limit;
-import org.o7planning.project_04.model.category;
+import org.o7planning.project_04.model.Category;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -169,7 +162,7 @@ holder.itemView.setOnClickListener(v -> {
     }
     private Drawable getIconDrawable(Limit limit) {
          dblimit = new LimitDAO(context);
-        List<category> categories = dblimit.getCategoriesForLimit(limit.getID_HM());
+        List<Category> categories = dblimit.getCategoriesForLimit(limit.getID_HM());
 
         if (categories == null || categories.isEmpty()) {
             return context.getResources().getDrawable(R.drawable.ic_default);

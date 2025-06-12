@@ -2,16 +2,14 @@ package org.o7planning.project_04.model;
 
 import java.util.List;
 
-import javax.xml.transform.sax.SAXResult;
-
 public class SpendingGroup {
     private int idDM;
     private String tnDM;
     private long tongChi;
     private String iconName;
-    private List<GIAODICH> giaodichList;
+    private List<Transaction> giaodichList;
 
-    public SpendingGroup(int idDM, String tnDM, long tongChi, String iconName, List<GIAODICH> giaodichList) {
+    public SpendingGroup(int idDM, String tnDM, long tongChi, String iconName, List<Transaction> giaodichList) {
         this.idDM = idDM;
         this.tnDM = tnDM;
         this.tongChi = tongChi;
@@ -51,11 +49,11 @@ public class SpendingGroup {
         this.tongChi = tongChi;
     }
 
-    public List<GIAODICH> getGiaodichList() {
+    public List<Transaction> getGiaodichList() {
         return giaodichList;
     }
 
-    public void setGiaodichList(List<GIAODICH> giaodichList) {
+    public void setGiaodichList(List<Transaction> giaodichList) {
         this.giaodichList = giaodichList;
     }
 }

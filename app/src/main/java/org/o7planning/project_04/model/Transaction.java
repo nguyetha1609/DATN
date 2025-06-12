@@ -1,13 +1,13 @@
 package org.o7planning.project_04.model;
 
-public class GIAODICH {
+public class Transaction {
     private int ID_GD;
    private int ID_DM;
    private long SoTien;
    private String ThoiGian;
    private String GhiChu;
 
-    public GIAODICH(int ID_GD, int ID_DM, long soTien, String ThoiGian, String ghiChu) {
+    public Transaction(int ID_GD, int ID_DM, long soTien, String ThoiGian, String ghiChu) {
         this.ID_GD = ID_GD;
         this.ID_DM = ID_DM;
         SoTien = soTien;
@@ -15,7 +15,7 @@ public class GIAODICH {
         GhiChu = ghiChu;
     }
 
-    public GIAODICH() {
+    public Transaction() {
     }
 
     public int getID_GD() {

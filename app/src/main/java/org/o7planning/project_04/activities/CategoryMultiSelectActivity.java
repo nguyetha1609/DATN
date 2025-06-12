@@ -12,11 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import org.o7planning.project_04.Adapter.CategoryCheckboxAdapter;
-import org.o7planning.project_04.Adapter.IconAdapter;
 import org.o7planning.project_04.R;
 import org.o7planning.project_04.databases.CategoryDAO;
-import org.o7planning.project_04.databases.DBHelper;
-import org.o7planning.project_04.model.category;
+import org.o7planning.project_04.model.Category;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,7 +25,7 @@ public class CategoryMultiSelectActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private CategoryCheckboxAdapter adapter;
     private SwitchCompat switchSelectAll;
-    private List<category> allCategories = new ArrayList<>();
+    private List<Category> allCategories = new ArrayList<>();
     private Set<Integer> selectedId = new HashSet<>();
     private CategoryDAO dbcate;
 

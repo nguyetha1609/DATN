@@ -1,12 +1,12 @@
 package org.o7planning.project_04.model;
 
-public class spendingsummary {
+public class Spendingsummary {
     private int idDM;
     private String tenDM;
     private  long TongChi;
     private String HinhAnh;
 
-    public spendingsummary(int idDM, String tenDM, long tongChi, String hinhAnh) {
+    public Spendingsummary(int idDM, String tenDM, long tongChi, String hinhAnh) {
         this.idDM = idDM;
         this.tenDM = tenDM;
         TongChi = tongChi;
@@ -21,7 +21,7 @@ public class spendingsummary {
         HinhAnh = hinhAnh;
     }
 
-    public spendingsummary() {
+    public Spendingsummary() {
     }
 
     public int getIdDM() {

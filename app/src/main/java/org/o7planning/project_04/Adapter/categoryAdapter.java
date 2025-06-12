@@ -1,10 +1,8 @@
 package org.o7planning.project_04.Adapter;
 
-import org.o7planning.project_04.activities.EditCategoryActivity;
-import org.o7planning.project_04.model.category;
+import org.o7planning.project_04.model.Category;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +20,12 @@ import java.util.List;
 
 public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.ViewHolder> {
     private Context context;
-    private List<category> categoryList;
+    private List<Category> categoryList;
     private boolean isEditMode = false;
 
     public interface OnItemActionListener{
-        void onDelete(category cat);
-        void onEdit (category cat);
+        void onDelete(Category cat);
+        void onEdit (Category cat);
     }
     private OnItemActionListener actionListener;
 
@@ -35,7 +33,7 @@ public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.ViewHo
         this.actionListener = listener;
     }
 
-    public categoryAdapter(Context cont, List<category> categoryList){
+    public categoryAdapter(Context cont, List<Category> categoryList){
         this.context= cont;
         this.categoryList= categoryList;
 
@@ -50,7 +48,7 @@ public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull categoryAdapter.ViewHolder holder, int position) {
-        category cat = categoryList.get(position);
+        Category cat = categoryList.get(position);
         holder.txtName.setText(cat.getTenDM());
 
         // Giả định bạn có method lấy id resource icon từ tên
@@ -100,7 +98,7 @@ public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.ViewHo
     public int getItemCount(){
         return categoryList.size();
     }
-    public void setData(List<category> newList) {
+    public void setData(List<Category> newList) {
         this.categoryList = newList;
     }
     public void setEditMode(boolean editMode){

@@ -1,11 +1,11 @@
 package org.o7planning.project_04.model;
 
-public class categoryStat {
+public class CategoryStat {
     private  String cateName;
     private float amount;
     private  int color;
 
-    public categoryStat(String cateName , float amount, int color){
+    public CategoryStat(String cateName , float amount, int color){
         this.cateName = cateName;
         this.amount = amount;
         this.color = color;

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -16,16 +15,12 @@ import androidx.fragment.app.Fragment;
 import org.o7planning.project_04.R; // Đảm bảo import R
 import org.o7planning.project_04.activities.ActivityAccountInfor; // Import đã cập nhật
 import org.o7planning.project_04.activities.ActivityChangePassword;
-import org.o7planning.project_04.activities.activity_add_spendinglimit;
 import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.databases.LimitDAO;
-import org.o7planning.project_04.model.Limit;
-
-import java.util.List;
 
 
-public class spending_limit_fragment extends Fragment {
-    public spending_limit_fragment(){};
+public class SpendingLimitFragment extends Fragment {
+    public SpendingLimitFragment(){};
     private DBHelper db;
     private LimitDAO dblimit;
     private final ActivityResultLauncher<Intent> addLimitLauncher =

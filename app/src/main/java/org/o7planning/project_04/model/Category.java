@@ -2,7 +2,7 @@ package org.o7planning.project_04.model;
 
 
 
-public class category {
+public class Category {
     private int ID_DM;
     private String TenDM;
     private String LoaiDM;
@@ -10,10 +10,10 @@ public class category {
     private int DMMacDinh;
     private int ID_TK;
 
-    public category() {
+    public Category() {
     }
 
-    public category(int ID_DM, String tenDM, String loaiDM, String hinhAnh, int DMMacDinh) {
+    public Category(int ID_DM, String tenDM, String loaiDM, String hinhAnh, int DMMacDinh) {
         this.ID_DM = ID_DM;
         TenDM = tenDM;
         LoaiDM = loaiDM;
@@ -21,7 +21,7 @@ public class category {
         this.DMMacDinh = DMMacDinh;
     }
 
-    public category(int ID_DM, String tenDM, String loaiDM, String hinhAnh, int DMMacDinh, int ID_TK) {
+    public Category(int ID_DM, String tenDM, String loaiDM, String hinhAnh, int DMMacDinh, int ID_TK) {
         this.ID_DM = ID_DM;
         TenDM = tenDM;
         LoaiDM = loaiDM;
@@ -30,13 +30,13 @@ public class category {
         this.ID_TK = ID_TK;
     }
 
-    public category(int ID_DM, String tenDM, String hinhAnh) {
+    public Category(int ID_DM, String tenDM, String hinhAnh) {
         this.ID_DM = ID_DM;
         TenDM = tenDM;
         HinhAnh = hinhAnh;
     }
 
-    public category(String tenDM, String loai, String HinhAnh, int i) {
+    public Category(String tenDM, String loai, String HinhAnh, int i) {
         this.TenDM=tenDM;
         this.LoaiDM= loai;
         this.HinhAnh=HinhAnh;

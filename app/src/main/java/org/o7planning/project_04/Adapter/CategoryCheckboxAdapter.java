@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.o7planning.project_04.R;
-import org.o7planning.project_04.model.category;
+import org.o7planning.project_04.model.Category;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +19,10 @@ import java.util.Set;
 
 public class CategoryCheckboxAdapter extends RecyclerView.Adapter<CategoryCheckboxAdapter.ViewHolder> {
 
-    private List<category> categoryList;
+    private List<Category> categoryList;
     private Set<Integer> selectedId;
 
-    public CategoryCheckboxAdapter(List<category> categoryList, Set<Integer> selectedId) {
+    public CategoryCheckboxAdapter(List<Category> categoryList, Set<Integer> selectedId) {
         this.categoryList = categoryList;
         this.selectedId = selectedId;
     }
@@ -37,7 +37,7 @@ public class CategoryCheckboxAdapter extends RecyclerView.Adapter<CategoryCheckb
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position){
-        category cate = categoryList.get(position);
+        Category cate = categoryList.get(position);
         holder.tvName.setText(cate.getTenDM());
         holder.imgIcon.setImageResource(
                 holder.itemView.getContext().getResources().getIdentifier(
@@ -75,7 +75,7 @@ public class CategoryCheckboxAdapter extends RecyclerView.Adapter<CategoryCheckb
     }
 
     public void selectAll() {
-        for (category cat : categoryList) {
+        for (Category cat : categoryList) {
             selectedId.add(cat.getID());
         }
         notifyDataSetChanged();

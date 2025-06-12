@@ -16,12 +16,10 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import org.o7planning.project_04.activities.activity_category;
+import org.o7planning.project_04.activities.ActivityCategory;
 import org.o7planning.project_04.databases.CategoryDAO;
-import org.o7planning.project_04.databases.DBHelper;
-import org.o7planning.project_04.fragments.Transaction_Fragment;
-import org.o7planning.project_04.fragments.spending_limit_fragment;
-import org.o7planning.project_04.fragments.statfragment;
+import org.o7planning.project_04.fragments.TransactionFragment;
+import org.o7planning.project_04.fragments.StatFragment;
 
 
 import com.jakewharton.threetenabp.AndroidThreeTen; // Đảm bảo đã thêm thư viện này vào build.gradle
@@ -31,11 +29,6 @@ import com.jakewharton.threetenabp.AndroidThreeTen; // Đảm bảo đã thêm t
 
 import org.o7planning.project_04.activities.AccountActivity;
 import org.o7planning.project_04.activities.NotLoginActivity;
-import org.o7planning.project_04.databases.DBHelper;
-import org.o7planning.project_04.fragments.Transaction_Fragment;
-import org.o7planning.project_04.fragments.statfragment;
-
-import com.jakewharton.threetenabp.AndroidThreeTen;
 
 public class MainActivity extends AppCompatActivity {
     private PrepopulatedDBHelper database;
@@ -68,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Load the Transaction_Fragment as the default fragment
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new Transaction_Fragment())
+                .replace(R.id.fragment_container, new TransactionFragment())
                 .commit();
 
         // Handle navigation item selection
@@ -79,13 +72,13 @@ public class MainActivity extends AppCompatActivity {
                 int itemId = item.getItemId();
 
                 if (itemId == R.id.nav_home) {
-                    selectedFragment = new Transaction_Fragment();
+                    selectedFragment = new TransactionFragment();
 
                 } else if (itemId == R.id.nav_stats) {
-                    selectedFragment = new statfragment();
+                    selectedFragment = new StatFragment();
 
-                }    else if (itemId == R.id.nav_category) { // gia dinh de test thoi, xóa khi gọi từ trang them giao dịch
-                  Intent intent = new Intent(MainActivity.this, activity_category.class);
+                } else if (itemId == R.id.nav_category) { // gia dinh de test thoi, xóa khi gọi từ trang them giao dịch
+                    Intent intent = new Intent(MainActivity.this, ActivityCategory.class);
                     startActivity(intent);
                     return true;
                 } else if (itemId == R.id.nav_more) {
@@ -116,8 +109,6 @@ public class MainActivity extends AppCompatActivity {
                             .commit();
                     return true;
                 }
-
-
                 return false;
             }
         });
