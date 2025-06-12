@@ -13,7 +13,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import org.o7planning.project_04.R;
 
-public class AddExpenseActivity extends AppCompatActivity {
+public class AddTransactionActivity extends AppCompatActivity {
 
     private TextInputEditText etAmount;
     private LinearLayout itemType, itemDate, itemTime, itemNote;
@@ -29,7 +29,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         // Khởi tạo các View
         toolbar = findViewById(R.id.toolbar_add_expense); // Khởi tạo Toolbar
         etAmount = findViewById(R.id.etAmount); // Khởi tạo EditText cho số tiền
-        itemType = findViewById(R.id.item_type); // Khởi tạo LinearLayout cho loại
+        //itemType = findViewById(R.id.item_type); // Khởi tạo LinearLayout cho loại
         itemDate = findViewById(R.id.item_date); // Khởi tạo LinearLayout cho ngày
         itemTime = findViewById(R.id.item_time); // Khởi tạo LinearLayout cho giờ
         itemNote = findViewById(R.id.item_note); // Khởi tạo LinearLayout cho ghi chú
@@ -58,7 +58,7 @@ public class AddExpenseActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Xử lý hành động lưu
-                Toast.makeText(AddExpenseActivity.this, "Lưu đã được click", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddTransactionActivity.this, "Lưu đã được click", Toast.LENGTH_SHORT).show();
                 // Bạn thường sẽ lưu dữ liệu chi tiêu ở đây
             }
         });
@@ -67,7 +67,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         itemType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(AddExpenseActivity.this, "Loại đã được click", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddTransactionActivity.this, "Loại đã được click", Toast.LENGTH_SHORT).show();
                 // Mở activity hoặc dialog để chọn loại chi tiêu
             }
         });
@@ -75,7 +75,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         itemDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(AddExpenseActivity.this, "Ngày đã được click", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddTransactionActivity.this, "Ngày đã được click", Toast.LENGTH_SHORT).show();
                 // Mở dialog chọn ngày
             }
         });
@@ -83,7 +83,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         itemTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(AddExpenseActivity.this, "Giờ đã được click", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddTransactionActivity.this, "Giờ đã được click", Toast.LENGTH_SHORT).show();
                 // Mở dialog chọn giờ
             }
         });
@@ -91,7 +91,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         itemNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(AddExpenseActivity.this, "Ghi Chú đã được click", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddTransactionActivity.this, "Ghi Chú đã được click", Toast.LENGTH_SHORT).show();
                 // Mở activity hoặc dialog để thêm ghi chú
             }
         });
@@ -100,7 +100,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         btnGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(AddExpenseActivity.this, "Gallery đã được click", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddTransactionActivity.this, "Gallery đã được click", Toast.LENGTH_SHORT).show();
                 // Mở thư viện để chọn ảnh
             }
         });
@@ -108,7 +108,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(AddExpenseActivity.this, "Camera đã được click", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddTransactionActivity.this, "Camera đã được click", Toast.LENGTH_SHORT).show();
                 // Mở camera để chụp ảnh
             }
         });

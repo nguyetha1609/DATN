@@ -13,26 +13,47 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/white"
         android:elevation="4dp"
-        app:title="@string/title_add_expense"
-        app:titleTextColor="@color/textPrimary"
-        app:navigationIcon="@drawable/ic_arrow_left"
-        app:contentInsetStartWithNavigation="0dp">
+        app:contentInsetStartWithNavigation="0dp">  <!-- Giữ để không có padding -->
 
-    <!-- Thêm TextView “Lưu” ở góc phải của Toolbar -->
-    <TextView
-        android:id="@+id/toolbar_save"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="end|center_vertical"
-        android:gravity="center"
-        android:text="@string/save"
-        android:textColor="@color/colorPrimary"
-        android:textSize="16sp"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:clickable="true"
-        android:focusable="true" />
-</com.google.android.material.appbar.MaterialToolbar>
+        <!-- 1. ImageButton cho nút back -->
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_arrow_left"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/desc_back"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- 2. Tiêu đề -->
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:text="@string/title_add_expense"
+            android:textColor="@color/textPrimary"
+            android:textSize="18sp" />
+
+        <!-- 3. TextView “Lưu” ở góc phải -->
+        <TextView
+            android:id="@+id/toolbar_save"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end|center_vertical"
+            android:gravity="center"
+            android:text="@string/save"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:clickable="true"
+            android:focusable="true" />
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <!-- Nội dung chính nằm trong ScrollView để khi bàn phím bật vẫn cuộn được -->
     <ScrollView
@@ -48,14 +69,12 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
-            <!-- 1. Input số tiền (dạng EditText)
-                 Sử dụng TextInputLayout + TextInputEditText để có background bo góc -->
+            <!-- 1. Input số tiền (dạng EditText)-->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layout_amount"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint=""
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusTopStart="12dp"
                 app:boxCornerRadiusTopEnd="12dp"
@@ -71,7 +90,6 @@
                     android:inputType="number"
                     android:textColor="@color/textPrimary"
                     android:textSize="16sp"
-                    android:hint="@string/hint_amount"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
                     android:backgroundTint="@color/white"
@@ -93,39 +111,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="12dp">
-
-                    <!-- Item: Loại -->
-                    <LinearLayout
-                        android:id="@+id/item_type"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp">
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_question"
-                            app:tint="@color/iconColor" />
-
-                        <TextView
-                            android:id="@+id/tvTypeLabel"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/label_type"
-                            android:textSize="16sp"
-                            android:textColor="@color/textPrimary"
-                            android:layout_marginStart="16dp" />
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_arrow_right"
-                            app:tint="@color/iconColor" />
-                    </LinearLayout>
 
                     <!-- Divider giữa các item -->
                     <View

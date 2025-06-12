@@ -155,6 +155,8 @@
         <item>Tiền hàng tháng</item>
         <item>Tiền hàng năm</item>
     </string-array>
+    <string name="desc_back">Quay về</string>
+    <string name="desc_category">Danh mục</string>
 
 
 </resources>

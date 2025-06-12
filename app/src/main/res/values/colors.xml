@@ -70,27 +70,26 @@
 
     <color name="grey_200">#EEEEEE</color>
 
-        <!-- Màu chủ đạo của App -->
-        <color name="colorPrimary">#6200EE</color>
-        <color name="colorPrimaryDark">#3700B3</color>
-        <color name="colorAccent">#03DAC5</color>
+    <!-- Màu chủ đạo của App -->
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
 
-        <!-- Màu nền chung -->
+    <!-- Màu nền chung -->
+    <color name="gray_light">#E0E0E0</color>
+    <color name="gray_medium">#9E9E9E</color>
 
-        <color name="gray_light">#E0E0E0</color>
-        <color name="gray_medium">#9E9E9E</color>
+    <!-- Màu text -->
+    <color name="textPrimary">#212121</color>
+    <color name="textSecondary">#757575</color>
+    <color name="textHint">#9E9E9E</color>
 
-        <!-- Màu text -->
-        <color name="textPrimary">#212121</color>
-        <color name="textSecondary">#757575</color>
-        <color name="textHint">#9E9E9E</color>
+    <!-- Màu cho các icon và divider -->
+    <color name="iconColor">#616161</color>
+    <color name="dividerColor">#BDBDBD</color>
 
-        <!-- Màu cho các icon và divider -->
-        <color name="iconColor">#616161</color>
-        <color name="dividerColor">#BDBDBD</color>
-
-        <!-- Màu riêng cho mỗi mục (nếu cần) -->
-        <color name="cardBackground">#FFFFFF</color>
+    <!-- Màu riêng cho mỗi mục (nếu cần) -->
+    <color name="cardBackground">#FFFFFF</color>
 
 
 </resources>

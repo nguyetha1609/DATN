@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import org.o7planning.project_04.activities.AddExpenseActivity;
+import org.o7planning.project_04.activities.AddTransactionActivity;
 import org.o7planning.project_04.R;
 
 public class Transaction_Fragment extends Fragment {
@@ -26,17 +26,15 @@ public class Transaction_Fragment extends Fragment {
         View view = inflater.inflate(R.layout.transaction_fragment, container, false);
 
         // các xử lý ở trang giao dịch
-
+        // Khởi tạo btnAdd và đặt OnClickListener cho nó
         btnAdd = view.findViewById(R.id.btnAdd); // Đảm bảo btnAdd là ID chính xác từ activity_main.xml
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), AddExpenseActivity.class);
+                Intent intent = new Intent(getActivity(), AddTransactionActivity.class);
                 startActivity(intent);
             }
         });
-        // Khởi tạo btnAdd và đặt OnClickListener cho nó
-
 
         // Khởi tạo các tab con Chi tiêu và Thu nhập và thêm sự kiện click
         tabExpense = view.findViewById(R.id.tabExpense);

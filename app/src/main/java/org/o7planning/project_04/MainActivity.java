@@ -68,7 +68,16 @@ public class MainActivity extends AppCompatActivity {
                     fragment.setArguments(args);
                     selectedFragment = fragment;
                 } else if (itemId == R.id.nav_stats) {
+<<<<<<< Updated upstream
                     selectedFragment = new statfragment();
+=======
+                    selectedFragment = new StatFragment();
+
+                } else if (itemId == R.id.nav_category) {
+                    Intent intent = new Intent(MainActivity.this, ActivityCategory.class);
+                    startActivity(intent);
+                    return true;
+>>>>>>> Stashed changes
                 } else if (itemId == R.id.nav_more) {
                     // Check login state using SharedPreferences
                     SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);

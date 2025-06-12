@@ -57,6 +57,6 @@
         <activity android:name=".activities.NotLoginActivity" />
 
 
-        <activity android:name=".activities.AddExpenseActivity" android:theme="@style/Theme.Project_04"/>
+        <activity android:name=".activities.AddTransactionActivity" android:theme="@style/Theme.Project_04"/>
     </application>
 </manifest>
