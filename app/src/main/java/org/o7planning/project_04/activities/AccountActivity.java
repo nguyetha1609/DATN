@@ -1,13 +1,16 @@
 package org.o7planning.project_04.activities;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -16,13 +19,21 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import org.o7planning.project_04.MainActivity;
 import org.o7planning.project_04.PrepopulatedDBHelper;
 import org.o7planning.project_04.R;
+import org.o7planning.project_04.fragments.Transaction_Fragment;
+import org.o7planning.project_04.fragments.categoryfragment;
+import org.o7planning.project_04.fragments.statfragment;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -43,6 +54,7 @@ public class AccountActivity extends AppCompatActivity {
     private LinearLayout layoutAccount;
     private LinearLayout layoutChangePassword;
     private Button btnLogout;
+    private BottomNavigationView bottomNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +73,8 @@ public class AccountActivity extends AppCompatActivity {
         layoutAccount = findViewById(R.id.layoutAccount);
         layoutChangePassword = findViewById(R.id.layoutChangePassword);
         btnLogout = findViewById(R.id.btnLogout);
+
+        bottomNav = findViewById(R.id.bottomNav);
 
         // ── 3. Load dữ liệu từ DB (sau khi đã mở database) ──
         loadProfileImageFromDB();
@@ -99,6 +113,52 @@ public class AccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 confirmLogout();
+            }
+        });
+
+        bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.nav_home) {
+                    selectedFragment = new Transaction_Fragment();
+                } else if (itemId == R.id.nav_category) {
+                    categoryfragment fragment = new categoryfragment();
+                    Bundle args = new Bundle();
+                    args.putString("loaiDM", "chi tiêu");
+                    fragment.setArguments(args);
+                    selectedFragment = fragment;
+                } else if (itemId == R.id.nav_stats) {
+                    selectedFragment = new statfragment();
+                } else if (itemId == R.id.nav_more) {
+                    // Check login state using SharedPreferences
+                    SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
+                    boolean isLoggedIn = prefs.getBoolean("REMEMBER", false);
+                    String username = prefs.getString("USERNAME", "");
+
+                    if (isLoggedIn && !username.isEmpty()) {
+                        // User is logged in, navigate to AccountActivity
+                        Intent intent = new Intent(MainActivity.this, AccountActivity.class);
+                        startActivity(intent);
+                    } else {
+                        // User is not logged in, navigate to NotLoginActivity
+                        Intent intent = new Intent(MainActivity.this, NotLoginActivity.class);
+                        startActivity(intent);
+                    }
+                    return true; // Return true to indicate the event is handled
+                }
+
+                // Load the selected fragment if not null
+                if (selectedFragment != null) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, selectedFragment)
+                            .commit();
+                    return true;
+                }
+
+                return false;
             }
         });
     }
@@ -246,6 +306,8 @@ public class AccountActivity extends AppCompatActivity {
     // =====================================================================================
     // 5. ĐĂNG XUẤT với AlertDialog xác nhận
     // =====================================================================================
+    private static final String PREF_NAME = "MyAppPrefs";  // Tên SharedPreferences của bạn
+
     private void confirmLogout() {
         new AlertDialog.Builder(AccountActivity.this)
                 .setTitle("Đăng xuất")
@@ -260,7 +322,17 @@ public class AccountActivity extends AppCompatActivity {
                 .show();
     }
 
+    /**
+     * Thực hiện đăng xuất:
+     *  1. Xoá SharedPreferences.
+     *  2. Quay về MainActivity, xóa toàn bộ lịch sử Activity trước.
+     */
     private void performLogout() {
+        // 1. Xoá session trong SharedPreferences
+        SharedPreferences sharedPrefs = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        sharedPrefs.edit().clear().apply();
+
+        // 2. Quay về MainActivity, xóa sạch back stack
         Intent intent = new Intent(AccountActivity.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
@@ -275,4 +347,5 @@ public class AccountActivity extends AppCompatActivity {
             database.close();
         }
     }
+
 }

@@ -70,31 +70,38 @@
             android:padding="16dp">
 
             <!-- 1. Input số tiền (dạng EditText)-->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_amount"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <LinearLayout
+                android:id="@+id/item_amount"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:boxBackgroundMode="outline"
-                app:boxCornerRadiusTopStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
-                app:boxCornerRadiusBottomEnd="12dp"
-                app:boxStrokeColor="@color/dividerColor"
-                android:layout_marginBottom="24dp">
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/bg_amount_box"
+                android:clickable="true"
+                android:focusable="true">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etAmount"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:inputType="number"
-                    android:textColor="@color/textPrimary"
-                    android:textSize="16sp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:backgroundTint="@color/white"
-                    />
-            </com.google.android.material.textfield.TextInputLayout>
+                <ImageView
+                    android:id="@+id/imgCategory"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_category"
+                    app:tint="@color/iconColor" />
+
+                <TextView
+                    android:id="@+id/tvAmount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="230dp"
+                    android:text="@string/hint_amount"
+                    android:textSize="18sp"
+                    android:textColor="@color/textPrimary" />
+
+            </LinearLayout>
+
 
             <!-- 2. Card đầu tiên chứa: Loại, Ngày, Giờ, Ghi Chú -->
             <com.google.android.material.card.MaterialCardView
