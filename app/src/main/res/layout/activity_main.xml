@@ -1,16 +1,210 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootRelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F6F6F6">
+
     <!-- FragmentContainerView chứa HomeFragment -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="50dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <LinearLayout
+        android:id="@+id/topContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="50dp"
+        android:paddingBottom="16dp">
+
+
+        <!-- 2.1 Tabs: Ngày, Tháng, Năm, Tất cả, Tùy chỉnh -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="5"
+            android:background="@drawable/bg_add_expense"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:id="@+id/filter_day"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/filter_day"/>
+
+            <TextView
+                android:id="@+id/filter_month"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/filter_month" />
+
+            <TextView
+                android:id="@+id/filter_year"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/filter_year"/>
+
+            <TextView
+                android:id="@+id/filter_all"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/filter_all"/>
+        </LinearLayout>
+
+        <!-- 2.2 CardView: Ngân sách + Vượt chi -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="4dp"
+            app:cardCornerRadius="12dp" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Ngân sách\n0 ₫"
+                    android:textSize="16sp"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vượt chi\n556 ₫"
+                    android:textSize="16sp"
+                    android:textColor="#FF3B30" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- 2.3 Chi tiêu và Thu nhập -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp">
+
+            <Button
+                android:id="@+id/btnChiTieu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/radious"
+                android:text="Chi tiêu\n556 ₫"
+                android:backgroundTint="#FF3B30"
+                android:textColor="#FFFFFF"
+                android:padding="12dp" />
+
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btnThuNhap"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/radious"
+                android:text="Thu nhập\n0 ₫"
+                android:backgroundTint="#34C759"
+                android:textColor="#FFFFFF"
+                android:padding="12dp" />
+        </LinearLayout>
+
+        <!-- 2.4 Số dư -->
+        <TextView
+            android:id="@+id/tvSoDu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Số dư: -556 ₫"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="#666666"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp" />
+
+        <!-- 2.5 Tabs con:chi têu / thu nhập -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <TextView
+                android:id="@+id/tabExpense"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/expense"
+                android:paddingBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tabIncome"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/income"
+                android:paddingBottom="8dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 3. ListView hiển thị giao dịch -->
+    <ListView
+        android:id="@+id/listViewTransactions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="#DDDDDD"
+        android:dividerHeight="1dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_below="@id/topContainer"
+        />
+
+    <Button
+        android:id="@+id/btnAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/listViewTransactions"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_add_expense"
+        android:text="Thêm"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="72dp"
+        android:layout_marginEnd="16dp"
+        app:cornerRadius="8dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
@@ -21,5 +215,5 @@
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu"
         android:layout_alignParentBottom="true" />
+</RelativeLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
