@@ -1,4 +1,4 @@
-package org.o7planning.project_04;
+package org.o7planning.project_04.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
 import org.o7planning.project_04.Adapter.OnboardingAdapter;
+import org.o7planning.project_04.R;
 
 public class OnboardingActivity extends AppCompatActivity {
     private ViewPager2 viewPager;

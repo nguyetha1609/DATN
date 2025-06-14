@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,10 +16,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.o7planning.project_04.PrepopulatedDBHelper;
+import org.o7planning.project_04.databases.PrepopulatedDBHelper;
 import org.o7planning.project_04.R;
 
-public class ActivityAccountInfor extends AppCompatActivity {
+public class AccountInforActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_PICK_IMAGE = 2000;
 
@@ -48,9 +47,9 @@ public class ActivityAccountInfor extends AppCompatActivity {
 
         // Ánh xạ View (bây giờ là EditText thay cho TextInputEditText)
         ivLogoForgot    = findViewById(R.id.ivLogoForgot);
-        edtForgotEmail  = findViewById(R.id.edtForgotEmail);
-        edtOldPassword  = findViewById(R.id.editTextText);
-        edtNewPassword  = findViewById(R.id.editTextText2);
+//        edtForgotEmail  = findViewById(R.id.edtForgotEmail);
+//        edtOldPassword  = findViewById(R.id.editTextText);
+//        edtNewPassword  = findViewById(R.id.editTextText2);
         btnExit         = findViewById(R.id.btnexit);
         btnSave         = findViewById(R.id.btnsave);
 
@@ -65,7 +64,7 @@ public class ActivityAccountInfor extends AppCompatActivity {
     }
 
     private void confirmChangeLogo() {
-        new AlertDialog.Builder(ActivityAccountInfor.this)
+        new AlertDialog.Builder(AccountInforActivity.this)
                 .setTitle("Thay đổi ảnh đại diện")
                 .setMessage("Bạn có muốn thay đổi ảnh không?")
                 .setPositiveButton("Có", (dialog, which) -> openGalleryToPickImage())

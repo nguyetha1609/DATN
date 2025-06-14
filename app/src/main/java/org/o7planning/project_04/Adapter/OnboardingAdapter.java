@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import org.o7planning.project_04.MainActivity;
+import org.o7planning.project_04.activities.MainActivity;
 import org.o7planning.project_04.R;
 
 public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.ViewHolder> {

@@ -15,6 +15,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import org.o7planning.project_04.Adapter.SpendingGroupAdapter;
 import org.o7planning.project_04.R;
 import org.o7planning.project_04.databases.DBHelper;
+import org.o7planning.project_04.databases.LimitDAO;
 import org.o7planning.project_04.model.GIAODICH;
 import org.o7planning.project_04.model.Limit;
 import org.o7planning.project_04.model.SpendingGroup;
@@ -25,11 +26,13 @@ import java.util.List;
 
 public class spendingList_Activity extends AppCompatActivity {
     private int limitId;
+    private LimitDAO dblimit;
 
 
     protected  void onCreate(@NonNull Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.spending_list);
+        dblimit = new LimitDAO(this);
 
         int limitId = getIntent().getIntExtra(LimitDetailActivity.EXTRA_LIMIT_ID, -1);
         if (limitId == -1) {
@@ -53,8 +56,8 @@ public class spendingList_Activity extends AppCompatActivity {
     }
 
     private void loadSpendingsForLimit(int limitId) {
-        DBHelper db = new DBHelper(this);
-        Limit limit = db.getLimitById(limitId);
+
+        Limit limit = dblimit.getLimitById(limitId);
         if (limit == null) return;
 
         if (limit == null) {
@@ -66,12 +69,12 @@ public class spendingList_Activity extends AppCompatActivity {
         String endDate = limit.getNgayKetThuc();
 
         List<Integer> listDmId = limit.getListDanhMuc();
-        List<spendingsummary> summaryList = db.getSpendingsByLimit(limitId,startDate,endDate);
+        List<spendingsummary> summaryList = dblimit.getSpendingsByLimit(limitId,startDate,endDate);
 
         List<SpendingGroup> spendingGroups = new ArrayList<>();
 
         for(spendingsummary summary : summaryList){
-            List<GIAODICH> giaodichList = db.getTransactionsByCategoryAndLimit(summary.getIdDM(),startDate,endDate,limitId);
+            List<GIAODICH> giaodichList = dblimit.getTransactionsByCategoryAndLimit(summary.getIdDM(),startDate,endDate,limitId);
             SpendingGroup group = new SpendingGroup(summary.getIdDM(),summary.getTenDM(),summary.getTongChi(),summary.getHinhAnh(),giaodichList);
             spendingGroups.add(group);
         }

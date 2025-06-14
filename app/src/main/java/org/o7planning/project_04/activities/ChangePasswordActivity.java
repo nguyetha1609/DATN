@@ -9,10 +9,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.o7planning.project_04.PrepopulatedDBHelper;
+import org.o7planning.project_04.databases.PrepopulatedDBHelper;
 import org.o7planning.project_04.R;
 
-public class ActivityChangePassword extends AppCompatActivity {
+public class ChangePasswordActivity extends AppCompatActivity {
     private EditText etNew, etConfirm;
     private Button btnExit, btnSave;
     private PrepopulatedDBHelper dbHelper;

@@ -15,8 +15,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.o7planning.project_04.MainActivity;
-import org.o7planning.project_04.PrepopulatedDBHelper;
+import org.o7planning.project_04.databases.PrepopulatedDBHelper;
 import org.o7planning.project_04.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -67,12 +66,19 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 if (checkLogin(user, pass)) {
+                    // Lấy ID_TK
+                    int idTK = getID_TK(user);
                     // Lưu nhớ hay không
                     saveAccount(
                             cbRemember.isChecked() ? user : "",
                             cbRemember.isChecked() ? pass : "",
                             cbRemember.isChecked()
                     );
+                    // Lưu luôn ID_TK để dùng ở chỗ khác (luôn lưu, không phụ thuộc cbRemember để thêm danh mục, giao dịch
+                    SharedPreferences.Editor editor = sharedPrefs.edit();
+                    editor.putInt("ID_TK", idTK);
+                    editor.apply();
+
                     // Đăng nhập thành công → MainActivity
                     Intent intent = new Intent(
                             LoginActivity.this,
@@ -97,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
         tvForgotPassword.setOnClickListener(v ->
                 startActivity(new Intent(
                         LoginActivity.this,
-                        ActivityForgotPassword.class))
+                        ForgotPasswordActivity.class))
         );
     }
 
@@ -133,4 +139,21 @@ public class LoginActivity extends AppCompatActivity {
             cbRemember.setChecked(true);
         }
     }
+
+    // Hàm này để lấy ID_TK
+    private int getID_TK(String username) {
+        SQLiteDatabase db = dbHelper.openDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT ID_TK FROM TAIKHOAN WHERE Username = ? LIMIT 1",
+                new String[]{ username }
+        );
+        int id = -1;
+        if (cursor.moveToFirst()) {
+            id = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return id;
+    }
+
 }

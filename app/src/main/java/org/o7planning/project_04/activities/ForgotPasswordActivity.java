@@ -7,16 +7,16 @@ import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.o7planning.project_04.PrepopulatedDBHelper;
+import org.o7planning.project_04.databases.PrepopulatedDBHelper;
 import org.o7planning.project_04.R;
 import org.o7planning.project_04.utils.EmailSender;
 
 import java.util.Random;
 
-public class ActivityForgotPassword extends AppCompatActivity {
+public class ForgotPasswordActivity extends AppCompatActivity {
     private EditText edtEmail;
     private Button btnExit, btnSend;
     private PrepopulatedDBHelper dbHelper;
@@ -62,7 +62,7 @@ public class ActivityForgotPassword extends AppCompatActivity {
             EmailSender.sendCode(currentEmail, currentCode);
 
             // CHUYỂN SANG MÀN HÌNH NHẬP MÃ
-            Intent it = new Intent(this, ActivityVerificationCode.class);
+            Intent it = new Intent(this, VerificationCodeActivity.class);
             it.putExtra("email", currentEmail);
             it.putExtra("code", currentCode);
             startActivity(it);

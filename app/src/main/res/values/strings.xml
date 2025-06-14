@@ -107,10 +107,10 @@
     <string name="save">Lưu</string>
 
     <!-- Placeholder và label -->
-    <string name="hint_amount">100.000 VND</string>
+    <string name="hint_amount"></string>
     <string name="label_type">Loại</string>
-    <string name="label_date">02/12/2022</string>
-    <string name="label_time">09:24</string>
+    <string name="label_date"></string>
+    <string name="label_time"></string>
     <string name="hint_note">Ghi Chú</string>
     <string name="label_location">Vị Trí</string>
     <string name="label_friends">Bạn bè</string>
@@ -150,6 +150,9 @@
     <string name="income">Thu nhập</string>
 
 
+    <!-- biểu tượng danh mục -->
+    <string name="category_icon" >Biểu tượng danh mục</string>
+
     <string-array name="income_type_array">
         <item>Tiền hàng ngày</item>
         <item>Tiền hàng tháng</item>
@@ -157,6 +160,5 @@
     </string-array>
     <string name="desc_back">Quay về</string>
     <string name="desc_category">Danh mục</string>
-
-
 </resources>
+

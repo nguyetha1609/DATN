@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.o7planning.project_04.PrepopulatedDBHelper;
+import org.o7planning.project_04.databases.PrepopulatedDBHelper;
 import org.o7planning.project_04.R;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -88,7 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
         );
 
         tvForgotPassword.setOnClickListener(v ->
-                startActivity(new Intent(this, ActivityForgotPassword.class))
+                startActivity(new Intent(this, ForgotPasswordActivity.class))
         );
     }
 

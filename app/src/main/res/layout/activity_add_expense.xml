@@ -248,10 +248,6 @@
                 android:backgroundTint="@color/cardBackground">
 
             </com.google.android.material.card.MaterialCardView>
-
-            <!-- 4. Hai nút thêm ảnh (Gallery + Camera) -->
-
         </LinearLayout>
     </ScrollView>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

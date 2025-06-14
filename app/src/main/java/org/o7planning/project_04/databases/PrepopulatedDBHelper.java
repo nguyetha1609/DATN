@@ -1,4 +1,4 @@
-package org.o7planning.project_04;
+package org.o7planning.project_04.databases;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

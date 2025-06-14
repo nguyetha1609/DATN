@@ -7,14 +7,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import org.o7planning.project_04.R;
 import org.o7planning.project_04.utils.EmailSender;
 
 import java.util.Random;
 
-public class ActivityVerificationCode extends AppCompatActivity {
+public class VerificationCodeActivity extends AppCompatActivity {
     private EditText etCode;
     private Button btnVerify;
     private TextView tvResend;
@@ -39,7 +38,7 @@ public class ActivityVerificationCode extends AppCompatActivity {
         btnVerify.setOnClickListener(v -> {
             String input = etCode.getText().toString().trim();
             if (input.equals(sentCode)) {
-                Intent i2 = new Intent(this, ActivityChangePassword.class);
+                Intent i2 = new Intent(this, ChangePasswordActivity.class);
                 i2.putExtra("email", email);
                 startActivity(i2);
                 finish();

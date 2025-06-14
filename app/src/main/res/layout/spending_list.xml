@@ -11,9 +11,10 @@
         android:id="@+id/toolbar_spending_list"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/teal"
+        android:background="@color/white"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-        app:navigationIcon="@drawable/ic_chevron_left"
+        app:navigationIcon="@drawable/ic_arrow_left"
+        app:titleTextColor="@color/black"
         app:title=" Chi tiết khoản chi"
         app:titleCentered="true" />
 

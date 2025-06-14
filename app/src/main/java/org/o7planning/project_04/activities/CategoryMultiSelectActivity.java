@@ -1,6 +1,7 @@
 package org.o7planning.project_04.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import org.o7planning.project_04.Adapter.CategoryCheckboxAdapter;
 import org.o7planning.project_04.Adapter.IconAdapter;
 import org.o7planning.project_04.R;
+import org.o7planning.project_04.databases.CategoryDAO;
 import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.model.category;
 
@@ -27,6 +29,7 @@ public class CategoryMultiSelectActivity extends AppCompatActivity {
     private SwitchCompat switchSelectAll;
     private List<category> allCategories = new ArrayList<>();
     private Set<Integer> selectedId = new HashSet<>();
+    private CategoryDAO dbcate;
 
     @Override
     protected  void onCreate(Bundle savedInstanceState){
@@ -76,11 +79,16 @@ public class CategoryMultiSelectActivity extends AppCompatActivity {
         });
     }
     private void loadCategories(){
-        DBHelper db = new DBHelper(this);
+        int currentUserId = getCurrentUserId();
+        CategoryDAO dbcate = new CategoryDAO(this);
         allCategories.clear();
-        allCategories.addAll(db.getAllCategories("ChiTieu"));
+        allCategories.addAll(dbcate.getAllCategories("ChiTieu",currentUserId));
         if (adapter != null) {
             adapter.notifyDataSetChanged();
         }
+    }
+    private int getCurrentUserId() {
+        SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        return prefs.getInt("ID_TK", -1); // -1 nếu chưa đăng nhập
     }
 }

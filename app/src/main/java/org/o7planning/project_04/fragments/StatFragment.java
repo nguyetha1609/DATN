@@ -46,8 +46,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class statfragment extends Fragment {
-    public statfragment() {
+public class StatFragment extends Fragment {
+    public StatFragment() {
     }
 
     private View tabIndicator;
@@ -319,16 +319,13 @@ public class statfragment extends Fragment {
         DBHelper db = new DBHelper(requireContext());
 
         String loai = selectedTab == 0 ? "ChiTieu" : "ThuNhap";
-
+//format theo định dạng ngày lưu trong db để truy vấn được yyyy-MM-dd
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String start = startDate.format(formatter);
         String end = endDate.format(formatter);
 
         List<categoryStat> catestat = db.getStatsByDateRange(loai,start,end);
-        // Giả định
-        if (catestat == null || catestat.isEmpty()) {
-            catestat = getDummyData(loai);
-        }
+
 
 
         List<PieEntry> entries = new ArrayList<>();
@@ -376,10 +373,7 @@ public class statfragment extends Fragment {
         String end = endDate.format(formatter);
 
         List<categoryStat> catestat= db.getStatsByDateRange(loai,start,end);
-        if(catestat == null || catestat.isEmpty()){
-            catestat = getDummyData(loai);
 
-        }
 
         List<BarEntry> entries = new ArrayList<>();
         List<String> labels = new ArrayList<>();
@@ -443,21 +437,6 @@ public class statfragment extends Fragment {
 
   }
 
-  // gỉa định
-    private List<categoryStat> getDummyData(String loai) {
-        List<categoryStat> dummyList = new ArrayList<>();
-        if (loai.equals("ChiTieu")) {
-            dummyList.add(new categoryStat("Ăn uống", 150000, Color.parseColor("#F44336")));
-            dummyList.add(new categoryStat("Đi lại", 50000, Color.parseColor("#2196F3")));
-            dummyList.add(new categoryStat("Giải trí", 80000, Color.parseColor("#4CAF50")));
-            dummyList.add(new categoryStat("Mua sắm", 120000, Color.parseColor("#FFC107")));
-        } else { // Thu Nhap
-            dummyList.add(new categoryStat("Lương", 2000000, Color.parseColor("#4CAF50")));
-            dummyList.add(new categoryStat("Thưởng", 500000, Color.parseColor("#2196F3")));
-            dummyList.add(new categoryStat("Khác", 200000, Color.parseColor("#9C27B0")));
-        }
-        return dummyList;
-    }
     private  void updateSummary(String startDate,String endDate){
         DBHelper dbHelper = new DBHelper(getContext());
 

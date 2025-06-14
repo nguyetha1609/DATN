@@ -18,6 +18,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 
 import org.o7planning.project_04.R;
 import org.o7planning.project_04.databases.DBHelper;
+import org.o7planning.project_04.databases.LimitDAO;
 import org.o7planning.project_04.model.Limit;
 
 import java.text.ParseException;
@@ -37,12 +38,14 @@ public class LimitDetailActivity extends AppCompatActivity {
     private LinearLayout ll_SpendingList;
     private int limitId;
     private TextView tv_expired;
+    private LimitDAO dblimit;
 
 
     @Override
     protected void onCreate(@NonNull Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_limit_detail);
+        dblimit = new LimitDAO(this);
 
         tvTotalLimit= findViewById(R.id.tv_total_limit);
         tvDateRange= findViewById(R.id.tv_date_range);
@@ -73,7 +76,7 @@ public class LimitDetailActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar_limit_detail);
          setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Chi tiết hạn mức");
+
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,7 +105,7 @@ public class LimitDetailActivity extends AppCompatActivity {
 
     private void loadLimitDetail(int limitId){
         DBHelper db = new DBHelper(this);
-        Limit limit= db.getLimitById(limitId);
+        Limit limit= dblimit.getLimitById(limitId);
 
 //        if(limit==null){
 //            Toast.makeText(this,"Khong tim thay han muc",Toast.LENGTH_SHORT).show();

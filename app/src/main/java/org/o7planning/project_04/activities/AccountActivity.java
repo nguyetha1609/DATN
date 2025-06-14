@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -19,21 +18,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
-import org.o7planning.project_04.MainActivity;
-import org.o7planning.project_04.PrepopulatedDBHelper;
+import org.o7planning.project_04.databases.PrepopulatedDBHelper;
 import org.o7planning.project_04.R;
-import org.o7planning.project_04.fragments.Transaction_Fragment;
-import org.o7planning.project_04.fragments.categoryfragment;
-import org.o7planning.project_04.fragments.statfragment;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -94,7 +86,7 @@ public class AccountActivity extends AppCompatActivity {
         layoutAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AccountActivity.this, ActivityAccountInfor.class);
+                Intent intent = new Intent(AccountActivity.this, AccountInforActivity.class);
                 startActivity(intent);
             }
         });
@@ -103,7 +95,7 @@ public class AccountActivity extends AppCompatActivity {
         layoutChangePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AccountActivity.this, ActivityChangePassword.class);
+                Intent intent = new Intent(AccountActivity.this, ChangePasswordActivity.class);
                 startActivity(intent);
             }
         });
@@ -116,51 +108,7 @@ public class AccountActivity extends AppCompatActivity {
             }
         });
 
-        bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment selectedFragment = null;
-                int itemId = item.getItemId();
 
-                if (itemId == R.id.nav_home) {
-                    selectedFragment = new Transaction_Fragment();
-                } else if (itemId == R.id.nav_category) {
-                    categoryfragment fragment = new categoryfragment();
-                    Bundle args = new Bundle();
-                    args.putString("loaiDM", "chi tiêu");
-                    fragment.setArguments(args);
-                    selectedFragment = fragment;
-                } else if (itemId == R.id.nav_stats) {
-                    selectedFragment = new statfragment();
-                } else if (itemId == R.id.nav_more) {
-                    // Check login state using SharedPreferences
-                    SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
-                    boolean isLoggedIn = prefs.getBoolean("REMEMBER", false);
-                    String username = prefs.getString("USERNAME", "");
-
-                    if (isLoggedIn && !username.isEmpty()) {
-                        // User is logged in, navigate to AccountActivity
-                        Intent intent = new Intent(MainActivity.this, AccountActivity.class);
-                        startActivity(intent);
-                    } else {
-                        // User is not logged in, navigate to NotLoginActivity
-                        Intent intent = new Intent(MainActivity.this, NotLoginActivity.class);
-                        startActivity(intent);
-                    }
-                    return true; // Return true to indicate the event is handled
-                }
-
-                // Load the selected fragment if not null
-                if (selectedFragment != null) {
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, selectedFragment)
-                            .commit();
-                    return true;
-                }
-
-                return false;
-            }
-        });
     }
 
     // =====================================================================================

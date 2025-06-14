@@ -22,7 +22,7 @@
 
 
         <activity
-            android:name=".OnboardingActivity"
+            android:name=".activities.OnboardingActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,14 +30,14 @@
             </intent-filter>
         </activity>
         <!-- Màn hình chính chính thức của ứng dụng -->
-        <activity android:name=".MainActivity"/>
-
+        <activity android:name=".activities.MainActivity"/>
+        <activity android:name=".activities.CategoryActivity" android:theme="@style/Base.Theme.Project_04"/>
         <!--Man hinh them danh muc-->
         <activity android:name=".activities.AddCategoryActivity" />
         <!--Man hinh sua/xoa danh muc-->
         <activity android:name=".activities.EditCategoryActivity" />
         <!-- Man hinh them han muc -->
-        <activity android:name=".activities.activity_add_spendinglimit"/>
+        <activity android:name=".activities.AddSpendingLimitActivity"/>
         <!-- man hinh chon danh muc trong them han muc -->
         <activity android:name=".activities.CategoryMultiSelectActivity"/>
         <!-- man hinh chi tiet han muc -->
@@ -48,10 +48,10 @@
         <activity android:name=".activities.spendingList_Activity" />
 
         <activity android:name=".activities.AccountActivity" />
-        <activity android:name=".activities.ActivityAccountInfor" />
-        <activity android:name=".activities.ActivityChangePassword" />
-        <activity android:name=".activities.ActivityForgotPassword" />
-        <activity android:name=".activities.ActivityVerificationCode" />
+        <activity android:name=".activities.AccountInforActivity" />
+        <activity android:name=".activities.ChangePasswordActivity" />
+        <activity android:name=".activities.ForgotPasswordActivity" />
+        <activity android:name=".activities.VerificationCodeActivity" />
         <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.NotLoginActivity" />

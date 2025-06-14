@@ -4,11 +4,13 @@ public class HanmucDanhmuc {
     private  int ID;
     private int ID_HM;
     private int ID_DM;
+    private int ID_TK;
 
-    public HanmucDanhmuc(int ID, int ID_HM, int ID_DM) {
+    public HanmucDanhmuc(int ID, int ID_HM, int ID_DM, int ID_TK) {
         this.ID = ID;
         this.ID_HM = ID_HM;
         this.ID_DM = ID_DM;
+        this.ID_TK = ID_TK;
     }
 
     public HanmucDanhmuc() {
@@ -36,5 +38,13 @@ public class HanmucDanhmuc {
 
     public void setID_DM(int ID_DM) {
         this.ID_DM = ID_DM;
+    }
+
+    public int getID_TK() {
+        return ID_TK;
+    }
+
+    public void setID_TK(int ID_TK) {
+        this.ID_TK = ID_TK;
     }
 }
