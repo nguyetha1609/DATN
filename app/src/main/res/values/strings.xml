@@ -48,6 +48,7 @@
     <string name="confirm_password">Xác nhận mật khẩu</string>
 
     <!-- Đổi mật khẩu -->
+    <string name="change_title">Đổi mật khẩu</string>
     <string name="enter_password">Mật khẩu cũ</string>
     <string name="enter_new_password">Mật khẩu mới</string>
     <string name="button_confirm_change">Đổi mật khẩu</string>

@@ -1,5 +1,6 @@
 package org.o7planning.project_04.Adapter;
 
+
 import org.o7planning.project_04.model.category;
 
 import android.content.Context;
@@ -12,7 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.zerobranch.layout.SwipeLayout;
+//import com.zerobranch.layout.SwipeLayout;
+import com.daimajia.swipe.SwipeLayout;
 
 import org.o7planning.project_04.R;
 
@@ -38,62 +40,59 @@ public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.ViewHo
         this.categoryList= categoryList;
 
     }
+//
+//        @Override
+//        public void onClick(View v) {
+//            int id_dm = categoryList.get(position).getID(); // ID_DM danh mục được chọn
+//
+//            Intent resultIntent = new Intent();
+//            resultIntent.putExtra("selected_category_id", id_dm);
+//            setResult(RESULT_OK, resultIntent); // Trả kết quả về
+//            finish(); // Quay lại màn hình trước
+//        }
+//    });
+    /** Callback khi user click chọn 1 item (chế độ chọn danh mục) */
+    public interface OnItemClickListener {
+        void onItemClick(category cat);
+    }
+    private OnItemClickListener clickListener;
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.clickListener = listener;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        category cat = categoryList.get(position);
+        holder.txtName.setText(cat.getTenDM());
+        int iconResId = context.getResources()
+                .getIdentifier(cat.getHinhAnh(),"drawable",context.getPackageName());
+        holder.imgIcon.setImageResource(iconResId !=0? iconResId :R.drawable.ic_default);
+
+        // Nếu ở chế độ chọn (clickListener != null), chỉ xử lý click chọn
+        if (clickListener != null && !isEditMode) {
+            //holder.swipeLayout.setLockDrag(true);      // khóa swipe
+            holder.imgEdit.setVisibility(View.GONE);
+            holder.imgDelete.setVisibility(View.GONE);
+            holder.itemView.setOnClickListener(v -> {
+                clickListener.onItemClick(cat);
+            });
+        }
+        else {
+            // mặc định xử lý edit/xóa vẫn như cũ
+            //holder.swipeLayout.setLockDrag(false);
+        }
+    }
+
 
     @NonNull
     @Override
     public categoryAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_category, parent, false);
         return new ViewHolder(view);
+
+
+
     }
-
-    @Override
-    public void onBindViewHolder(@NonNull categoryAdapter.ViewHolder holder, int position) {
-        category cat = categoryList.get(position);
-        holder.txtName.setText(cat.getTenDM());
-
-        // Giả định bạn có method lấy id resource icon từ tên
-        int iconResId = context.getResources().getIdentifier(cat.getHinhAnh(),"drawable",context.getPackageName());
-        holder.imgIcon.setImageResource(iconResId !=0? iconResId :R.drawable.ic_default);
-
-        if (isEditMode) {
-            holder.imgEdit.setVisibility(View.VISIBLE);
-            holder.imgDelete.setVisibility(View.VISIBLE);
-        } else {
-            holder.imgEdit.setVisibility(View.GONE);
-            holder.imgDelete.setVisibility(View.GONE);
-            holder.swipeLayout.close();
-        }
-
-        holder.imgDelete.setOnClickListener(v -> {
-            holder.swipeLayout.openRight();
-        });
-
-        holder.btnDelete.setOnClickListener(v -> {
-            if (actionListener != null) {
-                actionListener.onDelete(cat);
-            }
-        });
-
-        holder.imgEdit.setOnClickListener(v -> {
-            if (actionListener != null) {
-                actionListener.onEdit(cat);
-            }
-        });
-    }
-//    @Override
-//    public void onBindViewHolder(@NonNull CategoryViewHolder holder,int position){
-//        category cate = categoryList.get(position);
-//        holder.txtname.setText(cate.getTenDM());
-//        int iconResId = cont.getResources().getIdentifier(cate.getHinhAnh(),"drawable",cont.getPackageName());
-//        holder.imgIcon.setImageResource(iconResId !=0? iconResId :R.drawable.ic_default);
-//
-//        holder.imgIcon.setOnClickListener(v -> {
-//            Intent intent = new Intent(cont, EditCategoryActivity.class);
-//            intent.putExtra("ID_DM",cate.getID());
-//            cont.startActivity(intent);
-//        });
-//
-//    }
     @Override
     public int getItemCount(){
         return categoryList.size();
@@ -119,5 +118,5 @@ public static class ViewHolder extends RecyclerView.ViewHolder{
             txtName= itemView.findViewById(R.id.txt_name);
             btnDelete = itemView.findViewById(R.id.btn_delete);
         }
-}
+    }
 }

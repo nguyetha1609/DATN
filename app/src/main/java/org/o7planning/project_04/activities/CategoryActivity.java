@@ -37,6 +37,8 @@ public class CategoryActivity extends AppCompatActivity {
     private categoryAdapter adapter;
     private static final int REQUEST_EDIT_CATEGORY = 2001;
     private static final int REQUEST_ADD_CATEGORY = 1001;
+    public static final String EXTRA_FOR_SELECTION = "EXTRA_FOR_SELECTION";
+    private boolean forSelection = false;
     private boolean isEditMode = false;
     private MaterialToolbar topAppbar;
     private Button btnAddCategory;
@@ -77,19 +79,61 @@ public class CategoryActivity extends AppCompatActivity {
         }
 
         updateButtonStates(btnExpense, btnIncome);
-        loadCategoryList();
-
-
+//        loadCategoryList();
         recyclerView.setAdapter(adapter);
-//Them danh muc
+
+        // 1. Kiểm tra xem có phải gọi để chọn danh mục không?
+        forSelection = getIntent().getBooleanExtra(EXTRA_FOR_SELECTION, false);
+
+        // 2. Load dữ liệu và khởi tạo adapter
+        loadCategoryList();
+    }
+
+    private void loadCategoryList() {
+        List<category> list = dbHelper.getAllCategories(loaiDM, userId);
+        if (adapter == null) {
+            adapter = new categoryAdapter(this, list);
+            adapter.setEditMode(isEditMode);
+
+            // **Nếu là chế độ chọn** → chỉ cần 1 callback onItemClick
+            if (forSelection) {
+                adapter.setOnItemClickListener(cat -> {
+                    Intent result = new Intent();
+                    result.putExtra("selectedCategoryId", cat.getID());
+                    result.putExtra("selectedCategoryName", cat.getTenDM());
+                    setResult(RESULT_OK, result);
+                    finish();
+                });
+            }
+            else {
+                // Chế độ quản lý: xóa, sửa
+                adapter.setOnItemActionListener(new categoryAdapter.OnItemActionListener() {
+                    @Override
+                    public void onDelete(category cat) {
+                        showConfirmDeleteDialog(cat);
+                    }
+                    @Override
+                    public void onEdit(category cat) {
+                        Intent intent = new Intent(CategoryActivity.this,
+                                EditCategoryActivity.class);
+                        intent.putExtra("ID_DM", cat.getID());
+                        startActivityForResult(intent, REQUEST_EDIT_CATEGORY);
+                    }
+                });
+            }
+
+            recyclerView.setAdapter(adapter);
+        } else {
+            adapter.setData(list);
+            adapter.notifyDataSetChanged();
+        }
+
+        //Them danh muc
         Button btn = findViewById(R.id.btnAddCategory);
         btn.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddCategoryActivity.class);
             startActivityForResult(intent, REQUEST_ADD_CATEGORY);
         });
-
-
-
 
         btnExpense.setOnClickListener(v -> {
             loaiDM = "ChiTieu";
@@ -114,10 +158,8 @@ public class CategoryActivity extends AppCompatActivity {
             }
             return false;
         });
-
-
-
     }
+
     // trang thai btn chi tieu va thu nhap
     private void updateButtonStates(MaterialButton btnExpense, MaterialButton btnIncome) {
        if(loaiDM.equals("ChiTieu")){
@@ -161,33 +203,6 @@ public class CategoryActivity extends AppCompatActivity {
         recyclerView.animate().alpha(1f).setDuration(300).start();
     }
 
-    private void loadCategoryList() {
-        List<category> list = dbHelper.getAllCategories(loaiDM,userId);
-        if (adapter == null) {
-            adapter = new categoryAdapter(this, list);
-            adapter.setEditMode(isEditMode);
-
-            // Gán listener xử lý xóa và sửa
-            adapter.setOnItemActionListener(new categoryAdapter.OnItemActionListener() {
-                @Override
-                public void onDelete(category cat) {
-                    showConfirmDeleteDialog(cat);
-                }
-
-                @Override
-                public void onEdit(category cat) {
-                    Intent intent = new Intent(CategoryActivity.this, EditCategoryActivity.class);
-                    intent.putExtra("ID_DM", cat.getID());
-                    startActivityForResult(intent, REQUEST_EDIT_CATEGORY);
-                }
-            });
-
-            recyclerView.setAdapter(adapter);
-        } else {
-            adapter.setData(list);
-            adapter.notifyDataSetChanged();
-        }
-    }
     private void showConfirmDeleteDialog(category cat) {
         if (dbHelper.isCategoryUsedAnywhere(cat.getID())) {
             new AlertDialog.Builder(this)
@@ -228,4 +243,13 @@ public class CategoryActivity extends AppCompatActivity {
         return true;
     }
 
+
+//    @Override
+//    public void onItemClick(category cat) {
+//        Intent result = new Intent();
+//        result.putExtra("selectedCategoryId", cat.getID());
+//        result.putExtra("selectedCategoryName", cat.getTenDM());
+//        setResult(RESULT_OK, result);
+//        finish();
+//    }
 }

@@ -91,6 +91,7 @@ dependencies {
     implementation ("com.sun.mail:android-mail:1.6.7")
     implementation ("com.sun.mail:android-activation:1.6.7")
     implementation ("com.google.android.material:material:1.9.0")
+    implementation ("com.daimajia.swipelayout:library:1.2.0@aar")
 
     implementation(libs.activity)
     //implementation(libs.constraintlayout)

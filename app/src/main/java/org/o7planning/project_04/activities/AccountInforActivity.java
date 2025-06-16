@@ -39,7 +39,7 @@ public class AccountInforActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_password);
+        setContentView(R.layout.activity_account_infor);
 
         // Khởi tạo DBHelper
         dbHelper = new PrepopulatedDBHelper(this);

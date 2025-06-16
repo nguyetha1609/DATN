@@ -2,10 +2,13 @@ package org.o7planning.project_04.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -15,11 +18,13 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import org.o7planning.project_04.R;
+import org.o7planning.project_04.databases.DBHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -27,49 +32,86 @@ import java.util.Locale;
 
 public class AddTransactionActivity extends AppCompatActivity {
 
-    private TextView tvAmount;
+    private TextView tvAmount, toolbarSave,tvDateLabel,tvTimeLabel, txt_name;
     private LinearLayout itemDate, itemTime, itemNote;
-    private TextView toolbarSave;
-    private Toolbar toolbar;
-    private ImageView imgCategory; // Thêm ImageView cho category
-    private TextView tvDateLabel; // TextView để hiển thị ngày đã chọn
-    private TextView tvTimeLabel; // TextView để hiển thị giờ đã chọn
-    private TextView tvNoteHint; // TextView để hiển thị ghi chú
-
-    // Các biến để lưu trữ dữ liệu
-    private double amount = 0.0;
-    private Calendar selectedDate = Calendar.getInstance();
-    private String note = "";
+    private ImageView imgCategory,btnBack;
+    private Calendar calendar;
+    // field để lưu tạm category được chọn
+    private int selectedCategoryId = -1;
+    private String selectedCategoryName;
+    private static final int REQUEST_SELECT_CATEGORY = 3001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_expense);
+        setContentView(R.layout.activity_add_transaction);
 
         // Khởi tạo các View
-        toolbar = findViewById(R.id.toolbar_add_expense);
+        btnBack = findViewById(R.id.btnBack);
+        toolbarSave = findViewById(R.id.toolbar_save);
+        imgCategory = findViewById(R.id.imgCategory);
         tvAmount = findViewById(R.id.tvAmount);
-        itemDate = findViewById(R.id.item_date);
         itemTime = findViewById(R.id.item_time);
         itemNote = findViewById(R.id.item_note);
-        toolbarSave = findViewById(R.id.toolbar_save);
-        imgCategory = findViewById(R.id.imgCategory); // Ánh xạ ImageView category
-        tvDateLabel = findViewById(R.id.tvDateLabel); // Ánh xạ TextView ngày
-        tvTimeLabel = findViewById(R.id.tvTimeLabel); // Ánh xạ TextView giờ
-        tvNoteHint = findViewById(R.id.tvNoteHint); // Ánh xạ TextView ghi chú
+        tvDateLabel = findViewById(R.id.tvDateLabel);
+        tvTimeLabel = findViewById(R.id.tvTimeLabel);
+        calendar = Calendar.getInstance();
 
-        // Thiết lập Toolbar
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(""); // Xóa tiêu đề mặc định của Toolbar
-        }
+        tvDateLabel.setOnClickListener(v -> {
+            // Lấy ngày hiện tại
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        // Đặt tiêu đề tùy chỉnh cho Toolbar
-        TextView toolbarTitle = findViewById(R.id.toolbar_title);
-        toolbarTitle.setText(R.string.title_add_expense);
+            // Tạo DatePickerDialog
+            DatePickerDialog datePicker = new DatePickerDialog(AddTransactionActivity.this,
+                    (view, d, m, y) -> {
+                    // Lưu lại trong
+                        calendar.set(Calendar.DAY_OF_MONTH, d);
+                        calendar.set(Calendar.MONTH, m);
+                        calendar.set(Calendar.YEAR, y);
+
+                        // Format thành dd-MM-yyyy
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                        String selectedDate = sdf.format(calendar.getTime());
+
+                        // Set text cho etPurchaseDate
+                        tvDateLabel.setText(selectedDate);
+                    },
+                    year, month, day
+            );
+            datePicker.show();
+        });
+
+        // 2. Thiết lập sự kiện click
+        itemTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Lấy giờ phút hiện tại làm mặc định
+                Calendar calendar = Calendar.getInstance();
+                int hour   = calendar.get(Calendar.HOUR_OF_DAY);
+                int minute = calendar.get(Calendar.MINUTE);
+
+                // Tạo TimePickerDialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(
+                        AddTransactionActivity.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int selectedHour, int selectedMinute) {
+                                // Khi người dùng chọn giờ xong, cập nhật TextView
+                                String formattedTime = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
+                                tvTimeLabel.setText(formattedTime);
+                            }
+                        },
+                        hour,    // giờ mặc định
+                        minute,  // phút mặc định
+                        true     // true = 24h format, false = AM/PM
+                );
+                timePickerDialog.show();
+            }
+        });
 
         // Đặt OnClickListener cho nút back trên toolbar
-        ImageView btnBack = findViewById(R.id.btnBack);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,45 +121,89 @@ public class AddTransactionActivity extends AppCompatActivity {
             }
         });
 
-        // Đặt OnClickListener cho TextView "Lưu" trên toolbar
-        toolbarSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Xử lý hành động lưu dữ liệu vào database
-                saveTransactionToDatabase();
-            }
+        // 2. Click chọn danh mục → mở CategoryActivity chờ kết quả
+        imgCategory.setOnClickListener(v -> {
+            Intent intent = new Intent(AddTransactionActivity.this, CategoryActivity.class);
+            intent.putExtra(CategoryActivity.EXTRA_FOR_SELECTION, true);
+            // nếu có lọc ChiTieu / ThuNhap, vẫn truyền như bình thường
+            intent.putExtra("LoaiDM", "ChiTieu");
+            startActivityForResult(intent, REQUEST_SELECT_CATEGORY);
         });
+
+        // 3. Click lưu → gọi hàm save()
+        toolbarSave.setOnClickListener(v -> saveTransaction());
+    }
+
+    // Nhận kết quả từ CategoryActivity
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_SELECT_CATEGORY && resultCode == RESULT_OK && data != null) {
+            selectedCategoryId = data.getIntExtra("selectedCategoryId", -1);
+            String name = data.getStringExtra("selectedCategoryName");
+            txt_name.setText(name);
+        }
+    }
+
+    // Save vào DB
+    private void saveTransaction() {
+        // 1. Validate
+        if (selectedCategoryId < 0) {
+            Toast.makeText(this, "Vui lòng chọn danh mục", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String amountStr = tvAmount.getText().toString().trim();
+        if (TextUtils.isEmpty(amountStr)) {
+            Toast.makeText(this, "Nhập số tiền", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        double amount;
+        try {
+            amount = Double.parseDouble(amountStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String datetime = tvDateLabel.getText() + " " + tvTimeLabel.getText();
+        String note     = itemNote.toString().trim();
+
+        // 2. Insert vào DB
+        DBHelper dbHelper = new DBHelper(this);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("category_id", selectedCategoryId);
+        values.put("amount", amount);
+        values.put("datetime", datetime);
+        values.put("note", note);
+
+        long newId = db.insert("Transactions", null, values);
+        db.close();
+
+        // 3. Thông báo & đóng
+        if (newId > 0) {
+            Toast.makeText(this, "Lưu thành công", Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            Toast.makeText(this, "Lỗi khi lưu", Toast.LENGTH_SHORT).show();
+        }
 
         // Đặt OnClickListener cho ImageView category
         imgCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AddTransactionActivity.this, CategoryActivity.class);
-                startActivity(intent);
+                // truyền thêm loại nếu bạn có filter chi tiêu / thu nhập
+                intent.putExtra("LoaiDM", "ChiTieu");
+                startActivityForResult(intent, REQUEST_SELECT_CATEGORY);
             }
         });
-
+        //toolbarSave.setOnClickListener(v -> onSaveClicked());
         // Đặt OnClickListener cho TextView "tvAmount"
         tvAmount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAmountInputDialog();
-            }
-        });
-
-        // Đặt OnClickListener cho item_date
-        itemDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePickerDialog();
-            }
-        });
-
-        // Đặt OnClickListener cho item_time
-        itemTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showTimePickerDialog();
             }
         });
 
@@ -125,137 +211,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         itemNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showNoteInputDialog();
             }
         });
-
-        // Cập nhật ngày và giờ ban đầu
-        updateDateLabel();
-        updateTimeLabel();
-    }
-    //nhập số tiền
-    private void showAmountInputDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Nhập số tiền");
-
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        builder.setView(input);
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                try {
-                    amount = Double.parseDouble(input.getText().toString());
-                    tvAmount.setText(String.format(Locale.getDefault(), "%.0f", amount));
-                } catch (NumberFormatException e) {
-                    Toast.makeText(AddTransactionActivity.this, "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        builder.show();
-    }
-
-    //Nhập ngày
-    private void showDatePickerDialog() {
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        selectedDate.set(Calendar.YEAR, year);
-                        selectedDate.set(Calendar.MONTH, monthOfYear);
-                        selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                        updateDateLabel();
-                    }
-                },
-                selectedDate.get(Calendar.YEAR),
-                selectedDate.get(Calendar.MONTH),
-                selectedDate.get(Calendar.DAY_OF_MONTH));
-        datePickerDialog.show();
-    }
-
-    private void updateDateLabel() {
-        String dateFormat = "dd/MM/yyyy";
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.getDefault());
-        tvDateLabel.setText(sdf.format(selectedDate.getTime()));
-    }
-
-    //Nhập thời gian
-    private void showTimePickerDialog() {
-        int hour = selectedDate.get(Calendar.HOUR_OF_DAY);
-        int minute = selectedDate.get(Calendar.MINUTE);
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        selectedDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                        selectedDate.set(Calendar.MINUTE, minute);
-                        updateTimeLabel();
-                    }
-                }, hour, minute, true); // true cho định dạng 24 giờ
-        timePickerDialog.show();
-    }
-
-    private void updateTimeLabel() {
-        String timeFormat = "HH:mm";
-        SimpleDateFormat sdf = new SimpleDateFormat(timeFormat, Locale.getDefault());
-        tvTimeLabel.setText(sdf.format(selectedDate.getTime()));
-    }
-
-    //Viết ghi chú
-    private void showNoteInputDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Thêm ghi chú");
-
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setText(note); // Hiển thị ghi chú hiện tại nếu có
-        builder.setView(input);
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                note = input.getText().toString();
-                tvNoteHint.setText(note.isEmpty() ? getString(R.string.hint_note) : note);
-                if (note.isEmpty()) {
-                    tvNoteHint.setTextColor(getResources().getColor(R.color.textHint));
-                } else {
-                    tvNoteHint.setTextColor(getResources().getColor(R.color.textPrimary));
-                }
-            }
-        });
-        builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        builder.show();
-    }
-
-    //Lưu vào database
-    private void saveTransactionToDatabase() {
-        // Đây là nơi bạn sẽ thêm logic để lưu dữ liệu vào database.
-        // Ví dụ: Bạn có thể tạo một đối tượng Transaction và lưu nó.
-        // Trong ví dụ này, chúng ta chỉ hiển thị một Toast.
-        String message = String.format(Locale.getDefault(),
-                "Lưu dữ liệu:\nSố tiền: %.0f\nNgày: %s\nGiờ: %s\nGhi chú: %s",
-                amount,
-                new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(selectedDate.getTime()),
-                new SimpleDateFormat("HH:mm", Locale.getDefault()).format(selectedDate.getTime()),
-                note);
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-
-        // Sau khi lưu, bạn có thể quay lại Activity chính hoặc đóng Activity này
-        // Intent intent = new Intent(AddTransactionActivity.this, MainActivity.class);
-        // startActivity(intent);
-        // finish();
     }
 }
