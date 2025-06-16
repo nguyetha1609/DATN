@@ -55,7 +55,7 @@ public class EditCategoryActivity extends AppCompatActivity {
        //Lay id tu intent
        ID= getIntent().getIntExtra("ID_DM",-1);
        // Lấy ID_TK từ SharedPreferences
-       SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+       SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
        userId = prefs.getInt("ID_TK", -1);
 
        if (userId == -1) {
