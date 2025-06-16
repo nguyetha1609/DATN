@@ -66,7 +66,7 @@ public class CategoryDAO {
                 int ID_DM = cursor.getInt(cursor.getColumnIndexOrThrow("ID_DM"));
                 String TenDM = cursor.getString(cursor.getColumnIndexOrThrow("TenDM"));
                 String LoaiDM = cursor.getString(cursor.getColumnIndexOrThrow("LoaiDM"));
-                String HinhAnh = cursor.getString(cursor.getColumnIndexOrThrow("HinhAnh"));
+                String HinhAnh = cursor.getString(cursor.getColumnIndexOrThrow("HinhANh"));
                 int DMMacDinh = cursor.getInt(cursor.getColumnIndexOrThrow("DMMacDinh"));
 
                 category cate = new category(ID_DM, TenDM, LoaiDM, HinhAnh, DMMacDinh);
@@ -88,7 +88,7 @@ public class CategoryDAO {
             int ID_DM = cursor.getInt(cursor.getColumnIndexOrThrow("ID_DM"));
             String TenDM = cursor.getString(cursor.getColumnIndexOrThrow("TenDM"));
             String LoaiDM = cursor.getString(cursor.getColumnIndexOrThrow("LoaiDM"));
-            String HinhAnh = cursor.getString(cursor.getColumnIndexOrThrow("HinhAnh"));
+            String HinhAnh = cursor.getString(cursor.getColumnIndexOrThrow("HinhANh"));
             int DMMacDinh = cursor.getInt(cursor.getColumnIndexOrThrow("DMMacDinh"));
             cate = new category(ID_DM, TenDM, LoaiDM, HinhAnh, DMMacDinh);
 
@@ -103,7 +103,7 @@ public class CategoryDAO {
 
         values.put("TenDM", cate.getTenDM());
         values.put("LoaiDM", cate.getLoaiDM());
-        values.put("HinhAnh", cate.getHinhAnh());
+        values.put("HinhANh", cate.getHinhAnh());
         values.put("DMmacdinh", cate.getDMMacDinh());
         values.put("ID_TK", id_tk); // Thêm ID_TK
 
@@ -135,7 +135,7 @@ public class CategoryDAO {
         ContentValues values = new ContentValues();
         values.put("TenDM", cate.getTenDM());
         values.put("LoaiDM", cate.getLoaiDM());
-        values.put("HinhAnh", cate.getHinhAnh());
+        values.put("HinhANh", cate.getHinhAnh());
 
         int rows = db.update("DANHMUC", values, "ID_DM = ? AND ID_TK = ?",
                 new String[]{String.valueOf(cate.getID()), String.valueOf(id_tk)});

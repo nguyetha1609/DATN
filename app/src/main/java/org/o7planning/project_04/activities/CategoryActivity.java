@@ -65,7 +65,7 @@ public class CategoryActivity extends AppCompatActivity {
         db.createDatabaseIfNone();
 
         dbHelper = new CategoryDAO(this);
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
         userId = sharedPreferences.getInt("ID_TK", -1);
         if (userId == -1) {
             Toast.makeText(this, "Lỗi: chưa đăng nhập", Toast.LENGTH_SHORT).show();

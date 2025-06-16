@@ -34,7 +34,7 @@ public class AccountActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PICK_IMAGE = 1000;
 
     // Tạm giả sử ID tài khoản hiện tại = 1 (cột ID_TK của bảng TAIKHOAN)
-    private final int currentUserId = 1;
+    private  int currentUserId ;
 
     private PrepopulatedDBHelper dbHelper;
     private SQLiteDatabase database;
@@ -67,6 +67,14 @@ public class AccountActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
 
         bottomNav = findViewById(R.id.bottomNav);
+
+         SharedPreferences sharedPrefs = getSharedPreferences("LOGIN_PREF",MODE_PRIVATE);
+         currentUserId=sharedPrefs.getInt("ID_TK",-1);
+         if(currentUserId ==-1){
+             Toast.makeText(this,"Không tìm thấy thông tin người dùng",Toast.LENGTH_SHORT).show();
+             finish();
+             return;
+         }
 
         // ── 3. Load dữ liệu từ DB (sau khi đã mở database) ──
         loadProfileImageFromDB();

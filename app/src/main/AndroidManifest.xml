@@ -22,7 +22,7 @@
 
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,6 +30,8 @@
             </intent-filter>
         </activity>
         <!-- Màn hình chính chính thức của ứng dụng -->
+        <activity android:name=".activities.MainActivity" />
+
         <activity android:name=".activities.OnboardingActivity"/>
         <activity android:name=".activities.CategoryActivity" android:theme="@style/Base.Theme.Project_04"/>
         <!--Man hinh them danh muc-->
@@ -55,6 +57,6 @@
         <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.NotLoginActivity" />
-        <activity android:name=".activities.AddTransactionActivity" />
+        <activity android:name=".activities.AddTransactionActivity" android:theme="@style/Base.Theme.Project_04"/>
     </application>
 </manifest>

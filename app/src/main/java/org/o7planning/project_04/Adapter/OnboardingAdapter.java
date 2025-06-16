@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import org.o7planning.project_04.activities.LoginActivity;
 import org.o7planning.project_04.activities.MainActivity;
 import org.o7planning.project_04.R;
 
@@ -57,9 +58,9 @@ public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.Vi
             if (pos < NUM_PAGES - 1) {
                 viewPager.setCurrentItem(pos + 1, true);
             } else {
-                // Trang cuối: lưu flag và mở MainActivity
+                // Trang cuối: lưu flag và mở trang đăng ký/đăng nhập.
                 prefs.edit().putBoolean("isFirstRun", false).apply();
-                Intent i = new Intent(ctx, MainActivity.class);
+                Intent i = new Intent(ctx, LoginActivity.class);
                 ctx.startActivity(i);
                 if (ctx instanceof Activity) ((Activity) ctx).finish();
             }

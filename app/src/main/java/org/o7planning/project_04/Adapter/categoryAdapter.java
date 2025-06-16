@@ -14,8 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 //import com.zerobranch.layout.SwipeLayout;
-import com.daimajia.swipe.SwipeLayout;
-
+import com.zerobranch.layout.SwipeLayout;
 import org.o7planning.project_04.R;
 
 import java.util.List;
