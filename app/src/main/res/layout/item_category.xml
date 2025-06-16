@@ -37,7 +37,10 @@
         android:orientation="horizontal"
         android:background="@android:color/white"
         android:padding="12dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
 
         <!-- Nút delete nằm đầu -->
         <ImageView

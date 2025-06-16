@@ -57,6 +57,8 @@ public class AddTransactionActivity extends AppCompatActivity {
         tvTimeLabel = findViewById(R.id.tvTimeLabel);
         calendar = Calendar.getInstance();
 
+
+
         tvDateLabel.setOnClickListener(v -> {
             // Lấy ngày hiện tại
             int year = calendar.get(Calendar.YEAR);
@@ -124,9 +126,8 @@ public class AddTransactionActivity extends AppCompatActivity {
         // 2. Click chọn danh mục → mở CategoryActivity chờ kết quả
         imgCategory.setOnClickListener(v -> {
             Intent intent = new Intent(AddTransactionActivity.this, CategoryActivity.class);
-            intent.putExtra(CategoryActivity.EXTRA_FOR_SELECTION, true);
-            // nếu có lọc ChiTieu / ThuNhap, vẫn truyền như bình thường
-            intent.putExtra("LoaiDM", "ChiTieu");
+         //   intent.putExtra("LoaiDM", "ChiTieu");
+            intent.putExtra("isSelectMode",true);
             startActivityForResult(intent, REQUEST_SELECT_CATEGORY);
         });
 
@@ -141,7 +142,17 @@ public class AddTransactionActivity extends AppCompatActivity {
         if (requestCode == REQUEST_SELECT_CATEGORY && resultCode == RESULT_OK && data != null) {
             selectedCategoryId = data.getIntExtra("selectedCategoryId", -1);
             String name = data.getStringExtra("selectedCategoryName");
-            txt_name.setText(name);
+
+            // txt_name.setText(name); chưa có textView hiện tên danh mục
+            String iconName = data.getStringExtra("selectedCategoryIcon");
+            if (iconName != null) {
+                int resId = getResources().getIdentifier(iconName, "drawable", getPackageName());
+                if (resId != 0) {
+                    imgCategory.setImageResource(resId);
+                }
+            }
+
+
         }
     }
 
@@ -190,15 +201,15 @@ public class AddTransactionActivity extends AppCompatActivity {
         }
 
         // Đặt OnClickListener cho ImageView category
-        imgCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AddTransactionActivity.this, CategoryActivity.class);
-                // truyền thêm loại nếu bạn có filter chi tiêu / thu nhập
-                intent.putExtra("LoaiDM", "ChiTieu");
-                startActivityForResult(intent, REQUEST_SELECT_CATEGORY);
-            }
-        });
+//        imgCategory.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(AddTransactionActivity.this, CategoryActivity.class);
+//                // truyền thêm loại nếu bạn có filter chi tiêu / thu nhập
+//                intent.putExtra("LoaiDM", "ChiTieu");
+//                startActivityForResult(intent, REQUEST_SELECT_CATEGORY);
+//            }
+//        });
         //toolbarSave.setOnClickListener(v -> onSaveClicked());
         // Đặt OnClickListener cho TextView "tvAmount"
         tvAmount.setOnClickListener(new View.OnClickListener() {

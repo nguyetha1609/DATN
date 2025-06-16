@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,8 @@ public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.ViewHo
     private Context context;
     private List<category> categoryList;
     private boolean isEditMode = false;
+    private boolean isSelectMode = false;
+
 
     public interface OnItemActionListener{
         void onDelete(category cat);
@@ -34,10 +37,10 @@ public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.ViewHo
         this.actionListener = listener;
     }
 
-    public categoryAdapter(Context cont, List<category> categoryList){
-        this.context= cont;
-        this.categoryList= categoryList;
-
+    public categoryAdapter(Context context, List<category> categoryList, boolean isSelectMode) {
+        this.context = context;
+        this.categoryList = categoryList;
+        this.isSelectMode = isSelectMode;
     }
 //
 //        @Override
@@ -85,10 +88,19 @@ public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.ViewHo
         if (isEditMode) {
             holder.imgEdit.setVisibility(View.VISIBLE);
             holder.imgDelete.setVisibility(View.VISIBLE);
+            holder.swipeLayout.setOnTouchListener(null);
         } else {
             holder.imgEdit.setVisibility(View.GONE);
             holder.imgDelete.setVisibility(View.GONE);
-            holder.swipeLayout.close();
+            holder.swipeLayout.close(false);
+
+            holder.swipeLayout.setOnTouchListener((v, event) -> {
+                // Nếu là swipe ngang (trượt), thì chặn
+                if (Math.abs(event.getX() - event.getDownTime()) > 10) {
+                    return true; // chặn swipe
+                }
+                return false; // cho phép click
+            });
         }
 
         holder.imgDelete.setOnClickListener(v -> {
@@ -104,6 +116,11 @@ public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.ViewHo
         holder.imgEdit.setOnClickListener(v -> {
             if (actionListener != null) {
                 actionListener.onEdit(cat);
+            }
+        });
+        holder.layoutcontent.setOnClickListener(v -> {
+            if (clickListener != null && !isEditMode && isSelectMode) {
+                clickListener.onItemClick(cat);
             }
         });
 
@@ -134,6 +151,7 @@ public static class ViewHolder extends RecyclerView.ViewHolder{
         ImageView imgIcon,imgEdit, imgDelete;
         TextView txtName;
         TextView btnDelete;
+        LinearLayout layoutcontent;
 
         public ViewHolder(@NonNull View itemView){
             super(itemView);
@@ -143,6 +161,7 @@ public static class ViewHolder extends RecyclerView.ViewHolder{
             imgDelete = itemView.findViewById(R.id.img_delete);
             txtName= itemView.findViewById(R.id.txt_name);
             btnDelete = itemView.findViewById(R.id.btn_delete);
+            layoutcontent=itemView.findViewById(R.id.layout_content);
         }
     }
 }
