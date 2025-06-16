@@ -67,19 +67,46 @@ public class categoryAdapter extends RecyclerView.Adapter<categoryAdapter.ViewHo
                 .getIdentifier(cat.getHinhAnh(),"drawable",context.getPackageName());
         holder.imgIcon.setImageResource(iconResId !=0? iconResId :R.drawable.ic_default);
 
-        // Nếu ở chế độ chọn (clickListener != null), chỉ xử lý click chọn
-        if (clickListener != null && !isEditMode) {
-            //holder.swipeLayout.setLockDrag(true);      // khóa swipe
+
+//        // Nếu ở chế độ chọn (clickListener != null), chỉ xử lý click chọn
+//        if (clickListener != null && !isEditMode) {
+//            //holder.swipeLayout.setLockDrag(true);      // khóa swipe
+//            holder.imgEdit.setVisibility(View.GONE);
+//            holder.imgDelete.setVisibility(View.GONE);
+//            holder.itemView.setOnClickListener(v -> {
+//                clickListener.onItemClick(cat);
+//            });
+//        }
+//        else {
+//            // mặc định xử lý edit/xóa vẫn như cũ
+//            //holder.swipeLayout.setLockDrag(false);
+//        }
+
+        if (isEditMode) {
+            holder.imgEdit.setVisibility(View.VISIBLE);
+            holder.imgDelete.setVisibility(View.VISIBLE);
+        } else {
             holder.imgEdit.setVisibility(View.GONE);
             holder.imgDelete.setVisibility(View.GONE);
-            holder.itemView.setOnClickListener(v -> {
-                clickListener.onItemClick(cat);
-            });
+            holder.swipeLayout.close();
         }
-        else {
-            // mặc định xử lý edit/xóa vẫn như cũ
-            //holder.swipeLayout.setLockDrag(false);
-        }
+
+        holder.imgDelete.setOnClickListener(v -> {
+            holder.swipeLayout.openRight();
+        });
+
+        holder.btnDelete.setOnClickListener(v -> {
+            if (actionListener != null) {
+                actionListener.onDelete(cat);
+            }
+        });
+
+        holder.imgEdit.setOnClickListener(v -> {
+            if (actionListener != null) {
+                actionListener.onEdit(cat);
+            }
+        });
+
     }
 
 
