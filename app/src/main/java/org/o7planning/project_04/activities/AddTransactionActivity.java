@@ -173,12 +173,12 @@ public class AddTransactionActivity extends AppCompatActivity {
         DBHelper dbHelper = new DBHelper(this);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("category_id", selectedCategoryId);
-        values.put("amount", amount);
-        values.put("datetime", datetime);
-        values.put("note", note);
+        values.put("ID_DM", selectedCategoryId);
+        values.put("SoTien", amount);
+        values.put("ThoiGian", datetime);
+        values.put("GhiChu", note);
 
-        long newId = db.insert("Transactions", null, values);
+        long newId = db.insert("GIAODICH", null, values);
         db.close();
 
         // 3. Thông báo & đóng
