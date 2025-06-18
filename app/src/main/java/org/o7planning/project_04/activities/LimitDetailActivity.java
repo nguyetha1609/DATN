@@ -1,8 +1,11 @@
 package org.o7planning.project_04.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -120,10 +123,18 @@ public class LimitDetailActivity extends AppCompatActivity {
             tv_expired.setVisibility(View.GONE);     // ẩn nếu chưa hết hạn
         }
 
-        long daDung = 0;
+        String startDate = limit.getNgayGD() + " 00:00:00";
+        String endDate = limit.getNgayKetThuc() + " 23:59:59";
+
+        int userId = getUserId();
+        long daDung = dblimit.getTotalSpentInLimit(limitId,userId,startDate,endDate);
         long conlai=limit.getSoTien() -daDung;
 
+        Log.d("LIMIT_DEBUG", "Start: " + startDate + " | End: " + endDate + " | userId: " + userId);
+        Log.d("LIMIT_DEBUG", "Số tiền đã dùng: " + daDung);
+
         tvAmountLeft.setText(formatCurrency(conlai) + "d");
+
         int progress =(int) ((limit.getSoTien()- conlai)*100.0/limit.getSoTien());
         progressLimit.setProgress(progress);
     }
@@ -176,5 +187,10 @@ public class LimitDetailActivity extends AppCompatActivity {
         if (requestCode == 1002 && resultCode == RESULT_OK) {
             loadLimitDetail(limitId);
         }
+    }
+    private int getUserId(){
+        SharedPreferences sharedPrefs =getSharedPreferences("LOGIN_PREF", Context.MODE_PRIVATE);
+        return sharedPrefs.getInt("ID_TK", -1);
+
     }
 }

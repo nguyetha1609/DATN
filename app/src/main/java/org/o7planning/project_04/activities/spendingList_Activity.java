@@ -1,5 +1,6 @@
 package org.o7planning.project_04.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -27,12 +28,17 @@ import java.util.List;
 public class spendingList_Activity extends AppCompatActivity {
     private int limitId;
     private LimitDAO dblimit;
+    private int idTK;
 
 
     protected  void onCreate(@NonNull Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.spending_list);
         dblimit = new LimitDAO(this);
+
+        //Lấy ID_TK
+        SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
+        idTK = prefs.getInt("ID_TK", -1);
 
         int limitId = getIntent().getIntExtra(LimitDetailActivity.EXTRA_LIMIT_ID, -1);
         if (limitId == -1) {
@@ -69,12 +75,12 @@ public class spendingList_Activity extends AppCompatActivity {
         String endDate = limit.getNgayKetThuc();
 
         List<Integer> listDmId = limit.getListDanhMuc();
-        List<spendingsummary> summaryList = dblimit.getSpendingsByLimit(limitId,startDate,endDate);
+        List<spendingsummary> summaryList = dblimit.getSpendingsByLimit(limitId,startDate,endDate,idTK);
 
         List<SpendingGroup> spendingGroups = new ArrayList<>();
 
         for(spendingsummary summary : summaryList){
-            List<GIAODICH> giaodichList = dblimit.getTransactionsByCategoryAndLimit(summary.getIdDM(),startDate,endDate,limitId);
+            List<GIAODICH> giaodichList = dblimit.getTransactionsByCategoryAndLimit(summary.getIdDM(),startDate,endDate,limitId,idTK);
             SpendingGroup group = new SpendingGroup(summary.getIdDM(),summary.getTenDM(),summary.getTongChi(),summary.getHinhAnh(),giaodichList);
             spendingGroups.add(group);
         }

@@ -2,6 +2,7 @@ package org.o7planning.project_04.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -267,6 +268,11 @@ public class TransactionFragment extends Fragment {
         intent.putExtra("amount", giaoDich.getSoTien());
         intent.putExtra("time", giaoDich.getThoiGian());
         intent.putExtra("note", giaoDich.getGhiChu());
+
+        // Thêm ID_TK từ SharedPreferences
+        SharedPreferences preferences = getContext().getSharedPreferences("LOGIN_PREF", getContext().MODE_PRIVATE);
+        int userId = preferences.getInt("ID_TK", -1);
+        intent.putExtra("ID_TK", userId);
 
         // Lấy thông tin danh mục để truyền icon và tên danh mục
         category selectedCategory = mapDanhMuc.get(giaoDich.getID_DM());

@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ public class AddTransactionActivity extends AppCompatActivity {
     private Calendar calendar;
     // field để lưu tạm category được chọn
     private int selectedCategoryId = -1;
+    private int userId;
     private static final int REQUEST_SELECT_CATEGORY = 3001;
 
     private boolean isEditMode = false;
@@ -67,6 +69,8 @@ public class AddTransactionActivity extends AppCompatActivity {
         tvTimeLabel = findViewById(R.id.tvTimeLabel);
         calendar = Calendar.getInstance();
 
+
+
         // Kiểm tra nếu là chế độ chỉnh sửa
         if (getIntent().hasExtra("isEditMode") && getIntent().getBooleanExtra("isEditMode", false)) {
             isEditMode = true;
@@ -84,24 +88,20 @@ public class AddTransactionActivity extends AppCompatActivity {
         }
 
         tvDateLabel.setOnClickListener(v -> {
-            // Lấy ngày hiện tại
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-            // Tạo DatePickerDialog
             DatePickerDialog datePicker = new DatePickerDialog(AddTransactionActivity.this,
-                    (view, d, m, y) -> {
-                        // Lưu lại trong
-                        calendar.set(Calendar.DAY_OF_MONTH, d);
-                        calendar.set(Calendar.MONTH, m);
-                        calendar.set(Calendar.YEAR, y);
+                    (view, selectedYear, selectedMonth, selectedDayOfMonth) -> {
+                        // Đúng thứ tự: Năm → Tháng → Ngày
+                        calendar.set(Calendar.YEAR, selectedYear);
+                        calendar.set(Calendar.MONTH, selectedMonth);
+                        calendar.set(Calendar.DAY_OF_MONTH, selectedDayOfMonth);
 
-                        // Format thành dd-MM-yyyy
+                        // Format và hiển thị
                         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
                         String selectedDate = sdf.format(calendar.getTime());
-
-                        // Set text cho etPurchaseDate
                         tvDateLabel.setText(selectedDate);
                     },
                     year, month, day
@@ -114,7 +114,7 @@ public class AddTransactionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Lấy giờ phút hiện tại làm mặc định
-                Calendar calendar = Calendar.getInstance();
+               // Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
 
@@ -268,8 +268,30 @@ public class AddTransactionActivity extends AppCompatActivity {
             return;
         }
 
-        String datetime = tvDateLabel.getText() + " " + tvTimeLabel.getText();
+//        // Lấy giờ phút từ tvTimeLabel và cập nhật lại calendar
+//        try {
+//            String timeStr = tvTimeLabel.getText().toString(); // Ví dụ: "14:20"
+//            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+//            Date time = timeFormat.parse(timeStr);
+//            Calendar timeCal = Calendar.getInstance();
+//            timeCal.setTime(time);
+//
+//            calendar.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
+//            calendar.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
+//            calendar.set(Calendar.SECOND, 0); // optional
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+
+        //String datetime = tvDateLabel.getText() + " " + tvTimeLabel.getText();
+        SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String datetime = dbFormat.format(calendar.getTime());
+
         String note = edtNoteHint.getText().toString().trim();
+
+        //Lấy ID_TK
+        SharedPreferences preferences = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
+        userId = preferences.getInt("ID_TK", -1);
 
         // 2. Insert vào DB
         DBHelper dbHelper = new DBHelper(this);
@@ -279,6 +301,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         values.put("SoTien", amount);
         values.put("ThoiGian", datetime);
         values.put("GhiChu", note);
+        values.put("ID_TK", userId);
 
         long newId = db.insert("GIAODICH", null, values);
         db.close();
@@ -314,7 +337,25 @@ public class AddTransactionActivity extends AppCompatActivity {
             return;
         }
 
-        String datetime = tvDateLabel.getText() + " " + tvTimeLabel.getText();
+        // Lấy giờ phút từ tvTimeLabel và cập nhật lại calendar
+        try {
+            String timeStr = tvTimeLabel.getText().toString(); // Ví dụ: "14:20"
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            Date time = timeFormat.parse(timeStr);
+            Calendar timeCal = Calendar.getInstance();
+            timeCal.setTime(time);
+
+            calendar.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
+            calendar.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
+            calendar.set(Calendar.SECOND, 0); // optional
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+       // String datetime = tvDateLabel.getText() + " " + tvTimeLabel.getText();
+        SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String datetime = dbFormat.format(calendar.getTime());
+
         String note = edtNoteHint.getText().toString().trim();
 
         // 2. Update vào DB
@@ -325,6 +366,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         values.put("SoTien", amount);
         values.put("ThoiGian", datetime);
         values.put("GhiChu", note);
+        values.put("ID_TK", userId);
 
         int rowsAffected = db.update("GIAODICH", values, "ID_GD = ?", new String[]{String.valueOf(transactionId)});
         db.close();

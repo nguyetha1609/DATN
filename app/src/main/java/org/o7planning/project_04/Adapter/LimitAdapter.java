@@ -4,6 +4,7 @@ import static androidx.core.util.TypedValueCompat.dpToPx;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -40,12 +41,17 @@ public class LimitAdapter extends RecyclerView.Adapter<LimitAdapter.LimitViewHol
     private List<Limit> limitList;
     private Context context;
     private LimitDAO dblimit;
+    private int userId;
     public  LimitAdapter (List<Limit> limitList){
         this.limitList= limitList;
     }
     public LimitAdapter(Context context, List<Limit> limitList) {
         this.context = context;
         this.limitList = limitList;
+
+        //Lấy ID_TK
+        SharedPreferences prefs = context.getSharedPreferences("LOGIN_PREF", Context.MODE_PRIVATE);
+        this.userId = prefs.getInt("ID_TK", -1);
     }
     @NonNull
     @Override
@@ -222,7 +228,11 @@ holder.itemView.setOnClickListener(v -> {
     }
 
 private long getSotienDaDung(int idHM){
-        // tam truoc
-    return 0;
+    dblimit = new LimitDAO(context);
+
+    Limit limit = dblimit.getLimitById(idHM);
+    if (limit == null) return 0;
+
+    return dblimit.getTotalSpentInLimit(idHM, userId, limit.getNgayGD(), limit.getNgayKetThuc());
 }
 }

@@ -6,6 +6,7 @@ public class GIAODICH {
    private long SoTien;
    private String ThoiGian;
    private String GhiChu;
+   private int ID_TK;
 
     public GIAODICH(int ID_GD, int ID_DM, long soTien, String ThoiGian, String ghiChu) {
         this.ID_GD = ID_GD;
@@ -13,6 +14,15 @@ public class GIAODICH {
         SoTien = soTien;
         ThoiGian = ThoiGian;
         GhiChu = ghiChu;
+    }
+
+    public GIAODICH(int ID_GD, int ID_DM, long soTien, String thoiGian, String ghiChu, int ID_TK) {
+        this.ID_GD = ID_GD;
+        this.ID_DM = ID_DM;
+        SoTien = soTien;
+        ThoiGian = thoiGian;
+        GhiChu = ghiChu;
+        this.ID_TK = ID_TK;
     }
 
     public GIAODICH() {
@@ -56,5 +66,13 @@ public class GIAODICH {
 
     public void setGhiChu(String ghiChu) {
         GhiChu = ghiChu;
+    }
+
+    public int getID_TK() {
+        return ID_TK;
+    }
+
+    public void setID_TK(int ID_TK) {
+        this.ID_TK = ID_TK;
     }
 }

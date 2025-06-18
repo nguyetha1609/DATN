@@ -94,6 +94,7 @@ public class EditLimitActivity extends AppCompatActivity {
 
 
         btn_save_limit.setOnClickListener(v -> saveLimit());
+
         btn_delete_limit.setOnClickListener(v -> {
             new AlertDialog.Builder(this)
                     .setTitle("Xác nhận xóa")

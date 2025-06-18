@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Adapter;
@@ -72,6 +74,26 @@ private int idTk;
         btn_save_limit= findViewById(R.id.btn_save_limit);
         et_limit_name=findViewById(R.id.et_limit_name);
         et_amount = findViewById(R.id.et_amount);
+        DBHelper dbHelper =new DBHelper(this);
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT ID_GD, SoTien, ThoiGian FROM GIAODICH WHERE ID_TK = ?", new String[]{"2"});
+
+        if (cursor.moveToFirst()) {
+            do {
+                int idGD = cursor.getInt(cursor.getColumnIndexOrThrow("ID_GD"));
+                long soTien = cursor.getLong(cursor.getColumnIndexOrThrow("SoTien"));
+                String thoiGian = cursor.getString(cursor.getColumnIndexOrThrow("ThoiGian"));
+
+                android.util.Log.d("DEBUG_GIAODICH", "ID: " + idGD + " | SoTien: " + soTien + " | ThoiGian: " + thoiGian);
+            } while (cursor.moveToNext());
+        } else {
+            android.util.Log.d("DEBUG_GIAODICH", "Không có giao dịch nào với ID_TK = 2");
+        }
+
+        cursor.close();
+        db.close();
+
 
         //Lấy ID_TKAdd commentMore actions
         SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
@@ -140,16 +162,19 @@ private int idTk;
                 Toast.makeText(this,"Vui long chon it nhat 1 danh muc",Toast.LENGTH_SHORT).show();
                 return;
             }
+            String startTime = formatToStartOfDay(ngayBD);
+            String endTime = formatToEndOfDay(ngayKT);
+
             Limit limit = new Limit();
             limit.setTenHM(tenHM);
             limit.setSoTien(soTien);
-            limit.setNgayGD(ngayBD);
-            limit.setNgayKetThuc(ngayKT);
+            limit.setNgayGD(startTime);
+            limit.setNgayKetThuc(endTime);
             limit.setListDanhMuc(listDM);
             limit.setID_TK(idTK);
 
 
-            DBHelper db = new DBHelper(this);
+
             boolean result = dblimit.insertLimit(limit,idTK);
             if(result){
                 Toast.makeText(this,"Them han muc thanh cong",Toast.LENGTH_SHORT).show();
@@ -162,6 +187,13 @@ private int idTk;
 
         });
 
+    }
+    private String formatToStartOfDay(String date) {
+        return date.length() == 10 ? date + " 00:00:00" : date;
+    }
+
+    private String formatToEndOfDay(String date) {
+        return date.length() == 10 ? date + " 23:59:59" : date;
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

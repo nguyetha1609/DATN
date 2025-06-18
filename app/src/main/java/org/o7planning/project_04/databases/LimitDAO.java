@@ -276,9 +276,9 @@ public class LimitDAO {
         return categories;
     }
 
-    //truy vấn các khaonr chi tiêu thuộc hạn mức
+   // Lấy tổng số tiền đã chi theo từng danh mục trong 1 hạn mức cụ thể.
 
-    public List<spendingsummary> getSpendingsByLimit(int limitID, String startDate, String endDate) {
+    public List<spendingsummary> getSpendingsByLimit(int limitID, String startDate, String endDate,int userId) {
         List<spendingsummary> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -287,12 +287,14 @@ public class LimitDAO {
                 "JOIN DANHMUC dm ON hmdm.ID_DM = dm.ID_DM " +
                 "LEFT JOIN GIAODICH gd ON gd.ID_DM = dm.ID_DM " +
                 "    AND gd.ThoiGian BETWEEN ? AND ? " +
+                " AND gd.ID_TK = ? " +
                 "WHERE hmdm.ID_HM = ? " +
                 "GROUP BY dm.ID_DM, dm.TenDM";
 
         Cursor cursor = db.rawQuery(sql, new String[]{
                 startDate,
                 endDate,
+                String.valueOf(userId),
                 String.valueOf(limitID)
         });
         if (cursor != null && cursor.moveToFirst()) {
@@ -309,18 +311,20 @@ public class LimitDAO {
         }
         return list;
     }
-    public List<GIAODICH> getTransactionsByCategoryAndLimit(int categoryId, String startDate, String endDate, int limitId) {
+   // Lấy danh sách giao dịch chi tiết thuộc một danh mục cụ thể, nằm trong 1 hạn mức.
+    public List<GIAODICH> getTransactionsByCategoryAndLimit(int categoryId, String startDate, String endDate, int limitId,int userId) {
         List<GIAODICH> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         String sql = "SELECT gd.* FROM GIAODICH gd " +
                 "INNER JOIN HANMUC_DANHMUC hm ON gd.ID_DM = hm.ID_DM " +
-                "WHERE gd.ID_DM = ? AND hm.ID_HM = ? AND gd.ThoiGian BETWEEN ? AND ?";
+                "WHERE gd.ID_DM = ? AND hm.ID_HM = ? AND gd.ThoiGian BETWEEN ? AND ? AND gd.ID_TK = ?";
 
         Cursor cursor = db.rawQuery(sql, new String[]{
                 String.valueOf(categoryId),
                 String.valueOf(limitId),
-                startDate, endDate
+                startDate, endDate,
+                String.valueOf(userId)
         });
 
         if (cursor != null && cursor.moveToFirst()) {
@@ -337,4 +341,28 @@ public class LimitDAO {
         }
         return list;
     }
+   // Tính tổng số tiền đã chi của toàn bộ hạn mức (gộp tất cả danh mục bên trong).
+    public long getTotalSpentInLimit(int limitId,int userId, String startDate, String endDate) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String sql = "SELECT SUM(gd.SoTien) FROM GIAODICH gd " +
+                "JOIN HANMUC_DANHMUC hmdm ON gd.ID_DM = hmdm.ID_DM " +
+                "WHERE hmdm.ID_HM = ? AND gd.ID_TK = ? AND gd.ThoiGian BETWEEN ? AND ?";
+        Cursor cursor = db.rawQuery(sql, new String[]{
+                String.valueOf(limitId),
+                String.valueOf(userId),
+                startDate,
+                endDate
+        });
+        Log.d("LIMIT_DEBUG", "Query: " + sql);
+        Log.d("LIMIT_DEBUG", "Params: " + limitId + ", " + userId + ", " + startDate + ", " + endDate);
+
+
+        long total = 0;
+        if (cursor.moveToFirst()) {
+            total = cursor.getLong(0);
+        }
+        cursor.close();
+        return total;
+    }
+
 }
