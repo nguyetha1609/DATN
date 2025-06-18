@@ -90,12 +90,14 @@
                     android:src="@drawable/ic_category"
                     app:tint="@color/iconColor" />
 
-                <TextView
-                    android:id="@+id/tvAmount"
+                <EditText
+                    android:id="@+id/edtAmount"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="230dp"
+                    android:focusable="false"
+                    android:cursorVisible="false"
                     android:text="@string/hint_amount"
                     android:textSize="18sp"
                     android:textColor="@color/textPrimary" />
@@ -217,12 +219,12 @@
                             android:src="@drawable/ic_note"
                             app:tint="@color/iconColor" />
 
-                        <TextView
-                            android:id="@+id/tvNoteHint"
+                        <EditText
+                            android:id="@+id/edtNoteHint"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/hint_note"
+                            android:hint="@string/hint_note"
                             android:textSize="16sp"
                             android:textColor="@color/textHint"
                             android:layout_marginStart="16dp" />
