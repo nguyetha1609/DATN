@@ -88,7 +88,7 @@ public class CategoryMultiSelectActivity extends AppCompatActivity {
         }
     }
     private int getCurrentUserId() {
-        SharedPreferences prefs = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
         return prefs.getInt("ID_TK", -1); // -1 nếu chưa đăng nhập
     }
 }

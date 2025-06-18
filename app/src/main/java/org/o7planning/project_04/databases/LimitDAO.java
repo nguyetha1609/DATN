@@ -21,7 +21,7 @@ public class LimitDAO {
     }
 
     //them han muc
-    public boolean insertLimit(Limit l) {
+    public boolean insertLimit(Limit l,int id_tk) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.beginTransaction();
         try {
@@ -30,6 +30,7 @@ public class LimitDAO {
             values.put("SoTien", l.getSoTien());
             values.put("NgayBD", l.getNgayGD());
             values.put("NgayKT", l.getNgayKetThuc());
+            values.put("ID_TK", id_tk);
 
             long idHanMuc = db.insert("HANMUC", null, values);
             if (idHanMuc == -1) {
@@ -57,38 +58,49 @@ public class LimitDAO {
         }
     }
     //Update limit
-    public boolean updateLimit(Limit l){
+    public boolean updateLimit(Limit l,int idTK){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.beginTransaction();
         try{
             ContentValues values = new ContentValues();
-            values.put("TenHM",l.getTenHM());
-            values.put("SoTien",l.getSoTien());
-            values.put("NgayBD",l.getNgayGD());
-            values.put("NgayKT",l.getNgayKetThuc());
+            values.put("TenHM", l.getTenHM());
+            values.put("SoTien", l.getSoTien());
+            values.put("NgayBD", l.getNgayGD());
+            values.put("NgayKT", l.getNgayKetThuc());
 
-            int rowsAffected = db.update("HANMUC",values,"ID_HM =?",new String[]{String.valueOf(l.getID_HM())});
-            if(rowsAffected <=0){
-                Log.e("DBHelper","Update HANMUC failed");
-                return  true;
+            int rowsAffected = db.update(
+                    "HANMUC",
+                    values,
+                    "ID_HM = ? AND ID_TK = ?",
+                    new String[]{String.valueOf(l.getID_HM()), String.valueOf(idTK)}
+            );
+
+            if (rowsAffected <= 0) {
+                Log.e("DBHelper", "Update HANMUC failed");
+                return false;
             }
-            db.delete("HANMUC_DANHMUC","ID_HM=?",new String[]{String.valueOf(l.getID_HM())});
+            // Xóa danh mục cũ
+            db.delete(
+                    "HANMUC_DANHMUC",
+                    "ID_HM = ?",
+                    new String[]{String.valueOf(l.getID_HM())}
+            );
 
-            // chen lai ds dm moi
-            for(int idDM : l.getListDanhMuc()){
-                ContentValues cv= new ContentValues();
-                cv.put("ID_HM",l.getID_HM());
-                cv.put("ID_DM",idDM);
-                long result = db.insert("HANMUC_DANHMUC",null,cv);
-                if(result ==-1){
-                    Log.e("DBHelper","Insert HANMUC_DANHMUC failed for ID_DM ="+idDM);
+            // Thêm lại danh mục mới
+            for (int idDM : l.getListDanhMuc()) {
+                ContentValues cv = new ContentValues();
+                cv.put("ID_HM", l.getID_HM());
+                cv.put("ID_DM", idDM);
+                long result = db.insert("HANMUC_DANHMUC", null, cv);
+                if (result == -1) {
+                    Log.e("DBHelper", "Insert HANMUC_DANHMUC failed for ID_DM = " + idDM);
                     return false;
                 }
             }
             db.setTransactionSuccessful();
             return true;
-        }catch (Exception e){
-            Log.e("DBHelper","updateLimit error",e);
+        } catch (Exception e) {
+            Log.e("DBHelper", "updateLimit error", e);
             return false;
         }finally {
             db.endTransaction();
@@ -97,31 +109,43 @@ public class LimitDAO {
     }
 
     // Xóa hạn mức
-    public void deleteLimit(int id) {
+    public boolean deleteLimit(int idHM,int idTK) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete("HANMUC_DANHMUC", "ID_HM = ?", new String[]{String.valueOf(id)});
-        db.delete("HANMUC", "ID_HM = ?", new String[]{String.valueOf(id)});
-        db.close();
+        try {
+            // Xóa trong bảng HANMUC_DANHMUC trước
+            db.delete("HANMUC_DANHMUC", "ID_HM = ?", new String[]{String.valueOf(idHM)});
+
+            // Xóa hạn mức nếu đúng ID_TK
+            int rows = db.delete("HANMUC", "ID_HM = ? AND ID_TK = ?", new String[]{
+                    String.valueOf(idHM),
+                    String.valueOf(idTK)
+            });
+
+            return rows > 0;
+        } catch (Exception e) {
+            Log.e("DBHelper", "deleteLimit error", e);
+            return false;
+        } finally {
+            db.close();
+        }
     }
 
-    public List<Limit> getAllLimits() {
+    public List<Limit> getAllLimits(int idTK) {
         List<Limit> limits = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
 
-        Cursor cursor = db.rawQuery("Select * from HANMUC", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM HANMUC WHERE ID_TK = ?", new String[]{String.valueOf(idTK)});
         if (cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow("ID_HM"));
-                String TenHM = cursor.getString(cursor.getColumnIndexOrThrow("TenHM"));
-                long sotien = cursor.getLong(cursor.getColumnIndexOrThrow("SoTien"));
-                String NgayBD = cursor.getString(cursor.getColumnIndexOrThrow("NgayGD"));
-                String ngayKT = cursor.getString(cursor.getColumnIndexOrThrow("NgayKetThuc"));
-
+                String tenHM = cursor.getString(cursor.getColumnIndexOrThrow("TenHM"));
+                long soTien = cursor.getLong(cursor.getColumnIndexOrThrow("SoTien"));
+                String ngayBD = cursor.getString(cursor.getColumnIndexOrThrow("NgayBD"));
+                String ngayKT = cursor.getString(cursor.getColumnIndexOrThrow("NgayKT"));
                 List<Integer> listDM = getDMByHM(id);
 
-                limits.add(new Limit(id, TenHM, sotien, NgayBD, ngayKT, listDM));
-
+                limits.add(new Limit(id, tenHM, soTien, ngayBD, ngayKT, listDM));
             } while (cursor.moveToNext());
 
         }
@@ -153,8 +177,8 @@ public class LimitDAO {
             limit.setID_HM(cursor.getInt(cursor.getColumnIndexOrThrow("ID_HM")));
             limit.setTenHM(cursor.getString(cursor.getColumnIndexOrThrow("TenHM")));
             limit.setSoTien(cursor.getLong(cursor.getColumnIndexOrThrow("SoTien")));
-            limit.setNgayGD(cursor.getString(cursor.getColumnIndexOrThrow("NgayGD")));
-            limit.setNgayKetThuc(cursor.getString(cursor.getColumnIndexOrThrow("NgayKetThuc")));
+            limit.setNgayGD(cursor.getString(cursor.getColumnIndexOrThrow("NgayBD")));
+            limit.setNgayKetThuc(cursor.getString(cursor.getColumnIndexOrThrow("NgayKT")));
             cursor.close();
             return limit;
 
@@ -277,7 +301,7 @@ public class LimitDAO {
                 summary.setIdDM(cursor.getInt(cursor.getColumnIndexOrThrow("ID_DM")));
                 summary.setTenDM(cursor.getString(cursor.getColumnIndexOrThrow("TenDM")));
                 summary.setTongChi(cursor.getLong(cursor.getColumnIndexOrThrow("TongChi")));
-                summary.setHinhAnh(cursor.getString(cursor.getColumnIndexOrThrow("HinhAnh")));
+                summary.setHinhAnh(cursor.getString(cursor.getColumnIndexOrThrow("HinhANh")));
                 list.add(summary);
 
             } while (cursor.moveToNext());

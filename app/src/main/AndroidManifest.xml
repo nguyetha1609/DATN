@@ -44,6 +44,7 @@
         <activity android:name=".activities.CategoryMultiSelectActivity"/>
         <!-- man hinh chi tiet han muc -->
         <activity android:name=".activities.LimitDetailActivity"/>
+        <activity android:name=".activities.SpendingLimitActivity"/>
         <!-- man hinh sua han muc -->
         <activity android:name=".activities.EditLimitActivity"/>
 <!--        man hinh chi tiet cac khoan chi-->

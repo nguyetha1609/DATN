@@ -81,7 +81,7 @@ public class LimitAdapter extends RecyclerView.Adapter<LimitAdapter.LimitViewHol
         holder.imgIcon.setImageResource(getIconResId(limit));
 
 
-
+// sự kiện mở trang chi tiết hạn mức
 
 holder.itemView.setOnClickListener(v -> {
     Intent intent = new Intent(context, LimitDetailActivity.class);

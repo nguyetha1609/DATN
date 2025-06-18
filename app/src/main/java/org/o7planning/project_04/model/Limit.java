@@ -8,9 +8,20 @@ public class Limit {
     private long SoTien;
     private String NgayGD;
     private  String NgayKetThuc;
+    private int ID_TK;
     private List<Integer> listDanhMuc;
 
     public Limit(){}
+
+    public Limit(int ID_HM, String tenHM, long soTien, String ngayGD, String ngayKetThuc, int ID_TK, List<Integer> listDanhMuc) {
+        this.ID_HM = ID_HM;
+        TenHM = tenHM;
+        SoTien = soTien;
+        NgayGD = ngayGD;
+                NgayKetThuc = ngayKetThuc;
+        this.ID_TK = ID_TK;
+        this.listDanhMuc = listDanhMuc;
+    }
 
     public Limit(int ID_HM, String tenHM, long soTien, String ngayGD, String ngayKetThuc, List<Integer> listDanhMuc) {
         this.ID_HM = ID_HM;
@@ -69,5 +80,13 @@ public class Limit {
 
     public void setNgayKetThuc(String ngayKetThuc) {
         NgayKetThuc = ngayKetThuc;
+    }
+
+    public int getID_TK() {
+        return ID_TK;
+    }
+
+    public void setID_TK(int ID_TK) {
+        this.ID_TK = ID_TK;
     }
 }

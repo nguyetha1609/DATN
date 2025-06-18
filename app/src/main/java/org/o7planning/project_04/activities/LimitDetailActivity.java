@@ -17,6 +17,7 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import org.o7planning.project_04.R;
+import org.o7planning.project_04.databases.CategoryDAO;
 import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.databases.LimitDAO;
 import org.o7planning.project_04.model.Limit;
@@ -39,6 +40,7 @@ public class LimitDetailActivity extends AppCompatActivity {
     private int limitId;
     private TextView tv_expired;
     private LimitDAO dblimit;
+    private CategoryDAO dbcate;
 
 
     @Override
@@ -46,6 +48,7 @@ public class LimitDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_limit_detail);
         dblimit = new LimitDAO(this);
+        dbcate = new CategoryDAO(this);
 
         tvTotalLimit= findViewById(R.id.tv_total_limit);
         tvDateRange= findViewById(R.id.tv_date_range);
@@ -104,14 +107,9 @@ public class LimitDetailActivity extends AppCompatActivity {
     }
 
     private void loadLimitDetail(int limitId){
-        DBHelper db = new DBHelper(this);
         Limit limit= dblimit.getLimitById(limitId);
 
-//        if(limit==null){
-//            Toast.makeText(this,"Khong tim thay han muc",Toast.LENGTH_SHORT).show();
-//            finish();
-//            return;
-//        }
+
         tvTotalLimit.setText(formatCurrency(limit.getSoTien())+"d");
         tvDateRange.setText(formatDate(limit.getNgayGD()) + " - " + formatDate(limit.getNgayKetThuc()));
 

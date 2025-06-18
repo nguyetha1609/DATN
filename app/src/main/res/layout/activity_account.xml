@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background">
 
-    <!-- 1. Toolbar ở trên cùng -->
+    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/teal"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:title="@string/profile_title" />
+        app:title="@string/profile_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Nội dung chính: phần trên ScrollView -->
+    <!-- Nội dung cuộn -->
     <ScrollView
         android:id="@+id/scrollContent"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/btnLogout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- 1. Ảnh đại diện và tên người dùng -->
+            <!-- Thông tin người dùng -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -36,7 +43,6 @@
                 android:gravity="center_vertical"
                 android:paddingBottom="16dp">
 
-                <!-- CircleImageView (thuộc thư viện de.hdodenhof.circleimageview) -->
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imgProfile"
                     android:layout_width="80dp"
@@ -49,7 +55,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
-                    <!-- Tên người dùng -->
                     <TextView
                         android:id="@+id/tvUserName"
                         android:layout_width="wrap_content"
@@ -59,17 +64,16 @@
                         android:textColor="@color/textPrimary"
                         android:textStyle="bold" />
 
-                    <!-- Thẻ Spinner thay cho TextView tvMonthlyIncomeLabel -->
                     <Spinner
                         android:id="@+id/spinnerIncomeType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:entries="@array/income_type_array"
-                        android:layout_marginTop="4dp" />
+                        android:layout_marginTop="4dp"
+                        android:entries="@array/income_type_array" />
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- 2. Số tiền (tvAmount) -->
+            <!-- Số tiền -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -95,22 +99,37 @@
                     android:layout_marginStart="8dp" />
             </LinearLayout>
 
-            <!-- 3. Mục Tài Khoản (click chuyển sang ForgotPasswordActivity) -->
+            <!-- Hạn mức -->
             <LinearLayout
-                android:id="@+id/layoutAccount"
+                android:id="@+id/layoutLimit"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:background="?attr/selectableItemBackground">
+                android:background="?attr/selectableItemBackground"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_limit"
+                    app:tint="@color/textPrimary" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/account"
+                    android:text="Hạn mức"
                     android:textSize="16sp"
                     android:textColor="@color/textPrimary"
                     android:layout_marginStart="12dp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
 
                 <ImageView
                     android:layout_width="24dp"
@@ -119,7 +138,45 @@
                     app:tint="@color/textSecondary" />
             </LinearLayout>
 
-            <!-- 4. Mục Đổi Mật Khẩu (click chuyển sang ChangePasswordActivity) -->
+            <!-- Tài khoản -->
+            <LinearLayout
+                android:id="@+id/layoutAccount"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="?attr/selectableItemBackground"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginTop="8dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_accountt"
+                    app:tint="@color/textPrimary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tài khoản"
+                    android:textSize="16sp"
+                    android:textColor="@color/textPrimary"
+                    android:layout_marginStart="12dp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_arrow_right"
+                    app:tint="@color/textSecondary" />
+            </LinearLayout>
+
+            <!-- Đổi mật khẩu -->
             <LinearLayout
                 android:id="@+id/layoutChangePassword"
                 android:layout_width="match_parent"
@@ -127,15 +184,28 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="?attr/selectableItemBackground"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
                 android:layout_marginTop="8dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_locked"
+                    app:tint="@color/textPrimary" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/change_title"
+                    android:text="Đổi mật khẩu"
                     android:textSize="16sp"
                     android:textColor="@color/textPrimary"
                     android:layout_marginStart="12dp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
 
                 <ImageView
                     android:layout_width="24dp"
@@ -144,28 +214,33 @@
                     app:tint="@color/textSecondary" />
             </LinearLayout>
 
-            <!-- Các mục khác (nếu có) … -->
-
         </LinearLayout>
     </ScrollView>
 
-    <!-- 5. Nút Đăng xuất (ở dưới cùng, sát dưới ScrollView) -->
+    <!-- Nút đăng xuất -->
     <Button
         android:id="@+id/btnLogout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/logout"
         android:textAllCaps="true"
         android:layout_margin="16dp"
         android:backgroundTint="@color/colorAccent"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 6. BottomNavigationView (Footer cố định) -->
+    <!-- BottomNavigationView -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/custom_color_bottom_nav_bar" />
-</LinearLayout>
+        app:itemIconTint="@color/custom_color_bottom_nav_bar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

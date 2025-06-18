@@ -2,6 +2,7 @@ package org.o7planning.project_04.activities;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +21,6 @@ import org.o7planning.project_04.R;
 import org.o7planning.project_04.databases.CategoryDAO;
 import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.databases.LimitDAO;
-import org.o7planning.project_04.fragments.spending_limit_fragment;
 import org.o7planning.project_04.model.Limit;
 import org.o7planning.project_04.model.category;
 
@@ -43,6 +43,7 @@ public class EditLimitActivity extends AppCompatActivity {
     private Button btn_save_limit , btn_delete_limit;
     private CategoryDAO dbcate;
     private LimitDAO dblimit;
+    private int idTK;
     private ArrayList<Integer> selectedCategoryIds = new ArrayList<>();
 
     @Override
@@ -50,6 +51,7 @@ public class EditLimitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_limit);
         dblimit = new LimitDAO(this);
+        dbcate = new CategoryDAO(this);
 
         // anh xa cac view
         edtAmount= findViewById(R.id.et_amount);
@@ -69,6 +71,9 @@ public class EditLimitActivity extends AppCompatActivity {
                 finish();
             }
         });
+        //Lấy ID_TK
+        SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
+                idTK = prefs.getInt("ID_TK", -1);
 
         //Lay ID tu intent
         limiId = getIntent().getIntExtra(EXTRA_LIMIT_ID, -1);
@@ -95,7 +100,7 @@ public class EditLimitActivity extends AppCompatActivity {
                     .setMessage("Bạn có chắc chắn muốn xóa hạn mức này không?")
                     .setPositiveButton("Xóa", (dialog, which) -> {
                         DBHelper db = new DBHelper(this);
-                        dblimit.deleteLimit(limiId);
+                        dblimit.deleteLimit(limiId,idTK);
                         Toast.makeText(this, "Đã xóa hạn mức", Toast.LENGTH_SHORT).show();
 
                         // Quay lại màn hình SpendingLimitActivity
@@ -114,7 +119,6 @@ public class EditLimitActivity extends AppCompatActivity {
         updateCategoryText();
     }
     private void loadLimitData(int id){
-        DBHelper db = new DBHelper(this);
         Limit limit = dblimit.getLimitById(id);
 
         if(limit == null){
@@ -126,8 +130,8 @@ public class EditLimitActivity extends AppCompatActivity {
         edtAmount.setText(String.valueOf(limit.getSoTien()));
         edtName.setText(limit.getTenHM());
 
-        tvStartDate.setText(formatDate(limit.getNgayGD()));
-        tvEndDate.setText(formatDate(limit.getNgayKetThuc()));
+        tvStartDate.setText(limit.getNgayGD());
+        tvEndDate.setText(limit.getNgayKetThuc());
 
     }
     private void showDatePicker(TextView target) {
@@ -186,10 +190,10 @@ public class EditLimitActivity extends AppCompatActivity {
         limit.setSoTien(amount);
         limit.setNgayGD(startDate);
         limit.setNgayKetThuc(endDate);
+        limit.setID_TK(idTK);
         limit.setListDanhMuc(selectedCategoryIds);
 
-        DBHelper db = new DBHelper(this);
-        boolean success = dblimit.updateLimit(limit);
+        boolean success = dblimit.updateLimit(limit,idTK);
 
         if (success) {
             Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
@@ -201,7 +205,6 @@ public class EditLimitActivity extends AppCompatActivity {
     }
 
     private void loadSelectedCategories(int limiId){
-        DBHelper db = new DBHelper(this);
         selectedCategoryIds =dblimit.getCategoryIdsByLimitId(limiId);
     }
     @Override
@@ -216,7 +219,6 @@ public class EditLimitActivity extends AppCompatActivity {
                 updateCategoryText(); // cập nhật TextView
             }
 
-            DBHelper db = new DBHelper(this);
 
             if (selectedCategoryIds != null) {
                 int size = selectedCategoryIds.size();
@@ -251,7 +253,6 @@ public class EditLimitActivity extends AppCompatActivity {
     }
 
     private void updateCategoryText() {
-        DBHelper db = new DBHelper(this);
 
         int size = selectedCategoryIds.size();
 

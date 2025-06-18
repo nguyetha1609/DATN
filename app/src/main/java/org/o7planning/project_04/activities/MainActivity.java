@@ -21,11 +21,7 @@ import org.o7planning.project_04.databases.CategoryDAO;
 import org.o7planning.project_04.databases.PrepopulatedDBHelper;
 import org.o7planning.project_04.fragments.StatFragment;
 import org.o7planning.project_04.fragments.TransactionFragment;
-import org.o7planning.project_04.fragments.spending_limit_fragment;
-
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import org.o7planning.project_04.fragments.AccountFragment;
 
 
 import com.google.android.material.navigation.NavigationBarView;
@@ -65,14 +61,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialize BottomNavigationView
         bottomNav = findViewById(R.id.bottom_nav);
 
-//        SharedPreferences prefs = getSharedPreferences(LOGIN_PREF, MODE_PRIVATE);
-//        boolean isLoggedIn = prefs.getBoolean(KEY_REMEMBER, false);
-//        if (!isLoggedIn) {
-//            // chưa login → qua NotLoginActivity
-//            startActivity(new Intent(this, NotLoginActivity.class));
-//            finish();
-//            return;
-//        }
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new TransactionFragment())//Load trang giao dich đầu tiên khi vào app
                 .commit();
@@ -96,22 +85,8 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 } else if (itemId == R.id.nav_more) {
 
-                     selectedFragment = new spending_limit_fragment();
+                     selectedFragment = new AccountFragment();
 
-//                    // Check login state using SharedPreferences
-//                    SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
-//                    boolean isLoggedIn = prefs.getBoolean("REMEMBER", false);
-//                    String username = prefs.getString("USERNAME", "");
-
-//                    if (isLoggedIn && !username.isEmpty()) {
-//                        // User is logged in, navigate to AccountActivity
-//                        Intent intent = new Intent(MainActivity.this, AccountActivity.class);
-//                        startActivity(intent);
-//                    } else {
-//                        // User is not logged in, navigate to NotLoginActivity
-//                        Intent intent = new Intent(MainActivity.this, NotLoginActivity.class);
-//                        startActivity(intent);
-//                    }
                 }
 
                 if (selectedFragment != null) {

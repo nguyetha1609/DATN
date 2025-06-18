@@ -4,6 +4,7 @@ package org.o7planning.project_04.activities;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Adapter;
@@ -47,6 +48,7 @@ public class AddSpendingLimitActivity extends AppCompatActivity {
     private EditText et_limit_name,et_amount;
 private CategoryDAO dbcate;
 private LimitDAO dblimit;
+private int idTk;
 
     Calendar calendar = Calendar.getInstance();
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -70,6 +72,10 @@ private LimitDAO dblimit;
         btn_save_limit= findViewById(R.id.btn_save_limit);
         et_limit_name=findViewById(R.id.et_limit_name);
         et_amount = findViewById(R.id.et_amount);
+
+        //Lấy ID_TKAdd commentMore actions
+        SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
+        int idTK = prefs.getInt("ID_TK", -1);
 
         llStartDate.setOnClickListener(v -> showDatePicker(tvStartDate));
         llEndDate.setOnClickListener(v -> showDatePicker(tvEndDate));
@@ -140,9 +146,11 @@ private LimitDAO dblimit;
             limit.setNgayGD(ngayBD);
             limit.setNgayKetThuc(ngayKT);
             limit.setListDanhMuc(listDM);
+            limit.setID_TK(idTK);
+
 
             DBHelper db = new DBHelper(this);
-            boolean result = dblimit.insertLimit(limit);
+            boolean result = dblimit.insertLimit(limit,idTK);
             if(result){
                 Toast.makeText(this,"Them han muc thanh cong",Toast.LENGTH_SHORT).show();
                 setResult(Activity.RESULT_OK);
