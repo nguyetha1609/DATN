@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootRelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,9 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="16dp"
+        android:paddingTop="10dp"
         android:paddingBottom="16dp">
-
+        <!-- FragmentContainerView chứa HomeFragment -->
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <!-- 2.1 Tabs: Ngày, Tháng, Năm, Tất cả, Tùy chỉnh -->
         <LinearLayout
@@ -83,14 +89,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Ngân sách\n0 ₫"
+                    android:hint="@string/budget_label"
                     android:textSize="16sp"
                     android:textColor="#000000" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Vượt chi\n556 ₫"
+                    android:hint="@string/notice"
                     android:textSize="16sp"
                     android:textColor="#FF3B30" />
             </LinearLayout>
@@ -111,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/radious"
-                android:text="Chi tiêu\n556 ₫"
+                android:text="Chi tiêu"
                 android:backgroundTint="#FF3B30"
                 android:textColor="#FFFFFF"
                 android:padding="12dp" />
@@ -126,7 +132,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/radious"
-                android:text="Thu nhập\n0 ₫"
+                android:text="Thu nhập"
                 android:backgroundTint="#34C759"
                 android:textColor="#FFFFFF"
                 android:padding="12dp" />
@@ -137,7 +143,7 @@
             android:id="@+id/tvSoDu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Số dư: -556 ₫"
+            android:text="Số dư:"
             android:gravity="center"
             android:textStyle="bold"
             android:textColor="#666666"
@@ -174,29 +180,30 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- 3. ListView hiển thị giao dịch -->
-    <ListView
-        android:id="@+id/listViewTransactions"
+    <!-- 3. RecyclerView hiển thị giao dịch -->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTransactions"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="#DDDDDD"
-        android:dividerHeight="1dp"
+        android:layout_below="@id/topContainer"
+        android:layout_marginTop="2dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:layout_below="@id/topContainer"
-       />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_transaction" />
 
     <Button
         android:id="@+id/btnAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/listViewTransactions"
+        android:layout_alignBottom="@+id/rvTransactions"
         android:layout_centerHorizontal="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="88dp"
         android:background="@drawable/bg_add_expense"
         android:text="Thêm"
         android:textColor="@android:color/black"
-        android:layout_marginBottom="72dp"
-        android:layout_marginEnd="16dp"
         app:cornerRadius="8dp" />
 </RelativeLayout>
 

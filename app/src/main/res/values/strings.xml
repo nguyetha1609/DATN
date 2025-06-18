@@ -90,9 +90,9 @@
     <string name="profile_title">Thông Tin Cá Nhân</string>
 
     <!-- Tên người dùng và tiền hàng tháng -->
-    <string name="user_name">Trần Ngọc Tiến</string>
+    <string name="user_name"></string>
     <string name="monthly_income">Tiền hàng tháng</string>
-    <string name="amount">30.000.000 VND</string>
+    <string name="amount"></string>
 
     <!-- Các mục trong menu -->
     <string name="menu_account">Tài Khoản</string>
@@ -131,9 +131,9 @@
 
     <!-- Phần Ngân sách -->
     <string name="budget_label">Ngân sách</string>
-    <string name="budget_amount">0 đ</string>
-    <string name="over_spent_prefix">Vượt chi</string>
-    <string name="over_spent_amount">556 đ</string>
+    <string name="notice"></string>
+    <string name="over_spent_prefix"></string>
+    <string name="over_spent_amount"></string>
     <string name="frequency_daily">Hằng ngày</string>
 
     <!-- Các thẻ Chi tiêu / Thu nhập -->

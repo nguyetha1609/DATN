@@ -5,11 +5,13 @@ import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,21 +27,28 @@ import androidx.appcompat.widget.Toolbar;
 
 import org.o7planning.project_04.R;
 import org.o7planning.project_04.databases.DBHelper;
+import org.o7planning.project_04.model.category; // Import model category
 
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class AddTransactionActivity extends AppCompatActivity {
 
-    private TextView tvAmount, toolbarSave,tvDateLabel,tvTimeLabel, txt_name;
-    private LinearLayout itemDate, itemTime, itemNote;
-    private ImageView imgCategory,btnBack;
+    private TextView toolbarSave, tvDateLabel, tvTimeLabel, toolbarTitle; // Thêm toolbarTitle
+    private EditText edtAmount, edtNoteHint;
+    private LinearLayout itemDate, itemTime;
+    private ImageView imgCategory, btnBack;
     private Calendar calendar;
     // field để lưu tạm category được chọn
     private int selectedCategoryId = -1;
-    private String selectedCategoryName;
     private static final int REQUEST_SELECT_CATEGORY = 3001;
+
+    private boolean isEditMode = false;
+    private int transactionId = -1; // ID giao dịch nếu đang ở chế độ chỉnh sửa
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +58,30 @@ public class AddTransactionActivity extends AppCompatActivity {
         // Khởi tạo các View
         btnBack = findViewById(R.id.btnBack);
         toolbarSave = findViewById(R.id.toolbar_save);
+        toolbarTitle = findViewById(R.id.toolbar_title); // Ánh xạ toolbarTitle
         imgCategory = findViewById(R.id.imgCategory);
-        tvAmount = findViewById(R.id.tvAmount);
+        edtAmount = findViewById(R.id.edtAmount);
         itemTime = findViewById(R.id.item_time);
-        itemNote = findViewById(R.id.item_note);
+        edtNoteHint = findViewById(R.id.edtNoteHint);
         tvDateLabel = findViewById(R.id.tvDateLabel);
         tvTimeLabel = findViewById(R.id.tvTimeLabel);
         calendar = Calendar.getInstance();
 
+        // Kiểm tra nếu là chế độ chỉnh sửa
+        if (getIntent().hasExtra("isEditMode") && getIntent().getBooleanExtra("isEditMode", false)) {
+            isEditMode = true;
+            transactionId = getIntent().getIntExtra("transactionId", -1);
+            toolbarTitle.setText("Sửa Giao Dịch"); // Thay đổi tiêu đề
+            toolbarSave.setText("Cập Nhật"); // Thay đổi văn bản nút lưu
+            loadTransactionData(); // Tải dữ liệu giao dịch đã có
+        } else {
+            // Đặt giá trị mặc định cho ngày và giờ khi tạo giao dịch mới
+            SimpleDateFormat sdfDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            tvDateLabel.setText(sdfDate.format(calendar.getTime()));
 
+            SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            tvTimeLabel.setText(sdfTime.format(calendar.getTime()));
+        }
 
         tvDateLabel.setOnClickListener(v -> {
             // Lấy ngày hiện tại
@@ -68,7 +92,7 @@ public class AddTransactionActivity extends AppCompatActivity {
             // Tạo DatePickerDialog
             DatePickerDialog datePicker = new DatePickerDialog(AddTransactionActivity.this,
                     (view, d, m, y) -> {
-                    // Lưu lại trong
+                        // Lưu lại trong
                         calendar.set(Calendar.DAY_OF_MONTH, d);
                         calendar.set(Calendar.MONTH, m);
                         calendar.set(Calendar.YEAR, y);
@@ -91,7 +115,7 @@ public class AddTransactionActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Lấy giờ phút hiện tại làm mặc định
                 Calendar calendar = Calendar.getInstance();
-                int hour   = calendar.get(Calendar.HOUR_OF_DAY);
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
 
                 // Tạo TimePickerDialog
@@ -117,22 +141,91 @@ public class AddTransactionActivity extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(AddTransactionActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                onBackPressed(); // Quay lại Fragment trước đó
             }
         });
 
         // 2. Click chọn danh mục → mở CategoryActivity chờ kết quả
         imgCategory.setOnClickListener(v -> {
             Intent intent = new Intent(AddTransactionActivity.this, CategoryActivity.class);
-         //   intent.putExtra("LoaiDM", "ChiTieu");
-            intent.putExtra("isSelectMode",true);
+            //   intent.putExtra("LoaiDM", "ChiTieu");
+            intent.putExtra("isSelectMode", true);
             startActivityForResult(intent, REQUEST_SELECT_CATEGORY);
         });
 
-        // 3. Click lưu → gọi hàm save()
-        toolbarSave.setOnClickListener(v -> saveTransaction());
+        // --- Sự kiện nhập số cho tvAmount ---
+        edtAmount.setFocusableInTouchMode(true);
+        edtAmount.setOnClickListener(v -> {
+            edtAmount.requestFocus();
+            edtAmount.postDelayed(() -> {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.showSoftInput(edtAmount, InputMethodManager.SHOW_IMPLICIT);
+                }
+            }, 100);
+        });
+
+        // --- Sự kiện nhập ghi chú cho itemNote ---
+        edtNoteHint.setOnClickListener(v -> {
+            edtNoteHint.requestFocus();
+            edtNoteHint.postDelayed(() -> {
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.showSoftInput(edtNoteHint, InputMethodManager.SHOW_IMPLICIT);
+                }
+            }, 100);
+        });
+
+        // 3. Click lưu → gọi hàm save() hoặc update()
+        toolbarSave.setOnClickListener(v -> {
+            if (isEditMode) {
+                updateTransaction();
+            } else {
+                saveTransaction();
+            }
+        });
+    }
+
+    private void loadTransactionData() {
+        // Lấy dữ liệu từ Intent và điền vào các trường
+        selectedCategoryId = getIntent().getIntExtra("categoryId", -1);
+        long amount = getIntent().getLongExtra("amount", 0L);
+        String time = getIntent().getStringExtra("time");
+        String note = getIntent().getStringExtra("note");
+        String categoryName = getIntent().getStringExtra("selectedCategoryName");
+        String categoryIcon = getIntent().getStringExtra("selectedCategoryIcon");
+
+        // Điền dữ liệu
+        edtAmount.setText(String.valueOf(amount));
+        edtNoteHint.setText(note);
+
+        if (time != null && time.contains(" ")) {
+            String[] dateTimeParts = time.split(" ");
+            if (dateTimeParts.length == 2) {
+                tvDateLabel.setText(dateTimeParts[0]);
+                tvTimeLabel.setText(dateTimeParts[1]);
+
+                // Cập nhật Calendar object
+                try {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+                    Date date = sdf.parse(time);
+                    calendar.setTime(date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+        // Cập nhật icon danh mục
+        if (categoryIcon != null) {
+            int resId = getResources().getIdentifier(categoryIcon, "drawable", getPackageName());
+            if (resId != 0) {
+                imgCategory.setImageResource(resId);
+            } else {
+                imgCategory.setImageResource(R.drawable.ic_default); // Icon mặc định nếu không tìm thấy
+            }
+        }
     }
 
     // Nhận kết quả từ CategoryActivity
@@ -151,34 +244,32 @@ public class AddTransactionActivity extends AppCompatActivity {
                     imgCategory.setImageResource(resId);
                 }
             }
-
-
         }
     }
 
-    // Save vào DB
+    // Save vào DB (thêm mới)
     private void saveTransaction() {
         // 1. Validate
         if (selectedCategoryId < 0) {
             Toast.makeText(this, "Vui lòng chọn danh mục", Toast.LENGTH_SHORT).show();
             return;
         }
-        String amountStr = tvAmount.getText().toString().trim();
+        String amountStr = edtAmount.getText().toString().trim();
         if (TextUtils.isEmpty(amountStr)) {
             Toast.makeText(this, "Nhập số tiền", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        double amount;
+        long amount;
         try {
-            amount = Double.parseDouble(amountStr);
+            amount = Long.parseLong(amountStr);
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
             return;
         }
 
         String datetime = tvDateLabel.getText() + " " + tvTimeLabel.getText();
-        String note     = itemNote.toString().trim();
+        String note = edtNoteHint.getText().toString().trim();
 
         // 2. Insert vào DB
         DBHelper dbHelper = new DBHelper(this);
@@ -195,34 +286,56 @@ public class AddTransactionActivity extends AppCompatActivity {
         // 3. Thông báo & đóng
         if (newId > 0) {
             Toast.makeText(this, "Lưu thành công", Toast.LENGTH_SHORT).show();
+            setResult(RESULT_OK);
             finish();
         } else {
             Toast.makeText(this, "Lỗi khi lưu", Toast.LENGTH_SHORT).show();
         }
+    }
 
-        // Đặt OnClickListener cho ImageView category
-//        imgCategory.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(AddTransactionActivity.this, CategoryActivity.class);
-//                // truyền thêm loại nếu bạn có filter chi tiêu / thu nhập
-//                intent.putExtra("LoaiDM", "ChiTieu");
-//                startActivityForResult(intent, REQUEST_SELECT_CATEGORY);
-//            }
-//        });
-        //toolbarSave.setOnClickListener(v -> onSaveClicked());
-        // Đặt OnClickListener cho TextView "tvAmount"
-        tvAmount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
+    // Update vào DB (chỉnh sửa)
+    private void updateTransaction() {
+        // 1. Validate (Tương tự như save, đảm bảo các trường không rỗng)
+        if (selectedCategoryId < 0) {
+            Toast.makeText(this, "Vui lòng chọn danh mục", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String amountStr = edtAmount.getText().toString().trim();
+        if (TextUtils.isEmpty(amountStr)) {
+            Toast.makeText(this, "Nhập số tiền", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        // Đặt OnClickListener cho item_note
-        itemNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
+        long amount;
+        try {
+            amount = Long.parseLong(amountStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String datetime = tvDateLabel.getText() + " " + tvTimeLabel.getText();
+        String note = edtNoteHint.getText().toString().trim();
+
+        // 2. Update vào DB
+        DBHelper dbHelper = new DBHelper(this);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("ID_DM", selectedCategoryId);
+        values.put("SoTien", amount);
+        values.put("ThoiGian", datetime);
+        values.put("GhiChu", note);
+
+        int rowsAffected = db.update("GIAODICH", values, "ID_GD = ?", new String[]{String.valueOf(transactionId)});
+        db.close();
+
+        // 3. Thông báo & đóng
+        if (rowsAffected > 0) {
+            Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+            setResult(RESULT_OK); // Báo hiệu đã có thay đổi
+            finish();
+        } else {
+            Toast.makeText(this, "Lỗi khi cập nhật", Toast.LENGTH_SHORT).show();
+        }
     }
 }

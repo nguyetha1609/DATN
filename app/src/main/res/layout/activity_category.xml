@@ -69,17 +69,15 @@
         android:textAllCaps="false"
         android:textColor="@android:color/black"
         android:backgroundTint="@null"
-    android:insetTop="0dp"
-    android:insetBottom="0dp"
-    android:insetLeft="0dp"
-    android:insetRight="0dp"
-    app:backgroundTint="@null"
-    android:background="@drawable/bg_addcate"
-    app:cornerRadius="24dp"
-    android:layout_marginBottom="16dp"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent" />
-
-
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:insetLeft="0dp"
+        android:insetRight="0dp"
+        app:backgroundTint="@null"
+        android:background="@drawable/bg_addcate"
+        app:cornerRadius="24dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
