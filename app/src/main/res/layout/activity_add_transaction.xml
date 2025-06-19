@@ -101,6 +101,14 @@
                     android:text="@string/hint_amount"
                     android:textSize="18sp"
                     android:textColor="@color/textPrimary" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₫"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="8dp"/>
 
             </LinearLayout>
 
@@ -152,12 +160,6 @@
                             android:textSize="16sp"
                             android:textColor="@color/textPrimary"
                             android:layout_marginStart="16dp" />
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_arrow_right"
-                            app:tint="@color/iconColor" />
                     </LinearLayout>
 
                     <View
@@ -190,12 +192,6 @@
                             android:textSize="16sp"
                             android:textColor="@color/textPrimary"
                             android:layout_marginStart="16dp" />
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_arrow_right"
-                            app:tint="@color/iconColor" />
                     </LinearLayout>
 
                     <View
@@ -228,12 +224,6 @@
                             android:textSize="16sp"
                             android:textColor="@color/textHint"
                             android:layout_marginStart="16dp" />
-
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_arrow_right"
-                            app:tint="@color/iconColor" />
                     </LinearLayout>
 
                 </LinearLayout>

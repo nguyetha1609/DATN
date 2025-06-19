@@ -268,8 +268,6 @@ public class AddTransactionActivity extends AppCompatActivity {
             return;
         }
 
-
-
         SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         String datetime = dbFormat.format(calendar.getTime());
 
