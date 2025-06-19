@@ -268,22 +268,6 @@ public class AddTransactionActivity extends AppCompatActivity {
             return;
         }
 
-//        // Lấy giờ phút từ tvTimeLabel và cập nhật lại calendar
-//        try {
-//            String timeStr = tvTimeLabel.getText().toString(); // Ví dụ: "14:20"
-//            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-//            Date time = timeFormat.parse(timeStr);
-//            Calendar timeCal = Calendar.getInstance();
-//            timeCal.setTime(time);
-//
-//            calendar.set(Calendar.HOUR_OF_DAY, timeCal.get(Calendar.HOUR_OF_DAY));
-//            calendar.set(Calendar.MINUTE, timeCal.get(Calendar.MINUTE));
-//            calendar.set(Calendar.SECOND, 0); // optional
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-
-        //String datetime = tvDateLabel.getText() + " " + tvTimeLabel.getText();
         SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         String datetime = dbFormat.format(calendar.getTime());
 

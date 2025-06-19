@@ -15,7 +15,9 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -26,9 +28,12 @@ import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.model.GIAODICH;
 import org.o7planning.project_04.model.category;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class TransactionFragment extends Fragment {
@@ -41,6 +46,7 @@ public class TransactionFragment extends Fragment {
     private Map<Integer, category> mapDanhMuc; // Map chứa danh mục
     private TransactionAdapter transactionAdapter;
     private String currentTransactionType = "all"; // Biến để lưu loại giao dịch hiện tại: "all", "expense", "income"
+    private String currentFilterPeriod = "all"; // Biến để lưu loại lọc thời gian: "all", "day", "month", "year"
 
 
     private void loadTransactions() {
@@ -66,8 +72,9 @@ public class TransactionFragment extends Fragment {
 
             // 2. Tải giao dịch và lọc theo loại
             String query = "SELECT ID_GD, ID_DM, SoTien, ThoiGian, GhiChu FROM GIAODICH";
-            String orderBy = " ORDER BY ID_GD DESC";
-            String whereClause = "";
+            String orderBy = " ORDER BY ThoiGian DESC"; // Sắp xếp theo thời gian mới nhất
+            List<String> whereClauses = new ArrayList<>();
+            List<String> selectionArgs = new ArrayList<>();
 
             // Lọc theo loại giao dịch (chi tiêu/thu nhập)
             if ("expense".equals(currentTransactionType)) {
@@ -78,14 +85,12 @@ public class TransactionFragment extends Fragment {
                     }
                 }
                 if (!expenseCategoryIds.isEmpty()) {
-                    whereClause = " WHERE ID_DM IN (" + TextUtils.join(",", expenseCategoryIds) + ")";
+                    whereClauses.add("ID_DM IN (" + TextUtils.join(",", expenseCategoryIds) + ")");
                 } else {
-                    // Không có danh mục chi tiêu, không hiển thị gì
-                    // Cập nhật adapter ngay và thoát
                     if (transactionAdapter != null) {
-                        transactionAdapter.updateData(listGiaoDich); // listGiaoDich rỗng
+                        transactionAdapter.updateData(listGiaoDich);
                     }
-                    return; // Thoát khỏi hàm để không thực hiện truy vấn tiếp
+                    return;
                 }
             } else if ("income".equals(currentTransactionType)) {
                 List<Integer> incomeCategoryIds = new ArrayList<>();
@@ -95,18 +100,39 @@ public class TransactionFragment extends Fragment {
                     }
                 }
                 if (!incomeCategoryIds.isEmpty()) {
-                    whereClause = " WHERE ID_DM IN (" + TextUtils.join(",", incomeCategoryIds) + ")";
+                    whereClauses.add("ID_DM IN (" + TextUtils.join(",", incomeCategoryIds) + ")");
                 } else {
-                    // Không có danh mục thu nhập, không hiển thị gì
-                    // Cập nhật adapter ngay và thoát
                     if (transactionAdapter != null) {
-                        transactionAdapter.updateData(listGiaoDich); // listGiaoDich rỗng
+                        transactionAdapter.updateData(listGiaoDich);
                     }
-                    return; // Thoát khỏi hàm để không thực hiện truy vấn tiếp
+                    return;
                 }
             }
 
-            cursorGiaoDich = db.rawQuery(query + whereClause + orderBy, null);
+            // Lọc theo thời gian (ngày/tháng/năm/tất cả)
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+            if ("day".equals(currentFilterPeriod)) {
+                String today = sdfDate.format(calendar.getTime());
+                whereClauses.add("strftime('%Y-%m-%d', ThoiGian) = ?");
+                selectionArgs.add(today);
+            } else if ("month".equals(currentFilterPeriod)) {
+                String currentMonth = new SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(calendar.getTime());
+                whereClauses.add("strftime('%Y-%m', ThoiGian) = ?");
+                selectionArgs.add(currentMonth);
+            } else if ("year".equals(currentFilterPeriod)) {
+                String currentYear = new SimpleDateFormat("yyyy", Locale.getDefault()).format(calendar.getTime());
+                whereClauses.add("strftime('%Y', ThoiGian) = ?");
+                selectionArgs.add(currentYear);
+            }
+
+            String finalWhereClause = "";
+            if (!whereClauses.isEmpty()) {
+                finalWhereClause = " WHERE " + TextUtils.join(" AND ", whereClauses);
+            }
+
+            cursorGiaoDich = db.rawQuery(query + finalWhereClause + orderBy, selectionArgs.toArray(new String[0]));
             while (cursorGiaoDich.moveToNext()) {
                 int idGd = cursorGiaoDich.getInt(0);
                 int idDm = cursorGiaoDich.getInt(1);
@@ -122,16 +148,26 @@ public class TransactionFragment extends Fragment {
                 transactionAdapter = new TransactionAdapter(getContext(), listGiaoDich, mapDanhMuc);
                 recyclerView.setAdapter(transactionAdapter);
 
-                //Click vào item để hiện trang chỉnh sửa giao dịch
-                recyclerView.setAdapter(transactionAdapter);
-                transactionAdapter.setOnItemClickListener(new TransactionAdapter.OnItemClickListener() {
+                transactionAdapter.setOnItemClickListener(this::openEditTransaction);
+
+                // Thêm ItemTouchHelper cho chức năng vuốt để xóa
+                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
                     @Override
-                    public void onItemClick(GIAODICH giaoDich) {
-                        openEditTransaction(giaoDich);
+                    public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                        int position = viewHolder.getAdapterPosition();
+                        GIAODICH giaoDichToDelete = listGiaoDich.get(position);
+                        showDeleteConfirmationDialog(giaoDichToDelete, position);
                     }
                 });
+                itemTouchHelper.attachToRecyclerView(recyclerView);
+
             } else {
-                transactionAdapter.updateData(listGiaoDich); // Gọi phương thức updateData mới
+                transactionAdapter.updateData(listGiaoDich);
             }
         } finally {
             if (cursorCategory != null) {
@@ -146,10 +182,42 @@ public class TransactionFragment extends Fragment {
         }
     }
 
+    private void showDeleteConfirmationDialog(GIAODICH giaoDich, int position) {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Xác nhận xóa")
+                .setMessage("Bạn có chắc chắn muốn xóa giao dịch này?")
+                .setPositiveButton("OK", (dialog, which) -> deleteTransaction(giaoDich, position))
+                .setNegativeButton("Hủy", (dialog, which) -> {
+                    // Nếu hủy, cập nhật lại adapter để item trở về vị trí cũ
+                    transactionAdapter.notifyItemChanged(position);
+                    dialog.dismiss();
+                })
+                .show();
+    }
+
+    private void deleteTransaction(GIAODICH giaoDich, int position) {
+        DBHelper dbHelper = new DBHelper(getContext());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        int rowsAffected = db.delete("GIAODICH", "ID_GD = ?", new String[]{String.valueOf(giaoDich.getID_GD())});
+        db.close();
+
+        if (rowsAffected > 0) {
+            listGiaoDich.remove(position);
+            transactionAdapter.notifyItemRemoved(position);
+            // Optionally, show a toast message
+            // Toast.makeText(getContext(), "Giao dịch đã xóa", Toast.LENGTH_SHORT).show();
+        } else {
+            // If deletion fails, revert the swipe
+            transactionAdapter.notifyItemChanged(position);
+            // Toast.makeText(getContext(), "Lỗi khi xóa giao dịch", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_ADD_TRANSACTION && resultCode == Activity.RESULT_OK) {
+        if ((requestCode == REQUEST_ADD_TRANSACTION || requestCode == REQUEST_EDIT_TRANSACTION) && resultCode == Activity.RESULT_OK) {
             loadTransactions(); // gọi hàm load lại dữ liệu vào ListView
         }
     }
@@ -159,7 +227,7 @@ public class TransactionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.transaction_fragment, container, false);
 
-        btnAdd = view.findViewById(R.id.btnAdd); // Đảm bảo btnAdd là ID chính xác từ activity_main.xml
+        btnAdd = view.findViewById(R.id.btnAdd);
         tabExpense = view.findViewById(R.id.tabExpense);
         tabIncome = view.findViewById(R.id.tabIncome);
         btnChiTieu = view.findViewById(R.id.btnChiTieu);
@@ -170,117 +238,91 @@ public class TransactionFragment extends Fragment {
         filterAll = view.findViewById(R.id.filter_all);
 
         recyclerView = view.findViewById(R.id.rvTransactions);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext())); // Thiết lập LayoutManager
-        loadTransactions(); // Tải giao dịch ban đầu (mặc định là "all")
-
-        btnAdd.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(getContext(), AddTransactionActivity.class);
-                startActivityForResult(intent, REQUEST_ADD_TRANSACTION);
-            }
-        });
-
-        //Hiển thị giao dịch theo chi tiêu
-        tabExpense.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentTransactionType = "expense"; // Đặt loại giao dịch là "chi tiêu"
-                loadTransactions(); // Tải lại dữ liệu
-                tabExpense.setTextColor(getResources().getColor(R.color.colorPrimary));
-                tabIncome.setTextColor(getResources().getColor(R.color.textPrimary));
-            }
-        });
-
-        //Hiển thị giao dịch theo thu nhập
-        tabIncome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentTransactionType = "income"; // Đặt loại giao dịch là "thu nhập"
-                loadTransactions(); // Tải lại dữ liệu
-                tabIncome.setTextColor(getResources().getColor(R.color.colorPrimary));
-                tabExpense.setTextColor(getResources().getColor(R.color.textPrimary));
-            }
-        });
-
-        btnChiTieu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Xử lý khi nút "Chi tiêu" được click
-                // Ví dụ: hiển thị chi tiết chi tiêu hoặc làm nổi bật nút này
-            }
-        });
-
-
-        btnThuNhap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Xử lý khi nút "Thu nhập" được click
-                // Ví dụ: hiển thị chi tiết thu nhập hoặc làm nổi bật nút này
-            }
-        });
-
-        //Lọc giao dịch theo ngày
-        filterDay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Xử lý khi tab "Ngày" được click
-                // Ví dụ: thay đổi trạng thái UI, load dữ liệu theo ngày
-            }
-        });
-
-        //Lọc giao dịch theo tháng
-        filterMonth.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Xử lý khi tab "Tháng" được click
-                // Ví dụ: thay đổi trạng thái UI, load dữ liệu theo tháng
-            }
-        });
-
-        //Lọc giao dịch theo năm
-        filterYear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Xử lý khi tab "Năm" được click
-                // Ví dụ: thay đổi trạng thái UI, load dữ liệu theo năm
-            }
-        });
-
-        //Hiển thị tất cả  giao dịch
-        filterAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Xử lý khi tab "Tất cả" được click
-                // Ví dụ: thay đổi trạng thái UI, load tất cả dữ liệu
-            }
-        });
-//        recyclerView     = view.findViewById(R.id.rvTransactions);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         loadTransactions();
+
+        btnAdd.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), AddTransactionActivity.class);
+            startActivityForResult(intent, REQUEST_ADD_TRANSACTION);
+        });
+
+        tabExpense.setOnClickListener(v -> {
+            currentTransactionType = "expense";
+            loadTransactions();
+            tabExpense.setTextColor(getResources().getColor(R.color.colorPrimary));
+            tabIncome.setTextColor(getResources().getColor(R.color.textPrimary));
+        });
+
+        tabIncome.setOnClickListener(v -> {
+            currentTransactionType = "income";
+            loadTransactions();
+            tabIncome.setTextColor(getResources().getColor(R.color.colorPrimary));
+            tabExpense.setTextColor(getResources().getColor(R.color.textPrimary));
+        });
+
+        btnChiTieu.setOnClickListener(v -> {
+            // Xử lý khi nút "Chi tiêu" được click
+        });
+
+        btnThuNhap.setOnClickListener(v -> {
+            // Xử lý khi nút "Thu nhập" được click
+        });
+
+        filterDay.setOnClickListener(v -> {
+            currentFilterPeriod = "day";
+            loadTransactions();
+            updateFilterTabColors(filterDay);
+        });
+
+        filterMonth.setOnClickListener(v -> {
+            currentFilterPeriod = "month";
+            loadTransactions();
+            updateFilterTabColors(filterMonth);
+        });
+
+        filterYear.setOnClickListener(v -> {
+            currentFilterPeriod = "year";
+            loadTransactions();
+            updateFilterTabColors(filterYear);
+        });
+
+        filterAll.setOnClickListener(v -> {
+            currentFilterPeriod = "all";
+            loadTransactions();
+            updateFilterTabColors(filterAll);
+        });
+
         return view;
     }
+
+    private void updateFilterTabColors(TextView selectedTab) {
+        filterDay.setTextColor(getResources().getColor(R.color.textPrimary));
+        filterMonth.setTextColor(getResources().getColor(R.color.textPrimary));
+        filterYear.setTextColor(getResources().getColor(R.color.textPrimary));
+        filterAll.setTextColor(getResources().getColor(R.color.textPrimary));
+        selectedTab.setTextColor(getResources().getColor(R.color.colorPrimary));
+    }
+
+
     public void openEditTransaction(GIAODICH giaoDich) {
-        // Khi một item giao dịch được click
         Intent intent = new Intent(getContext(), AddTransactionActivity.class);
-        intent.putExtra("isEditMode", true); // Báo hiệu là chế độ chỉnh sửa
+        intent.putExtra("isEditMode", true);
         intent.putExtra("transactionId", giaoDich.getID_GD());
         intent.putExtra("categoryId", giaoDich.getID_DM());
         intent.putExtra("amount", giaoDich.getSoTien());
         intent.putExtra("time", giaoDich.getThoiGian());
         intent.putExtra("note", giaoDich.getGhiChu());
 
-        // Thêm ID_TK từ SharedPreferences
         SharedPreferences preferences = getContext().getSharedPreferences("LOGIN_PREF", getContext().MODE_PRIVATE);
         int userId = preferences.getInt("ID_TK", -1);
         intent.putExtra("ID_TK", userId);
 
-        // Lấy thông tin danh mục để truyền icon và tên danh mục
         category selectedCategory = mapDanhMuc.get(giaoDich.getID_DM());
         if (selectedCategory != null) {
             intent.putExtra("selectedCategoryName", selectedCategory.getTenDM());
             intent.putExtra("selectedCategoryIcon", selectedCategory.getHinhAnh());
         }
 
-        startActivityForResult(intent, REQUEST_EDIT_TRANSACTION); // Sử dụng request code mới
+        startActivityForResult(intent, REQUEST_EDIT_TRANSACTION);
     }
 }
