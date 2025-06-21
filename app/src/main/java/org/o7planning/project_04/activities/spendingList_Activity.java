@@ -2,6 +2,7 @@ package org.o7planning.project_04.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +41,7 @@ public class spendingList_Activity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
         idTK = prefs.getInt("ID_TK", -1);
 
-        int limitId = getIntent().getIntExtra(LimitDetailActivity.EXTRA_LIMIT_ID, -1);
+         limitId = getIntent().getIntExtra(LimitDetailActivity.EXTRA_LIMIT_ID, -1);
         if (limitId == -1) {
             Toast.makeText(this, "Không tìm thấy hạn mức", Toast.LENGTH_SHORT).show();
             finish();
@@ -73,6 +74,8 @@ public class spendingList_Activity extends AppCompatActivity {
 
         String startDate = limit.getNgayGD();
         String endDate = limit.getNgayKetThuc();
+        Log.d("LIMIT_DATE", "Start: " + startDate + " | End: " + endDate);
+
 
         List<Integer> listDmId = limit.getListDanhMuc();
         List<spendingsummary> summaryList = dblimit.getSpendingsByLimit(limitId,startDate,endDate,idTK);

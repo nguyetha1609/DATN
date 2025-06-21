@@ -65,14 +65,17 @@ public class WeekPickerBottomSheet extends BottomSheetDialogFragment {
         btnNextMonth = view.findViewById(R.id.btnNextMonth);
 
         currentMonth = YearMonth.now();
+
         btnPrevMonth.setOnClickListener(v -> {
             currentMonth = currentMonth.minusMonths(1);
             calendarView.scrollToMonth(currentMonth);
+            updateMonthTitle(currentMonth);
         });
 
         btnNextMonth.setOnClickListener(v -> {
             currentMonth = currentMonth.plusMonths(1);
             calendarView.scrollToMonth(currentMonth);
+            updateMonthTitle(currentMonth);
         });
 
         initCalendar();
@@ -108,6 +111,10 @@ public class WeekPickerBottomSheet extends BottomSheetDialogFragment {
         calendarView.setMonthScrollListener(month -> {
             updateMonthTitle(month.getYearMonth());
             return null;
+        });
+        calendarView.post(() -> {
+            CalendarDay today = new CalendarDay(LocalDate.now(), DayPosition.MonthDate);
+            onDateClicked(today);
         });
     }
     private void updateMonthTitle(YearMonth yearMonth) {
@@ -178,7 +185,7 @@ public class WeekPickerBottomSheet extends BottomSheetDialogFragment {
             if (startOfWeek != null && endOfWeek != null) {
                 if (!day.getDate().isBefore(startOfWeek) && !day.getDate().isAfter(endOfWeek)) {
                     container.dayContainer.setBackgroundResource(R.drawable.bg_range_day);
-                    container.dayText.setTextColor(getResources().getColor(android.R.color.white));
+                    container.dayText.setTextColor(getResources().getColor(android.R.color.black));
                 } else {
                     container.dayContainer.setBackgroundResource(0);
                     container.dayText.setTextColor(getResources().getColor(android.R.color.black));

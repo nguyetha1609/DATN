@@ -61,13 +61,16 @@ public class MonthPickerBottomSheet extends BottomSheetDialogFragment {
         });
 
         btnNextYear.setOnClickListener(v -> {
-            selectedYear++;
-            updateYearDisplay();
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+            if (selectedYear < currentYear) {
+                selectedYear++;
+                updateYearDisplay();
+            }
         });
 
         btnDone.setOnClickListener(v -> {
             if (selectedMonth != -1) {
-                String monthText = String.format("Tháng %d/%d", selectedMonth + 1, selectedYear);
+                String monthText = String.format("Tháng %02d/%d", selectedMonth + 1, selectedYear);
                 listener.onMonthSelected(monthText);
                 dismiss();
             } else {

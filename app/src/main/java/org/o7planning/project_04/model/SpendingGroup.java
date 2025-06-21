@@ -10,6 +10,7 @@ public class SpendingGroup {
     private long tongChi;
     private String iconName;
     private List<GIAODICH> giaodichList;
+    private boolean isExpanded = false;
 
     public SpendingGroup(int idDM, String tnDM, long tongChi, String iconName, List<GIAODICH> giaodichList) {
         this.idDM = idDM;
@@ -57,5 +58,13 @@ public class SpendingGroup {
 
     public void setGiaodichList(List<GIAODICH> giaodichList) {
         this.giaodichList = giaodichList;
+    }
+
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
     }
 }

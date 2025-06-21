@@ -20,6 +20,7 @@
         android:background="@color/white"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="@null"
         android:layout_alignParentBottom="true"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

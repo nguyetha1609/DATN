@@ -81,8 +81,23 @@ public class SpendingLimitActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent); // Cập nhật intent mới nếu có
+
+        if (intent.getBooleanExtra("limit_deleted", false)) {
+            loadLimitList(); // Load lại danh sách sau khi xóa
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        loadLimitList();
+
+        // Chỉ load lại nếu không phải quay lại từ việc xóa
+        boolean fromDelete = getIntent().getBooleanExtra("limit_deleted", false);
+        if (!fromDelete) {
+            loadLimitList();
+        }
     }
 }

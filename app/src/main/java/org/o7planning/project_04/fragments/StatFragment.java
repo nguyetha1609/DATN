@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,6 +47,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import android.graphics.Typeface;
+
 
 public class StatFragment extends Fragment {
     public StatFragment() {
@@ -71,6 +75,8 @@ public class StatFragment extends Fragment {
         View view = inflater.inflate(R.layout.stat_fragment, container, false);
         initViews(view);
         setUpListeners();
+        loadCurrentWeekStats();
+
         selectTimeFrame(selectedTimeFrame);
         selectTab(selectedTab);
         selectChartType(selectedChartType);
@@ -320,11 +326,26 @@ public class StatFragment extends Fragment {
 
         String loai = selectedTab == 0 ? "ChiTieu" : "ThuNhap";
 //format theo định dạng ngày lưu trong db để truy vấn được yyyy-MM-dd
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String start = startDate.format(formatter);
-        String end = endDate.format(formatter);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String start = startDate.format(formatter) + " 00:00:00";
+        String end = endDate.format(formatter) + " 23:59:59";
 
         List<categoryStat> catestat = db.getStatsByDateRange(loai,start,end);
+
+        //  Kiểm tra nếu không có dữ liệu thì hiện thông báo và return
+        if (catestat.isEmpty()) {
+            pieChart.clear();  // Xoá dữ liệu cũ nếu có
+            pieChart.setNoDataText("Không có dữ liệu trong khoảng thời gian này");
+            pieChart.setNoDataTextColor(Color.GRAY);
+            pieChart.setNoDataTextTypeface(Typeface.DEFAULT_BOLD);
+            pieChart.invalidate();
+
+            if (adapter != null) {
+                adapter.categoryList.clear();
+                adapter.notifyDataSetChanged();
+            }
+            return;
+        }
 
 
 
@@ -337,7 +358,7 @@ public class StatFragment extends Fragment {
         }
 
         PieDataSet dataSet = new PieDataSet(entries,"");
-        dataSet.setColors(colors);
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         dataSet.setValueTextSize(14f);
         dataSet.setValueTextColor(Color.WHITE);
         dataSet.setValueFormatter(new PercentFormatter(pieChart));
@@ -345,7 +366,6 @@ public class StatFragment extends Fragment {
 
         PieData pieData = new PieData(dataSet);
         pieChart.setData(pieData);
-       // pieChart.setNoDataText("");
         pieChart.setDrawEntryLabels(true);
         pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(false);
@@ -368,12 +388,26 @@ public class StatFragment extends Fragment {
         DBHelper db = new DBHelper(requireContext());
         String loai = selectedTab ==0 ? "ChiTieu" :"ThuNhap";
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String start = startDate.format(formatter);
-        String end = endDate.format(formatter);
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      String start = startDate.format(formatter) + " 00:00:00";
+      String end = endDate.format(formatter) + " 23:59:59";
 
         List<categoryStat> catestat= db.getStatsByDateRange(loai,start,end);
 
+      if (catestat.isEmpty()) {
+          barChart.clear(); // Xoá dữ liệu cũ nếu có
+          barChart.setNoDataText("Không có dữ liệu trong khoảng thời gian này");
+          barChart.setNoDataTextColor(Color.BLACK);
+          barChart.setNoDataTextTypeface(Typeface.DEFAULT_BOLD); // nhớ import
+          barChart.invalidate();
+
+          // Xoá danh sách cũ nếu có
+          if (adapter != null) {
+              adapter.categoryList = new ArrayList<>();
+              adapter.notifyDataSetChanged();
+          }
+          return;
+      }
 
         List<BarEntry> entries = new ArrayList<>();
         List<String> labels = new ArrayList<>();
@@ -387,7 +421,7 @@ public class StatFragment extends Fragment {
         }
 
       BarDataSet dataSet = new BarDataSet(entries,"");
-        dataSet.setColors(colors);
+      dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         dataSet.setValueTextColor(Color.BLACK);
         dataSet.setValueTextSize(14f);
 
@@ -440,8 +474,15 @@ public class StatFragment extends Fragment {
     private  void updateSummary(String startDate,String endDate){
         DBHelper dbHelper = new DBHelper(getContext());
 
-        List<categoryStat> chiTieuList =dbHelper.getStatsByDateRange("ChiTieu",startDate,endDate);
-        List<categoryStat> thuNhapList= dbHelper.getStatsByDateRange("ThuNhap",startDate,endDate);
+        // Chuyển đổi startDate và endDate từ "dd/MM/yyyy" thành "yyyy-MM-dd HH:mm:ss"
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
+        DateTimeFormatter dbFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        String start = LocalDate.parse(startDate, inputFormatter).format(dbFormatter) + " 00:00:00";
+        String end = LocalDate.parse(endDate, inputFormatter).format(dbFormatter) + " 23:59:59";
+
+        List<categoryStat> chiTieuList =dbHelper.getStatsByDateRange("ChiTieu",start,end);
+        List<categoryStat> thuNhapList= dbHelper.getStatsByDateRange("ThuNhap",start,end);
 
         float tongChiTieu = 0f;
         for(categoryStat item :chiTieuList){
@@ -459,6 +500,27 @@ public class StatFragment extends Fragment {
         tvChi.setText("Chi Tiêu : -"+chiFormatted);
         tvThu.setText("Thu Nhập : +"+thuFormatted);
     }
+
+    private void loadCurrentWeekStats() {
+        LocalDate today = LocalDate.now(); // Lấy ngày hiện tại
+
+        // Tìm Thứ 2 đầu tuần
+        LocalDate startOfWeek = today.with(java.time.DayOfWeek.MONDAY);
+        LocalDate endOfWeek = startOfWeek.plusDays(6);
+
+        currentStartDate = startOfWeek;
+        currentEndDate = endOfWeek;
+
+        // Cập nhật TextView hiển thị ngày
+        DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
+        String displayText = startOfWeek.format(displayFormatter) + " - " + endOfWeek.format(displayFormatter);
+        tvDateRange.setText(displayText);
+
+        // Cập nhật biểu đồ và tổng kết
+        updateChart(currentStartDate, currentEndDate);
+        updateSummary(startOfWeek.format(displayFormatter), endOfWeek.format(displayFormatter));
+    }
+
 }
 
 

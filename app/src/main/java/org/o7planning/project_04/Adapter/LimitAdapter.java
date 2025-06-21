@@ -68,8 +68,16 @@ public class LimitAdapter extends RecyclerView.Adapter<LimitAdapter.LimitViewHol
         holder.tvThoiGian.setText(ngayGD + " - " + ngayKT);
         holder.TvSotien.setText(formatCurrency(limit.getSoTien())+ "đ");
 
-        long tienConlai= limit.getSoTien() - getSotienDaDung(limit.getID_HM());
-        holder.TvTienconLai.setText(formatCurrency(tienConlai)+ "đ");
+        long daChi = getSotienDaDung(limit.getID_HM());
+        long tienConLai = limit.getSoTien() - daChi;
+
+        if (tienConLai >= 0) {
+            holder.TvTienconLai.setText(formatCurrency(tienConLai) + "đ");
+            holder.TvTienconLai.setTextColor(context.getResources().getColor(R.color.black)); // màu bình thường
+        } else {
+            holder.TvTienconLai.setText("-" + formatCurrency(Math.abs(tienConLai)) + "đ"); // hiện số âm
+            holder.TvTienconLai.setTextColor(context.getResources().getColor(R.color.red)); // màu đỏ cảnh báo
+        }
 
         long daysLeft= getDaysLeft(limit.getNgayKetThuc());
         if (daysLeft == 0) {
@@ -81,7 +89,11 @@ public class LimitAdapter extends RecyclerView.Adapter<LimitAdapter.LimitViewHol
 
         }
 
-        int progress= (int) ((limit.getSoTien()-tienConlai)/limit.getSoTien()*100);
+        long tongTien = limit.getSoTien();
+        int progress = 0;
+        if (tongTien > 0) {
+            progress = (int) (((tongTien - tienConLai) * 100) / tongTien);
+        }
         holder.progressBar.setProgress(progress);
 
         holder.imgIcon.setImageResource(getIconResId(limit));

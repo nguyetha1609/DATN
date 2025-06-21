@@ -22,6 +22,7 @@ import com.kizitonwose.calendar.view.CalendarView;
 import com.kizitonwose.calendar.view.MonthDayBinder;
 import com.kizitonwose.calendar.view.ViewContainer;
 
+
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -104,47 +105,47 @@ public class CustomRangeBottomSheet extends BottomSheetDialogFragment {
             TextView dayText = container.dayText;
             View dayContainer = container.dayContainer;
 
-            dayText.setText(String.valueOf(day.getDate().getDayOfMonth()));
             LocalDate date = day.getDate();
+            dayText.setText(String.valueOf(date.getDayOfMonth()));
 
-
-            // Reset giao diện
+            // Reset
             dayContainer.setBackgroundResource(0);
             dayText.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
 
             LocalDate today = LocalDate.now();
+            YearMonth dayMonth = YearMonth.from(date);
+            boolean isInCurrentMonth = dayMonth.equals(currentMonth);
 
             if (date.isAfter(today)) {
                 dayText.setAlpha(0.3f);
                 dayText.setTypeface(null, Typeface.NORMAL);
-                dayContainer.setOnClickListener(null);  // Không cho chọn
-            } else {
+                dayContainer.setOnClickListener(null);
+            } else if (isInCurrentMonth) {
                 dayText.setAlpha(1f);
                 dayText.setTypeface(null, Typeface.BOLD);
                 dayContainer.setOnClickListener(v -> onDateClicked(day));
+            } else {
+                dayText.setAlpha(0.3f);
+                dayText.setTypeface(null, Typeface.NORMAL);
+                dayContainer.setOnClickListener(null);
             }
 
-            // Highlight logic
-            if (startDate != null && endDate != null) {
-                if (!day.getDate().isBefore(startDate.getDate()) &&
-                        !day.getDate().isAfter(endDate.getDate())) {
-                    dayContainer.setBackgroundResource(R.drawable.range_middle);
-                    dayText.setTextColor(Color.BLACK);
-                }
-            }
-
-            if (startDate != null && day.getDate().equals(startDate.getDate())) {
-                dayContainer.setBackgroundResource(R.drawable.range_start_end);
-                dayText.setTextColor(Color.BLACK);
-            } else if (endDate != null && day.getDate().equals(endDate.getDate())) {
-                dayContainer.setBackgroundResource(R.drawable.range_start_end);
+            // Highlight range
+            if (startDate != null && endDate != null &&
+                    !date.isBefore(startDate.getDate()) && !date.isAfter(endDate.getDate())) {
+                dayContainer.setBackgroundResource(R.drawable.range_middle);
                 dayText.setTextColor(Color.BLACK);
             }
 
-
-
-
+            if (startDate != null && date.equals(startDate.getDate())) {
+                dayContainer.setBackgroundResource(R.drawable.range_start_end);
+                dayText.setTextColor(Color.BLACK);
+            } else if (endDate != null && date.equals(endDate.getDate())) {
+                dayContainer.setBackgroundResource(R.drawable.range_start_end);
+                dayText.setTextColor(Color.BLACK);
+            }
         }
+
     }
 
     private void initCalendar() {

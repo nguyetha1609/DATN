@@ -105,10 +105,11 @@ public class EditLimitActivity extends AppCompatActivity {
                         Toast.makeText(this, "Đã xóa hạn mức", Toast.LENGTH_SHORT).show();
 
                         // Quay lại màn hình SpendingLimitActivity
-                        Intent intent = new Intent();
+                        Intent intent = new Intent(EditLimitActivity.this, SpendingLimitActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         intent.putExtra("limit_deleted", true);
-                        setResult(RESULT_OK, intent);
-                        finish();
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
                     })
                     .setNegativeButton("Hủy", null)
                     .show();

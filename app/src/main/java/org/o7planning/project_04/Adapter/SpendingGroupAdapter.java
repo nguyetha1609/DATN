@@ -2,6 +2,7 @@ package org.o7planning.project_04.Adapter;
 
 import org.o7planning.project_04.R;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,8 +63,13 @@ public class SpendingGroupAdapter extends RecyclerView.Adapter<SpendingGroupAdap
             holder.imgCategoryIcon.setImageResource(R.drawable.ic_food);
         }
 
-        holder.layoutChildContainer.setVisibility(View.GONE);
-        holder.imgToggleArrow.setRotation(0f);
+        if (group.isExpanded()) {
+            holder.layoutChildContainer.setVisibility(View.VISIBLE);
+            holder.imgToggleArrow.setRotation(180f);
+        } else {
+            holder.layoutChildContainer.setVisibility(View.GONE);
+            holder.imgToggleArrow.setRotation(0f);
+        }
 
         holder.layoutChildContainer.removeAllViews();
 
@@ -75,18 +81,21 @@ public class SpendingGroupAdapter extends RecyclerView.Adapter<SpendingGroupAdap
             TextView txtAmount = childView.findViewById(R.id.tv_child_amount);
 
             txtDate.setText(gd.getThoiGian());
+            Log.d("DEBUG_DATE", "Ngày giao dịch: " + gd.getThoiGian());
+
             txtAmount.setText(String.format("%,d đ",gd.getSoTien()));
 
             holder.layoutChildContainer.addView(childView);
         }
         holder.layoutHeader.setOnClickListener(v -> {
-            if(holder.layoutChildContainer.getVisibility()==View.GONE){
-                holder.layoutChildContainer.setVisibility(View.VISIBLE);
-                holder.imgToggleArrow.setRotation(180f);
-            }else {
-                holder.layoutChildContainer.setVisibility(View.GONE);
-                holder.imgToggleArrow.setRotation(0f);
-            }
+            boolean newState = !group.isExpanded();
+            group.setExpanded(newState);
+            notifyItemChanged(holder.getAdapterPosition());
+        });
+        holder.imgToggleArrow.setOnClickListener(v -> {
+            boolean newState = !group.isExpanded();
+            group.setExpanded(newState);
+            notifyItemChanged(holder.getAdapterPosition());
         });
     }
     @Override

@@ -74,25 +74,7 @@ private int idTk;
         btn_save_limit= findViewById(R.id.btn_save_limit);
         et_limit_name=findViewById(R.id.et_limit_name);
         et_amount = findViewById(R.id.et_amount);
-        DBHelper dbHelper =new DBHelper(this);
 
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT ID_GD, SoTien, ThoiGian FROM GIAODICH WHERE ID_TK = ?", new String[]{"2"});
-
-        if (cursor.moveToFirst()) {
-            do {
-                int idGD = cursor.getInt(cursor.getColumnIndexOrThrow("ID_GD"));
-                long soTien = cursor.getLong(cursor.getColumnIndexOrThrow("SoTien"));
-                String thoiGian = cursor.getString(cursor.getColumnIndexOrThrow("ThoiGian"));
-
-                android.util.Log.d("DEBUG_GIAODICH", "ID: " + idGD + " | SoTien: " + soTien + " | ThoiGian: " + thoiGian);
-            } while (cursor.moveToNext());
-        } else {
-            android.util.Log.d("DEBUG_GIAODICH", "Không có giao dịch nào với ID_TK = 2");
-        }
-
-        cursor.close();
-        db.close();
 
 
         //Lấy ID_TKAdd commentMore actions
@@ -138,8 +120,8 @@ private int idTk;
             long soTien;
             try {
                 soTien = Long.parseLong(sotien);
-                if (soTien < 0) {
-                    Toast.makeText(this, "Số tiền không được nhỏ hơn 0", Toast.LENGTH_SHORT).show();
+                if (soTien <= 0) {
+                    Toast.makeText(this, "Số tiền phải lớn hơn 0", Toast.LENGTH_SHORT).show();
                     return;
                 }
             } catch (NumberFormatException e) {

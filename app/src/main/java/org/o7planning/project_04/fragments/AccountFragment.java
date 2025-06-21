@@ -66,7 +66,7 @@ public class AccountFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_account, container, false);
+        View view = inflater.inflate(R.layout.account_fragment, container, false);
 
         dbHelper = new PrepopulatedDBHelper(requireContext());
         database = dbHelper.openDatabase();

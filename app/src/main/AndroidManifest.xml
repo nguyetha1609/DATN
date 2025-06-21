@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
 
     <uses-sdk
         android:minSdkVersion="21"
@@ -50,7 +52,7 @@
 <!--        man hinh chi tiet cac khoan chi-->
         <activity android:name=".activities.spendingList_Activity" />
 
-        <activity android:name=".activities.AccountActivity" />
+<!--        <activity android:name=".activities.AccountActivity" />-->
         <activity android:name=".activities.AccountInforActivity" />
         <activity android:name=".activities.ChangePasswordActivity" />
         <activity android:name=".activities.ForgotPasswordActivity" />

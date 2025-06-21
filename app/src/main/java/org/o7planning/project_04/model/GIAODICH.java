@@ -56,8 +56,8 @@ public class GIAODICH {
         return ThoiGian;
     }
 
-    public void setThoiGian(String ThoiGian) {
-        ThoiGian = ThoiGian;
+    public void setThoiGian(String thoiGian) {
+        ThoiGian = thoiGian;
     }
 
     public String getGhiChu() {

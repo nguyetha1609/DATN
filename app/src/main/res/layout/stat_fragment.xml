@@ -8,7 +8,9 @@
     android:scrollbars="none"
     android:overScrollMode="ifContentScrolls"
     android:padding="16dp"
-    tools:context="org.o7planning.project_04.fragments.statfragment">
+    android:paddingBottom="80dp"
+    android:clipToPadding="false"
+    tools:context="org.o7planning.project_04.fragments.StatFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -250,5 +252,14 @@
             app:layout_constraintTop_toBottomOf="@id/llSummary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintTop_toBottomOf="@id/rvCategoryDetail"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

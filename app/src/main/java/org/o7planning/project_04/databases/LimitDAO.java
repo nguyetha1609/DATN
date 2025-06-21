@@ -179,6 +179,9 @@ public class LimitDAO {
             limit.setSoTien(cursor.getLong(cursor.getColumnIndexOrThrow("SoTien")));
             limit.setNgayGD(cursor.getString(cursor.getColumnIndexOrThrow("NgayBD")));
             limit.setNgayKetThuc(cursor.getString(cursor.getColumnIndexOrThrow("NgayKT")));
+
+            limit.setListDanhMuc(getDMByHM(limitId));
+
             cursor.close();
             return limit;
 
@@ -316,7 +319,8 @@ public class LimitDAO {
         List<GIAODICH> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        String sql = "SELECT gd.* FROM GIAODICH gd " +
+        String sql = "SELECT gd.ID_GD, gd.ID_DM, gd.SoTien, gd.ThoiGian, gd.GhiChu " +
+                "FROM GIAODICH gd " +
                 "INNER JOIN HANMUC_DANHMUC hm ON gd.ID_DM = hm.ID_DM " +
                 "WHERE gd.ID_DM = ? AND hm.ID_HM = ? AND gd.ThoiGian BETWEEN ? AND ? AND gd.ID_TK = ?";
 
@@ -364,5 +368,33 @@ public class LimitDAO {
         cursor.close();
         return total;
     }
+
+    public List<Limit> getLimitsByCategory(int categoryId) {
+        List<Limit> limits = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String sql = "SELECT hm.* FROM HANMUC hm " +
+                "JOIN HANMUC_DANHMUC hmdm ON hm.ID_HM = hmdm.ID_HM " +
+                "WHERE hmdm.ID_DM = ?";
+
+        Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(categoryId)});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("ID_HM"));
+                String tenHM = cursor.getString(cursor.getColumnIndexOrThrow("TenHM"));
+                long soTien = cursor.getLong(cursor.getColumnIndexOrThrow("SoTien"));
+                String ngayBD = cursor.getString(cursor.getColumnIndexOrThrow("NgayBD"));
+                String ngayKT = cursor.getString(cursor.getColumnIndexOrThrow("NgayKT"));
+                List<Integer> listDM = getDMByHM(id);
+
+                limits.add(new Limit(id, tenHM, soTien, ngayBD, ngayKT, listDM));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        return limits;
+    }
+
 
 }
