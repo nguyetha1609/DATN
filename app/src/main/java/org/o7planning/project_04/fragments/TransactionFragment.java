@@ -365,15 +365,23 @@ public class TransactionFragment extends Fragment {
 
         // Cập nhật tổng chi/thu nếu cần:
         long tongChi = 0, tongThu = 0;
-        for (GIAODICH gd : listGiaoDich) {
-            category cat = mapDanhMuc.get(gd.getID_DM());
+        DBHelper dbHelper = new DBHelper(getContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT ID_DM, SoTien FROM GIAODICH WHERE ID_TK = ?", new String[]{String.valueOf(userId)});
+        while (cursor.moveToNext()) {
+            int idDM = cursor.getInt(0);
+            long soTien = cursor.getLong(1);
+            category cat = mapDanhMuc.get(idDM);
             if (cat == null) continue;
+
             if ("ChiTieu".equals(cat.getLoaiDM())) {
-                tongChi += gd.getSoTien();
+                tongChi += soTien;
             } else if ("ThuNhap".equals(cat.getLoaiDM())) {
-                tongThu += gd.getSoTien();
+                tongThu += soTien;
             }
         }
+        cursor.close();
+        db.close();
 
         btnChiTieu.setText("Chi tiêu:\n " + formatCurrency(tongChi));
         btnThuNhap.setText("Thu nhập:\n " + formatCurrency(tongThu));
