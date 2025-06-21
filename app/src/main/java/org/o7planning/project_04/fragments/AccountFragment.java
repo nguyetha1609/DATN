@@ -30,6 +30,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.o7planning.project_04.R;
 import org.o7planning.project_04.activities.AccountInforActivity;
 import org.o7planning.project_04.activities.ChangePasswordActivity;
+import org.o7planning.project_04.activities.LoginActivity;
 import org.o7planning.project_04.activities.MainActivity;
 import org.o7planning.project_04.activities.SpendingLimitActivity;
 import org.o7planning.project_04.databases.PrepopulatedDBHelper;
@@ -176,7 +177,7 @@ public class AccountFragment extends Fragment {
         SharedPreferences sharedPrefs = requireActivity().getSharedPreferences("LOGIN_PREF", Context.MODE_PRIVATE);
         sharedPrefs.edit().clear().apply();
 
-        Intent intent = new Intent(getActivity(), MainActivity.class);
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         requireActivity().finish();

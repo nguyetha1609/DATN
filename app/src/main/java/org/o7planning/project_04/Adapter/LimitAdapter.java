@@ -25,6 +25,7 @@ import org.o7planning.project_04.R;
 import org.o7planning.project_04.activities.LimitDetailActivity;
 import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.databases.LimitDAO;
+import org.o7planning.project_04.databases.Limit_CateDAO;
 import org.o7planning.project_04.model.Limit;
 import org.o7planning.project_04.model.category;
 
@@ -187,7 +188,9 @@ holder.itemView.setOnClickListener(v -> {
     }
     private Drawable getIconDrawable(Limit limit) {
          dblimit = new LimitDAO(context);
-        List<category> categories = dblimit.getCategoriesForLimit(limit.getID_HM());
+        Limit_CateDAO limitCateDAO = new Limit_CateDAO(new DBHelper(context).getReadableDatabase());
+
+        List<category> categories = limitCateDAO.getCategoriesForLimit(limit.getID_HM());
 
         if (categories == null || categories.isEmpty()) {
             return context.getResources().getDrawable(R.drawable.ic_default);
