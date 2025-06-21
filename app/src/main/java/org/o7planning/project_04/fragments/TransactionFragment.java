@@ -1,10 +1,12 @@
 package org.o7planning.project_04.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +27,9 @@ import org.o7planning.project_04.Adapter.TransactionAdapter;
 import org.o7planning.project_04.R;
 import org.o7planning.project_04.activities.AddTransactionActivity;
 import org.o7planning.project_04.databases.DBHelper;
+import org.o7planning.project_04.databases.LimitDAO;
 import org.o7planning.project_04.model.GIAODICH;
+import org.o7planning.project_04.model.Limit;
 import org.o7planning.project_04.model.category;
 
 import java.text.SimpleDateFormat;
@@ -38,7 +42,7 @@ import java.util.Map;
 
 public class TransactionFragment extends Fragment {
     private Button btnAdd, btnChiTieu, btnThuNhap;
-    private TextView tabExpense, tabIncome, filterDay, filterMonth, filterYear, filterAll;
+    private TextView tabExpense, tabIncome, filterDay, filterMonth, filterYear, filterAll,tvLimit, tvNotice, tvSoDu;
     private static final int REQUEST_ADD_TRANSACTION = 1001;
     private static final int REQUEST_EDIT_TRANSACTION = 1002;
     private RecyclerView recyclerView;
@@ -169,6 +173,8 @@ public class TransactionFragment extends Fragment {
             } else {
                 transactionAdapter.updateData(listGiaoDich);
             }
+            // Sau khi cập nhật danh sách giao dịch, cập nhật hạn mức
+            updateBudgetUI();
         } finally {
             if (cursorCategory != null) {
                 cursorCategory.close();
@@ -202,14 +208,14 @@ public class TransactionFragment extends Fragment {
         db.close();
 
         if (rowsAffected > 0) {
-            listGiaoDich.remove(position);
-            transactionAdapter.notifyItemRemoved(position);
-            // Optionally, show a toast message
-            // Toast.makeText(getContext(), "Giao dịch đã xóa", Toast.LENGTH_SHORT).show();
+//            listGiaoDich.remove(position);
+//            transactionAdapter.notifyItemRemoved(position);
+            loadTransactions();
         } else {
             // If deletion fails, revert the swipe
             transactionAdapter.notifyItemChanged(position);
             // Toast.makeText(getContext(), "Lỗi khi xóa giao dịch", Toast.LENGTH_SHORT).show();
+            updateBudgetUI();
         }
     }
 
@@ -219,6 +225,7 @@ public class TransactionFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if ((requestCode == REQUEST_ADD_TRANSACTION || requestCode == REQUEST_EDIT_TRANSACTION) && resultCode == Activity.RESULT_OK) {
             loadTransactions(); // gọi hàm load lại dữ liệu vào ListView
+            updateBudgetUI();
         }
     }
 
@@ -236,6 +243,9 @@ public class TransactionFragment extends Fragment {
         filterMonth = view.findViewById(R.id.filter_month);
         filterYear = view.findViewById(R.id.filter_year);
         filterAll = view.findViewById(R.id.filter_all);
+        tvLimit = view.findViewById(R.id.tvLimit);
+        tvNotice = view.findViewById(R.id.tvNotice);
+        tvSoDu = view.findViewById(R.id.tvSoDu);
 
         recyclerView = view.findViewById(R.id.rvTransactions);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -303,7 +313,7 @@ public class TransactionFragment extends Fragment {
         selectedTab.setTextColor(getResources().getColor(R.color.colorPrimary));
     }
 
-
+    //Phương thức chỉnh sửa giao dịch
     public void openEditTransaction(GIAODICH giaoDich) {
         Intent intent = new Intent(getContext(), AddTransactionActivity.class);
         intent.putExtra("isEditMode", true);
@@ -325,4 +335,52 @@ public class TransactionFragment extends Fragment {
 
         startActivityForResult(intent, REQUEST_EDIT_TRANSACTION);
     }
+
+    private void updateBudgetUI() {
+        SharedPreferences preferences = getContext().getSharedPreferences("LOGIN_PREF", Context.MODE_PRIVATE);
+        int userId = preferences.getInt("ID_TK", -1);
+
+        LimitDAO limitDAO = new LimitDAO(getContext());
+        List<Limit> limits = limitDAO.getAllLimits(userId);
+
+        if (limits.isEmpty()) return; // Không có hạn mức nào
+
+        // Ví dụ lấy hạn mức đầu tiên (hoặc giới hạn logic theo thời gian bạn muốn)
+        Limit limit = limits.get(0);
+
+        long totalLimit = limit.getSoTien();
+        long spentAmount = limitDAO.getTotalSpentInLimit(limit.getID_HM(), userId, limit.getNgayGD(), limit.getNgayKetThuc());
+        long remaining = totalLimit - spentAmount;
+
+        tvLimit.setText("Hạn mức: " + formatCurrency(totalLimit));
+
+        if (remaining < 0) {
+            tvNotice.setText("Vượt quá chi tiêu: " + formatCurrency(-remaining));
+            tvNotice.setTextColor(Color.RED);
+        } else {
+            tvNotice.setText("");
+        }
+
+        tvSoDu.setText("Số dư: " + formatCurrency(Math.max(remaining, 0)));
+
+        // Cập nhật tổng chi/thu nếu cần:
+        long tongChi = 0, tongThu = 0;
+        for (GIAODICH gd : listGiaoDich) {
+            category cat = mapDanhMuc.get(gd.getID_DM());
+            if (cat == null) continue;
+            if ("ChiTieu".equals(cat.getLoaiDM())) {
+                tongChi += gd.getSoTien();
+            } else if ("ThuNhap".equals(cat.getLoaiDM())) {
+                tongThu += gd.getSoTien();
+            }
+        }
+
+        btnChiTieu.setText("Chi tiêu:\n " + formatCurrency(tongChi));
+        btnThuNhap.setText("Thu nhập:\n " + formatCurrency(tongThu));
+    }
+
+    private String formatCurrency(long value) {
+        return String.format(Locale.getDefault(), "%,d", value).replace(',', '.');
+    }
+
 }
