@@ -8,20 +8,20 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.o7planning.project_04.Adapter.TransactionAdapter;
 import org.o7planning.project_04.R;
@@ -31,6 +31,8 @@ import org.o7planning.project_04.databases.LimitDAO;
 import org.o7planning.project_04.model.GIAODICH;
 import org.o7planning.project_04.model.Limit;
 import org.o7planning.project_04.model.category;
+import org.threeten.bp.LocalDate; // Import LocalDate từ ThreeTenABP
+import org.threeten.bp.format.DateTimeFormatter; // Import DateTimeFormatter từ ThreeTenABP
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,18 +42,35 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class TransactionFragment extends Fragment {
+public class TransactionFragment extends Fragment implements HomeFragment.OnDateSelectedListener { // Triển khai giao diện
     private Button btnAdd, btnChiTieu, btnThuNhap;
-    private TextView tabExpense, tabIncome, filterDay, filterMonth, filterYear, filterAll,tvLimit, tvNotice, tvSoDu;
+    private TextView tabExpense, tabIncome, filterDay, filterMonth, filterYear, filterAll, tvLimit, tvNotice, tvSoDu;
     private static final int REQUEST_ADD_TRANSACTION = 1001;
     private static final int REQUEST_EDIT_TRANSACTION = 1002;
     private RecyclerView recyclerView;
     private List<GIAODICH> listGiaoDich;
-    private Map<Integer, category> mapDanhMuc; // Map chứa danh mục
+    private Map<Integer, category> mapDanhMuc;
     private TransactionAdapter transactionAdapter;
-    private String currentTransactionType = "all"; // Biến để lưu loại giao dịch hiện tại: "all", "expense", "income"
-    private String currentFilterPeriod = "all"; // Biến để lưu loại lọc thời gian: "all", "day", "month", "year"
 
+    private String currentTransactionType = "all";
+    private String currentFilterPeriod = "all";
+    private LocalDate selectedFilterDate = LocalDate.now(); // Thêm biến để lưu ngày đã chọn
+
+    @Override
+    public void onDateSelected(LocalDate date) {
+        selectedFilterDate = date;
+        currentFilterPeriod = "day"; // Khi chọn một ngày cụ thể, lọc theo ngày
+        loadTransactions();
+        updateFilterTabColors(filterDay); // Cập nhật màu tab lọc ngày
+    }
+
+    @Override
+    public void onResetToToday() {
+        selectedFilterDate = LocalDate.now();
+        currentFilterPeriod = "all"; // Reset về "all" để hiển thị tất cả giao dịch
+        loadTransactions();
+        updateFilterTabColors(filterAll); // Cập nhật màu tab lọc tất cả
+    }
 
     private void loadTransactions() {
         listGiaoDich = new ArrayList<>();
@@ -63,7 +82,6 @@ public class TransactionFragment extends Fragment {
         Cursor cursorGiaoDich = null;
 
         try {
-            // 1. Tải danh mục vào mapDanhMuc trước
             cursorCategory = db.rawQuery("SELECT ID_DM, TenDM, HinhAnh, LoaiDM FROM DANHMUC", null);
             while (cursorCategory.moveToNext()) {
                 int idDm = cursorCategory.getInt(0);
@@ -74,13 +92,11 @@ public class TransactionFragment extends Fragment {
                 mapDanhMuc.put(idDm, cat);
             }
 
-            // 2. Tải giao dịch và lọc theo loại
             String query = "SELECT ID_GD, ID_DM, SoTien, ThoiGian, GhiChu FROM GIAODICH";
-            String orderBy = " ORDER BY ThoiGian DESC"; // Sắp xếp theo thời gian mới nhất
+            String orderBy = " ORDER BY ThoiGian DESC";
             List<String> whereClauses = new ArrayList<>();
             List<String> selectionArgs = new ArrayList<>();
 
-            // Lọc theo loại giao dịch (chi tiêu/thu nhập)
             if ("expense".equals(currentTransactionType)) {
                 List<Integer> expenseCategoryIds = new ArrayList<>();
                 for (Map.Entry<Integer, category> entry : mapDanhMuc.entrySet()) {
@@ -113,22 +129,21 @@ public class TransactionFragment extends Fragment {
                 }
             }
 
-            // Lọc theo thời gian (ngày/tháng/năm/tất cả)
-            Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-
-            if ("day".equals(currentFilterPeriod)) {
-                String today = sdfDate.format(calendar.getTime());
-                whereClauses.add("strftime('%Y-%m-%d', ThoiGian) = ?");
-                selectionArgs.add(today);
-            } else if ("month".equals(currentFilterPeriod)) {
-                String currentMonth = new SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(calendar.getTime());
-                whereClauses.add("strftime('%Y-%m', ThoiGian) = ?");
-                selectionArgs.add(currentMonth);
-            } else if ("year".equals(currentFilterPeriod)) {
-                String currentYear = new SimpleDateFormat("yyyy", Locale.getDefault()).format(calendar.getTime());
-                whereClauses.add("strftime('%Y', ThoiGian) = ?");
-                selectionArgs.add(currentYear);
+            // Lọc theo thời gian dựa trên selectedFilterDate và currentFilterPeriod
+            if (selectedFilterDate != null) {
+                if ("day".equals(currentFilterPeriod)) {
+                    String today = selectedFilterDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                    whereClauses.add("strftime('%Y-%m-%d', ThoiGian) = ?");
+                    selectionArgs.add(today);
+                } else if ("month".equals(currentFilterPeriod)) {
+                    String currentMonth = selectedFilterDate.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+                    whereClauses.add("strftime('%Y-%m', ThoiGian) = ?");
+                    selectionArgs.add(currentMonth);
+                } else if ("year".equals(currentFilterPeriod)) {
+                    String currentYear = selectedFilterDate.format(DateTimeFormatter.ofPattern("yyyy"));
+                    whereClauses.add("strftime('%Y', ThoiGian) = ?");
+                    selectionArgs.add(currentYear);
+                }
             }
 
             String finalWhereClause = "";
@@ -154,7 +169,6 @@ public class TransactionFragment extends Fragment {
 
                 transactionAdapter.setOnItemClickListener(this::openEditTransaction);
 
-                // Thêm ItemTouchHelper cho chức năng vuốt để xóa
                 ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
                     @Override
                     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -173,7 +187,6 @@ public class TransactionFragment extends Fragment {
             } else {
                 transactionAdapter.updateData(listGiaoDich);
             }
-            // Sau khi cập nhật danh sách giao dịch, cập nhật hạn mức
             updateBudgetUI();
         } finally {
             if (cursorCategory != null) {
@@ -194,7 +207,6 @@ public class TransactionFragment extends Fragment {
                 .setMessage("Bạn có chắc chắn muốn xóa giao dịch này?")
                 .setPositiveButton("OK", (dialog, which) -> deleteTransaction(giaoDich, position))
                 .setNegativeButton("Hủy", (dialog, which) -> {
-                    // Nếu hủy, cập nhật lại adapter để item trở về vị trí cũ
                     transactionAdapter.notifyItemChanged(position);
                     dialog.dismiss();
                 })
@@ -208,23 +220,18 @@ public class TransactionFragment extends Fragment {
         db.close();
 
         if (rowsAffected > 0) {
-//            listGiaoDich.remove(position);
-//            transactionAdapter.notifyItemRemoved(position);
             loadTransactions();
         } else {
-            // If deletion fails, revert the swipe
             transactionAdapter.notifyItemChanged(position);
-            // Toast.makeText(getContext(), "Lỗi khi xóa giao dịch", Toast.LENGTH_SHORT).show();
             updateBudgetUI();
         }
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if ((requestCode == REQUEST_ADD_TRANSACTION || requestCode == REQUEST_EDIT_TRANSACTION) && resultCode == Activity.RESULT_OK) {
-            loadTransactions(); // gọi hàm load lại dữ liệu vào ListView
+            loadTransactions();
             updateBudgetUI();
         }
     }
@@ -250,6 +257,13 @@ public class TransactionFragment extends Fragment {
         recyclerView = view.findViewById(R.id.rvTransactions);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         loadTransactions();
+
+        // Thêm HomeFragment vào fragment_container
+        if (getChildFragmentManager().findFragmentById(R.id.fragment_container) == null) {
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new HomeFragment())
+                    .commit();
+        }
 
         btnAdd.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), AddTransactionActivity.class);
@@ -280,24 +294,28 @@ public class TransactionFragment extends Fragment {
 
         filterDay.setOnClickListener(v -> {
             currentFilterPeriod = "day";
+            selectedFilterDate = LocalDate.now(); // Đặt lại ngày hiện tại khi chọn lọc theo ngày
             loadTransactions();
             updateFilterTabColors(filterDay);
         });
 
         filterMonth.setOnClickListener(v -> {
             currentFilterPeriod = "month";
+            selectedFilterDate = LocalDate.now(); // Đặt lại ngày hiện tại khi chọn lọc theo tháng
             loadTransactions();
             updateFilterTabColors(filterMonth);
         });
 
         filterYear.setOnClickListener(v -> {
             currentFilterPeriod = "year";
+            selectedFilterDate = LocalDate.now(); // Đặt lại ngày hiện tại khi chọn lọc theo năm
             loadTransactions();
             updateFilterTabColors(filterYear);
         });
 
         filterAll.setOnClickListener(v -> {
             currentFilterPeriod = "all";
+            selectedFilterDate = null; // Đặt selectedFilterDate về null khi chọn lọc tất cả
             loadTransactions();
             updateFilterTabColors(filterAll);
         });
@@ -313,7 +331,6 @@ public class TransactionFragment extends Fragment {
         selectedTab.setTextColor(getResources().getColor(R.color.colorPrimary));
     }
 
-    //Phương thức chỉnh sửa giao dịch
     public void openEditTransaction(GIAODICH giaoDich) {
         Intent intent = new Intent(getContext(), AddTransactionActivity.class);
         intent.putExtra("isEditMode", true);
@@ -343,9 +360,8 @@ public class TransactionFragment extends Fragment {
         LimitDAO limitDAO = new LimitDAO(getContext());
         List<Limit> limits = limitDAO.getAllLimits(userId);
 
-        if (limits.isEmpty()) return; // Không có hạn mức nào
+        if (limits.isEmpty()) return;
 
-        // Ví dụ lấy hạn mức đầu tiên (hoặc giới hạn logic theo thời gian bạn muốn)
         Limit limit = limits.get(0);
 
         long totalLimit = limit.getSoTien();
@@ -363,7 +379,6 @@ public class TransactionFragment extends Fragment {
 
         tvSoDu.setText("Số dư: " + formatCurrency(Math.max(remaining, 0)));
 
-        // Cập nhật tổng chi/thu nếu cần:
         long tongChi = 0, tongThu = 0;
         DBHelper dbHelper = new DBHelper(getContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
