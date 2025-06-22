@@ -2,6 +2,7 @@ package org.o7planning.project_04.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,11 +62,9 @@ public class HomeFragment extends Fragment {
             LocalDate dateToProcess = (selectedDate != null) ? selectedDate : LocalDate.now();
             updateDateDisplay(dateToProcess.plusDays(1));
         });
-
-        btnNext.setOnClickListener(v -> {
-            if (selectedDate != null) {
-                updateDateDisplay(selectedDate.plusDays(1));
-            }
+        btnReset.setOnClickListener(v -> {
+            Log.d("HomeFragment", "Nút btnReset đã được nhấp!"); // Giữ dòng log này để kiểm tra thêm
+            updateDateDisplay(null);
         });
     }
 

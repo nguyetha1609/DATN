@@ -285,11 +285,11 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
         });
 
         btnChiTieu.setOnClickListener(v -> {
-            // Xử lý khi nút "Chi tiêu" được click
+            //Không xử lý, chỉ để hiển thị
         });
 
         btnThuNhap.setOnClickListener(v -> {
-            // Xử lý khi nút "Thu nhập" được click
+            //Không xử lý, chỉ để hiển thị
         });
 
         filterDay.setOnClickListener(v -> {
