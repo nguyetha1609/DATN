@@ -50,15 +50,16 @@ public class HomeFragment extends Fragment {
 
         tvDateTitle.setOnClickListener(v -> openCalendar());
 
-        btnReset.setOnClickListener(v -> {
-            // reset về Today
-            updateDateDisplay(null); // Gọi phương thức để reset
+        btnPrev.setOnClickListener(v -> {
+            // Nếu selectedDate đang là null (tức là "Hôm nay"), lấy LocalDate.now() để tính toán
+            LocalDate dateToProcess = (selectedDate != null) ? selectedDate : LocalDate.now();
+            updateDateDisplay(dateToProcess.minusDays(1));
         });
 
-        btnPrev.setOnClickListener(v -> {
-            if (selectedDate != null) {
-                updateDateDisplay(selectedDate.minusDays(1));
-            }
+        btnNext.setOnClickListener(v -> {
+            // Nếu selectedDate đang là null (tức là "Hôm nay"), lấy LocalDate.now() để tính toán
+            LocalDate dateToProcess = (selectedDate != null) ? selectedDate : LocalDate.now();
+            updateDateDisplay(dateToProcess.plusDays(1));
         });
 
         btnNext.setOnClickListener(v -> {

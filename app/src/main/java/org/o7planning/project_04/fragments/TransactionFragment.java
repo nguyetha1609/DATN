@@ -405,5 +405,4 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
     private String formatCurrency(long value) {
         return String.format(Locale.getDefault(), "%,d", value).replace(',', '.');
     }
-
 }
