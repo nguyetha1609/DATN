@@ -16,8 +16,9 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
-import com.github.mikephil.charting.charts.LineChart;
+
 import com.google.android.material.appbar.MaterialToolbar;
 
 import org.o7planning.project_04.R;
@@ -39,7 +40,7 @@ public class LimitDetailActivity extends AppCompatActivity {
     private ProgressBar progressLimit;
     private ImageView iconBarchart;
     private TextView tvChartLabel;
-    private LineChart lineChart;
+
     private LinearLayout ll_SpendingList;
     private int limitId;
     private TextView tv_expired;
@@ -59,9 +60,7 @@ public class LimitDetailActivity extends AppCompatActivity {
         tvDayleft=findViewById(R.id.tv_days_left);
         tvAmountLeft= findViewById(R.id.tv_amount_left);
         progressLimit= findViewById(R.id.progress_limit);
-        iconBarchart= findViewById(R.id.icon_barchart);
-        tvChartLabel= findViewById(R.id.tv_chart_label);
-        lineChart= findViewById(R.id.lineChart);
+
         ll_SpendingList= findViewById(R.id.ll_SpendingList);
         tv_expired = findViewById(R.id.tv_status_expired);
 
@@ -159,7 +158,16 @@ public class LimitDetailActivity extends AppCompatActivity {
         tvAmountLeft.setText(formatCurrency(conlai) + "d");
 
         int progress =(int) ((limit.getSoTien()- conlai)*100.0/limit.getSoTien());
+
+        if (progress <= 30) {
+            progressLimit.setProgressDrawable(ContextCompat.getDrawable(this, R.drawable.progress_green));
+        } else if (progress <= 70) {
+            progressLimit.setProgressDrawable(ContextCompat.getDrawable(this, R.drawable.progress_yellow));
+        } else {
+            progressLimit.setProgressDrawable(ContextCompat.getDrawable(this, R.drawable.progress_red));
+        }
         progressLimit.setProgress(progress);
+
     }
     private String formatCurrency(long amount){
         return String.format("%,d",amount);
@@ -202,6 +210,7 @@ public class LimitDetailActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
             return dateStr; // fallback nếu lỗi
+
         }
     }
     @Override

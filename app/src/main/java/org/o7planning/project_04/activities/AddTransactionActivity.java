@@ -303,12 +303,13 @@ public class AddTransactionActivity extends AppCompatActivity {
         values.put("GhiChu", note);
         values.put("ID_TK", userId);
 
+        checkAndNotifyLimitExceeded(selectedCategoryId, amount, datetime);
+
         long newId = db.insert("GIAODICH", null, values);
         db.close();
 
         // 3. Thông báo & đóng
         if (newId > 0) {
-            checkAndNotifyLimitExceeded(selectedCategoryId, amount, datetime);
             Toast.makeText(this, "Lưu thành công", Toast.LENGTH_SHORT).show();
             setResult(RESULT_OK);
             finish();
@@ -390,11 +391,10 @@ public class AddTransactionActivity extends AppCompatActivity {
                     datetime.compareTo(limit.getNgayKetThuc()) <= 0) {
 
                 long totalSpent = limitDAO.getTotalSpentInLimit(limit.getID_HM(), userId, limit.getNgayGD(), limit.getNgayKetThuc());
-                long totalAfter = totalSpent + amount;
 
-                if (totalAfter > limit.getSoTien()) {
-                    // Gửi thông báo vượt hạn mức
-                    sendLimitExceededNotification(limit.getID_HM(), limit.getTenHM(), totalAfter - limit.getSoTien());
+
+                if (totalSpent + amount > limit.getSoTien()) {
+                    sendLimitExceededNotification(limit.getID_HM(), limit.getTenHM(), (totalSpent + amount) - limit.getSoTien());
                 }
             }
         }

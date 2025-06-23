@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
@@ -96,6 +97,13 @@ public class LimitAdapter extends RecyclerView.Adapter<LimitAdapter.LimitViewHol
             progress = (int) (((tongTien - tienConLai) * 100) / tongTien);
         }
         holder.progressBar.setProgress(progress);
+        if (progress <= 30) {
+            holder.progressBar.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_green));
+        } else if (progress <= 70) {
+            holder.progressBar.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_yellow));
+        } else {
+            holder.progressBar.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_red));
+        }
 
         holder.imgIcon.setImageResource(getIconResId(limit));
 

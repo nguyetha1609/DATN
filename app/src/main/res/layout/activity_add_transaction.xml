@@ -95,7 +95,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="230dp"
                     android:focusable="false"
                     android:cursorVisible="false"
                     android:text="@string/hint_amount"
