@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="36dp"
+        android:id="@+id/date_controls_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
-        <!-- Tiêu đề ngày, ban đầu hiển thị "Hôm nay, dd/MM/yyyy" -->
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
         <TextView
             android:id="@+id/tvDateTitle"
             android:layout_width="wrap_content"
@@ -21,16 +26,15 @@
             android:text="Hôm nay"
             android:textSize="17sp"
             android:textStyle="bold"/>
-        <!-- … bạn có thể thêm các view khác của HomeFragment ở đây … -->
 
-        <!-- Nút Quay Lại, ban đầu ẩn -->
         <Button
             android:id="@+id/btnReset"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
+            android:layout_marginStart="8dp"
             android:background="@drawable/bg_onboarding_button"
             android:text="@string/back_to_today"
-            android:textColor="@color/blue"
+            android:textColor="@color/white"
             android:textSize="10sp"
             android:visibility="gone" />
 
@@ -42,13 +46,18 @@
         <ImageButton
             android:id="@+id/btnPrev"
             android:layout_width="35dp"
-            android:layout_height="20dp"
+            android:layout_height="13dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Previous Day"
             android:src="@drawable/ic_arrow_left" />
 
         <ImageButton
             android:id="@+id/btnNext"
             android:layout_width="35dp"
             android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Next Day"
             android:src="@drawable/ic_arrow_right" />
     </LinearLayout>
 

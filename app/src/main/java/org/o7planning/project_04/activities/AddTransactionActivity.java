@@ -223,7 +223,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
                 // Cập nhật Calendar object
                 try {
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
                     Date date = sdf.parse(time);
                     calendar.setTime(date);
                 } catch (ParseException e) {
@@ -354,7 +354,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         }
 
        // String datetime = tvDateLabel.getText() + " " + tvTimeLabel.getText();
-        SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
         String datetime = dbFormat.format(calendar.getTime());
 
         String note = edtNoteHint.getText().toString().trim();
@@ -399,6 +399,8 @@ public class AddTransactionActivity extends AppCompatActivity {
             }
         }
     }
+
+    //Thông báo vượt hạn mức bằng popchat
     private void sendLimitExceededNotification(int limitId, String tenHM, long vuotTien) {
         String channelId = "limit_warning_channel";
         String channelName = "Vượt hạn mức";
