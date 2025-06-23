@@ -232,11 +232,11 @@ public class EditLimitActivity extends AppCompatActivity {
                 if (size == 0) {
                     tv_category.setText("Không có danh mục nào");
                 } else if (size == 1) {
-                    category cate = dbcate.getCategoryById(selectedCategoryIds.get(0));
+                    category cate = dbcate.getCategoryById(selectedCategoryIds.get(0),idTK);
                     tv_category.setText(cate.getTenDM());
                 } else {
                     // Lấy tên danh mục đầu tiên
-                    category firstCate = dbcate.getCategoryById(selectedCategoryIds.get(0));
+                    category firstCate = dbcate.getCategoryById(selectedCategoryIds.get(0),idTK);
                     String firstName = firstCate != null ? firstCate.getTenDM() : "";
 
                     int othersCount = size - 1;
@@ -265,14 +265,14 @@ public class EditLimitActivity extends AppCompatActivity {
         if (size == 0) {
             tv_category.setText("Không có danh mục nào");
         } else if (size == 1) {
-            category cate = dbcate.getCategoryById(selectedCategoryIds.get(0));
+            category cate = dbcate.getCategoryById(selectedCategoryIds.get(0),idTK);
             if (cate != null) {
                 tv_category.setText(cate.getTenDM());
             } else {
                 tv_category.setText("Danh mục không tồn tại");
             }
         } else {
-            category firstCate = dbcate.getCategoryById(selectedCategoryIds.get(0));
+            category firstCate = dbcate.getCategoryById(selectedCategoryIds.get(0),idTK);
             String firstName = (firstCate != null) ? firstCate.getTenDM() : "Danh mục";
 
             int othersCount = size - 1;

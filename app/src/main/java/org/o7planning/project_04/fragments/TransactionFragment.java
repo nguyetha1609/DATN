@@ -43,6 +43,7 @@ public class TransactionFragment extends Fragment {
     private static final int REQUEST_EDIT_TRANSACTION = 1002;
     private RecyclerView recyclerView;
     private List<GIAODICH> listGiaoDich;
+    private int userId;
     private Map<Integer, category> mapDanhMuc; // Map chứa danh mục
     private TransactionAdapter transactionAdapter;
     private String currentTransactionType = "all"; // Biến để lưu loại giao dịch hiện tại: "all", "expense", "income"
@@ -241,6 +242,9 @@ public class TransactionFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         loadTransactions();
 
+        SharedPreferences preferences = getContext().getSharedPreferences("LOGIN_PREF", getContext().MODE_PRIVATE);
+         userId = preferences.getInt("ID_TK", -1);
+
         btnAdd.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), AddTransactionActivity.class);
             startActivityForResult(intent, REQUEST_ADD_TRANSACTION);
@@ -313,8 +317,7 @@ public class TransactionFragment extends Fragment {
         intent.putExtra("time", giaoDich.getThoiGian());
         intent.putExtra("note", giaoDich.getGhiChu());
 
-        SharedPreferences preferences = getContext().getSharedPreferences("LOGIN_PREF", getContext().MODE_PRIVATE);
-        int userId = preferences.getInt("ID_TK", -1);
+
         intent.putExtra("ID_TK", userId);
 
         category selectedCategory = mapDanhMuc.get(giaoDich.getID_DM());

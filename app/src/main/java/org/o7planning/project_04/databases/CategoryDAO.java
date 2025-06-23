@@ -80,10 +80,14 @@ public class CategoryDAO {
     }
 
     //getcatebyID
-    public category getCategoryById(int id) {
+    public category getCategoryById(int idDM, int idTK) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         category cate = null;
-        Cursor cursor = db.rawQuery("select * from DANHMUC where ID_DM=?", new String[]{String.valueOf(id)});
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM DANHMUC WHERE ID_DM = ? AND ID_TK = ?",
+                new String[]{String.valueOf(idDM), String.valueOf(idTK)}
+        );
+
         if (cursor.moveToFirst()) {
             int ID_DM = cursor.getInt(cursor.getColumnIndexOrThrow("ID_DM"));
             String TenDM = cursor.getString(cursor.getColumnIndexOrThrow("TenDM"));
@@ -91,11 +95,13 @@ public class CategoryDAO {
             String HinhAnh = cursor.getString(cursor.getColumnIndexOrThrow("HinhANh"));
             int DMMacDinh = cursor.getInt(cursor.getColumnIndexOrThrow("DMMacDinh"));
             cate = new category(ID_DM, TenDM, LoaiDM, HinhAnh, DMMacDinh);
-
         }
+
         cursor.close();
+        db.close();
         return cate;
     }
+
     //addcate
     public void addcate(category cate, int id_tk) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();

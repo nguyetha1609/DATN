@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -84,14 +85,36 @@ public class LimitDetailActivity extends AppCompatActivity {
          setSupportActionBar(toolbar);
 
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                finish();
+//            }
+//        });
+
+        toolbar.setNavigationOnClickListener(v -> handleBackNavigation());
+
+        // Xử lý sự kiện back vật lý
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
-            public void onClick(View v) {
-                finish();
+            public void handleOnBackPressed() {
+                handleBackNavigation();
             }
         });
 
-
+    }
+    private void handleBackNavigation() {
+        if (getIntent() != null && "notification".equals(getIntent().getStringExtra("source"))) {
+            // Mở từ notification - về TransactionFragment
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra("navigateTo", "transaction");
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        } else {
+            // Mở từ nơi khác - back bình thường
+            finish();
+        }
     }
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu){

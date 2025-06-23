@@ -45,8 +45,13 @@
         <!-- man hinh chon danh muc trong them han muc -->
         <activity android:name=".activities.CategoryMultiSelectActivity"/>
         <!-- man hinh chi tiet han muc -->
-        <activity android:name=".activities.LimitDetailActivity"/>
-        <activity android:name=".activities.SpendingLimitActivity"/>
+        <activity android:name=".activities.LimitDetailActivity"
+            android:parentActivityName=".activities.MainActivity">
+            <!-- Dành cho SDK < 16 -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>        <activity android:name=".activities.SpendingLimitActivity"/>
         <!-- man hinh sua han muc -->
         <activity android:name=".activities.EditLimitActivity"/>
 <!--        man hinh chi tiet cac khoan chi-->

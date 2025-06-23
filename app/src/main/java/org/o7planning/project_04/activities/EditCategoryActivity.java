@@ -71,7 +71,7 @@ public class EditCategoryActivity extends AppCompatActivity {
            return;
        }
        // lay danh muc tu db
-       currentCategory = dbHelper.getCategoryById(ID);
+       currentCategory = dbHelper.getCategoryById(ID,userId);
        if(currentCategory == null){
            Toast.makeText(this,"Danh muc khong ton tai",Toast.LENGTH_SHORT).show();
            finish();
