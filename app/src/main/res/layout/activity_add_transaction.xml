@@ -87,8 +87,8 @@
                     android:id="@+id/imgCategory"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:src="@drawable/ic_category"
-                    app:tint="@color/iconColor" />
+                    android:src="@drawable/ic_default"
+                    />
 
                 <EditText
                     android:id="@+id/edtAmount"
@@ -148,8 +148,8 @@
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_calendarr"
-                            app:tint="@color/iconColor" />
+                            android:src="@drawable/ic_calendar"
+                            />
 
                         <TextView
                             android:id="@+id/tvDateLabel"
@@ -181,7 +181,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_clock"
-                            app:tint="@color/iconColor" />
+                             />
 
                         <TextView
                             android:id="@+id/tvTimeLabel"
@@ -213,7 +213,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_note"
-                            app:tint="@color/iconColor" />
+                            />
 
                         <EditText
                             android:id="@+id/edtNoteHint"
