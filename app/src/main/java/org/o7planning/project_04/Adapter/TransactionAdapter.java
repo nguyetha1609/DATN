@@ -22,13 +22,15 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     private final Context context;
     private List<GIAODICH> listGD;
-    private final Map<Integer, category> mapDM;
+    private  Map<Integer, category> mapDM;
     private OnItemClickListener itemClickListener; // Thêm listener
 
     public interface OnItemClickListener {
         void onItemClick(GIAODICH giaoDich);
     }
-
+    public void setMapDanhMuc(Map<Integer, category> newMap) {
+        this.mapDM = newMap;
+    }
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.itemClickListener = listener;
     }

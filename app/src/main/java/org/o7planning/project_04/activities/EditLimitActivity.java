@@ -21,6 +21,7 @@ import org.o7planning.project_04.R;
 import org.o7planning.project_04.databases.CategoryDAO;
 import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.databases.LimitDAO;
+import org.o7planning.project_04.databases.Limit_CateDAO;
 import org.o7planning.project_04.model.Limit;
 import org.o7planning.project_04.model.category;
 
@@ -35,6 +36,7 @@ public class EditLimitActivity extends AppCompatActivity {
     public static final String EXTRA_LIMIT_ID ="limit_Id";
     private  static final int REQUEST_CATEGORY_PICKER = 1001;
     private final Calendar calendar = Calendar.getInstance();
+    private Limit_CateDAO limitCateDAO;
 
     private EditText edtAmount, edtName;
     private TextView tvStartDate, tvEndDate,tv_category;
@@ -52,6 +54,8 @@ public class EditLimitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_limit);
         dblimit = new LimitDAO(this);
         dbcate = new CategoryDAO(this);
+        limitCateDAO = new Limit_CateDAO(new DBHelper(this).getReadableDatabase());
+
 
         // anh xa cac view
         edtAmount= findViewById(R.id.et_amount);
@@ -207,7 +211,7 @@ public class EditLimitActivity extends AppCompatActivity {
     }
 
     private void loadSelectedCategories(int limiId){
-        selectedCategoryIds =dblimit.getCategoryIdsByLimitId(limiId);
+        selectedCategoryIds =limitCateDAO.getCategoryIdsByLimitId(limiId);
     }
     @Override
     protected  void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
@@ -228,11 +232,11 @@ public class EditLimitActivity extends AppCompatActivity {
                 if (size == 0) {
                     tv_category.setText("Không có danh mục nào");
                 } else if (size == 1) {
-                    category cate = dbcate.getCategoryById(selectedCategoryIds.get(0));
+                    category cate = dbcate.getCategoryById(selectedCategoryIds.get(0),idTK);
                     tv_category.setText(cate.getTenDM());
                 } else {
                     // Lấy tên danh mục đầu tiên
-                    category firstCate = dbcate.getCategoryById(selectedCategoryIds.get(0));
+                    category firstCate = dbcate.getCategoryById(selectedCategoryIds.get(0),idTK);
                     String firstName = firstCate != null ? firstCate.getTenDM() : "";
 
                     int othersCount = size - 1;
@@ -261,14 +265,14 @@ public class EditLimitActivity extends AppCompatActivity {
         if (size == 0) {
             tv_category.setText("Không có danh mục nào");
         } else if (size == 1) {
-            category cate = dbcate.getCategoryById(selectedCategoryIds.get(0));
+            category cate = dbcate.getCategoryById(selectedCategoryIds.get(0),idTK);
             if (cate != null) {
                 tv_category.setText(cate.getTenDM());
             } else {
                 tv_category.setText("Danh mục không tồn tại");
             }
         } else {
-            category firstCate = dbcate.getCategoryById(selectedCategoryIds.get(0));
+            category firstCate = dbcate.getCategoryById(selectedCategoryIds.get(0),idTK);
             String firstName = (firstCate != null) ? firstCate.getTenDM() : "Danh mục";
 
             int othersCount = size - 1;

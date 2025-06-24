@@ -18,6 +18,7 @@ import org.o7planning.project_04.Adapter.SpendingGroupAdapter;
 import org.o7planning.project_04.R;
 import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.databases.LimitDAO;
+import org.o7planning.project_04.databases.Limit_CateDAO;
 import org.o7planning.project_04.model.GIAODICH;
 import org.o7planning.project_04.model.Limit;
 import org.o7planning.project_04.model.SpendingGroup;
@@ -30,12 +31,16 @@ public class spendingList_Activity extends AppCompatActivity {
     private int limitId;
     private LimitDAO dblimit;
     private int idTK;
+    private Limit_CateDAO hmdmDAO;
+
 
 
     protected  void onCreate(@NonNull Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.spending_list);
         dblimit = new LimitDAO(this);
+        hmdmDAO = new Limit_CateDAO(new DBHelper(this).getReadableDatabase());
+
 
         //Lấy ID_TK
         SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
@@ -78,12 +83,12 @@ public class spendingList_Activity extends AppCompatActivity {
 
 
         List<Integer> listDmId = limit.getListDanhMuc();
-        List<spendingsummary> summaryList = dblimit.getSpendingsByLimit(limitId,startDate,endDate,idTK);
+        List<spendingsummary> summaryList = hmdmDAO.getSpendingsByLimit(limitId,startDate,endDate,idTK);
 
         List<SpendingGroup> spendingGroups = new ArrayList<>();
 
         for(spendingsummary summary : summaryList){
-            List<GIAODICH> giaodichList = dblimit.getTransactionsByCategoryAndLimit(summary.getIdDM(),startDate,endDate,limitId,idTK);
+            List<GIAODICH> giaodichList = hmdmDAO.getTransactionsByCategoryAndLimit(summary.getIdDM(),startDate,endDate,limitId,idTK);
             SpendingGroup group = new SpendingGroup(summary.getIdDM(),summary.getTenDM(),summary.getTongChi(),summary.getHinhAnh(),giaodichList);
             spendingGroups.add(group);
         }

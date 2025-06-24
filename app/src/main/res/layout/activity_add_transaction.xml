@@ -87,7 +87,6 @@
                     android:id="@+id/imgCategory"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
-                    android:layout_marginStart="10dp"
                     android:src="@drawable/ic_category"
                     app:tint="@color/iconColor" />
 
@@ -96,7 +95,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="210dp"
                     android:focusable="false"
                     android:cursorVisible="false"
                     android:text="@string/hint_amount"

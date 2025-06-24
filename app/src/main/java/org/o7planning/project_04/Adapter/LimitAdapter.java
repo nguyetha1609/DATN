@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.imageview.ShapeableImageView;
@@ -25,6 +26,7 @@ import org.o7planning.project_04.R;
 import org.o7planning.project_04.activities.LimitDetailActivity;
 import org.o7planning.project_04.databases.DBHelper;
 import org.o7planning.project_04.databases.LimitDAO;
+import org.o7planning.project_04.databases.Limit_CateDAO;
 import org.o7planning.project_04.model.Limit;
 import org.o7planning.project_04.model.category;
 
@@ -95,6 +97,13 @@ public class LimitAdapter extends RecyclerView.Adapter<LimitAdapter.LimitViewHol
             progress = (int) (((tongTien - tienConLai) * 100) / tongTien);
         }
         holder.progressBar.setProgress(progress);
+        if (progress <= 30) {
+            holder.progressBar.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_green));
+        } else if (progress <= 70) {
+            holder.progressBar.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_yellow));
+        } else {
+            holder.progressBar.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_red));
+        }
 
         holder.imgIcon.setImageResource(getIconResId(limit));
 
@@ -187,7 +196,9 @@ holder.itemView.setOnClickListener(v -> {
     }
     private Drawable getIconDrawable(Limit limit) {
          dblimit = new LimitDAO(context);
-        List<category> categories = dblimit.getCategoriesForLimit(limit.getID_HM());
+        Limit_CateDAO limitCateDAO = new Limit_CateDAO(new DBHelper(context).getReadableDatabase());
+
+        List<category> categories = limitCateDAO.getCategoriesForLimit(limit.getID_HM());
 
         if (categories == null || categories.isEmpty()) {
             return context.getResources().getDrawable(R.drawable.ic_default);

@@ -50,7 +50,7 @@ public class AddSpendingLimitActivity extends AppCompatActivity {
     private EditText et_limit_name,et_amount;
 private CategoryDAO dbcate;
 private LimitDAO dblimit;
-private int idTk;
+private int idTK;
 
     Calendar calendar = Calendar.getInstance();
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -79,7 +79,7 @@ private int idTk;
 
         //Lấy ID_TKAdd commentMore actions
         SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
-        int idTK = prefs.getInt("ID_TK", -1);
+         idTK = prefs.getInt("ID_TK", -1);
 
         llStartDate.setOnClickListener(v -> showDatePicker(tvStartDate));
         llEndDate.setOnClickListener(v -> showDatePicker(tvEndDate));
@@ -194,11 +194,11 @@ private int idTk;
                 if (size == 0) {
                     tvCategory.setText("Không có danh mục nào");
                 } else if (size == 1) {
-                    category cate = dbcate.getCategoryById(selectedCategoryId.get(0));
+                    category cate = dbcate.getCategoryById(selectedCategoryId.get(0),idTK);
                     tvCategory.setText(cate.getTenDM());
                 } else {
                     // Lấy tên danh mục đầu tiên
-                    category firstCate = dbcate.getCategoryById(selectedCategoryId.get(0));
+                    category firstCate = dbcate.getCategoryById(selectedCategoryId.get(0),idTK);
                     String firstName = firstCate != null ? firstCate.getTenDM() : "";
 
                     int othersCount = size - 1;

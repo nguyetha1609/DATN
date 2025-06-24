@@ -21,7 +21,7 @@ public class LimitDAO {
     }
 
     //them han muc
-    public boolean insertLimit(Limit l,int id_tk) {
+    public boolean insertLimit(Limit l, int id_tk) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.beginTransaction();
         try {
@@ -38,16 +38,16 @@ public class LimitDAO {
                 return false;
             }
 
+            // Gọi DAO đã tách ra để insert các mapping danh mục
+            Limit_CateDAO hmdmDAO = new Limit_CateDAO(db);
             for (int idDM : l.getListDanhMuc()) {
-                ContentValues cv = new ContentValues();
-                cv.put("ID_HM", idHanMuc);
-                cv.put("ID_DM", idDM);
-                long result = db.insert("HANMUC_DANHMUC", null, cv);
-                if (result == -1) {
-                    Log.e("DBHelper", "Insert HANMUC_DANHMUC failed for ID_DM=" + idDM);
+                boolean result = hmdmDAO.insertMapping((int) idHanMuc, idDM);
+                if (!result) {
+                    Log.e("DBHelper", "Insert HANMUC_DANHMUC failed for ID_DM = " + idDM);
                     return false;
                 }
             }
+
             db.setTransactionSuccessful();
             return true;
         } catch (Exception e) {
@@ -57,11 +57,12 @@ public class LimitDAO {
             db.endTransaction();
         }
     }
+
     //Update limit
-    public boolean updateLimit(Limit l,int idTK){
+    public boolean updateLimit(Limit l, int idTK) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.beginTransaction();
-        try{
+        try {
             ContentValues values = new ContentValues();
             values.put("TenHM", l.getTenHM());
             values.put("SoTien", l.getSoTien());
@@ -79,56 +80,56 @@ public class LimitDAO {
                 Log.e("DBHelper", "Update HANMUC failed");
                 return false;
             }
-            // Xóa danh mục cũ
-            db.delete(
-                    "HANMUC_DANHMUC",
-                    "ID_HM = ?",
-                    new String[]{String.valueOf(l.getID_HM())}
-            );
 
-            // Thêm lại danh mục mới
+            Limit_CateDAO hmdmDAO = new Limit_CateDAO(db);
+            hmdmDAO.deleteByLimitId(l.getID_HM());
+
             for (int idDM : l.getListDanhMuc()) {
-                ContentValues cv = new ContentValues();
-                cv.put("ID_HM", l.getID_HM());
-                cv.put("ID_DM", idDM);
-                long result = db.insert("HANMUC_DANHMUC", null, cv);
-                if (result == -1) {
+                if (!hmdmDAO.insertMapping(l.getID_HM(), idDM)) {
                     Log.e("DBHelper", "Insert HANMUC_DANHMUC failed for ID_DM = " + idDM);
                     return false;
                 }
             }
+
             db.setTransactionSuccessful();
             return true;
         } catch (Exception e) {
             Log.e("DBHelper", "updateLimit error", e);
             return false;
-        }finally {
+        } finally {
             db.endTransaction();
         }
-
     }
 
-    // Xóa hạn mức
-    public boolean deleteLimit(int idHM,int idTK) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        try {
-            // Xóa trong bảng HANMUC_DANHMUC trước
-            db.delete("HANMUC_DANHMUC", "ID_HM = ?", new String[]{String.valueOf(idHM)});
 
-            // Xóa hạn mức nếu đúng ID_TK
+    // Xóa hạn mức
+    public boolean deleteLimit(int idHM, int idTK) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            Limit_CateDAO hmdmDAO = new Limit_CateDAO(db);
+            hmdmDAO.deleteByLimitId(idHM);
+
             int rows = db.delete("HANMUC", "ID_HM = ? AND ID_TK = ?", new String[]{
                     String.valueOf(idHM),
                     String.valueOf(idTK)
             });
 
-            return rows > 0;
+            if (rows <= 0) {
+                Log.e("DBHelper", "Delete HANMUC failed");
+                return false;
+            }
+
+            db.setTransactionSuccessful();
+            return true;
         } catch (Exception e) {
             Log.e("DBHelper", "deleteLimit error", e);
             return false;
         } finally {
-            db.close();
+            db.endTransaction();
         }
     }
+
 
     public List<Limit> getAllLimits(int idTK) {
         List<Limit> limits = new ArrayList<>();
@@ -136,6 +137,9 @@ public class LimitDAO {
 
 
         Cursor cursor = db.rawQuery("SELECT * FROM HANMUC WHERE ID_TK = ?", new String[]{String.valueOf(idTK)});
+
+        Limit_CateDAO limitCateDAO = new Limit_CateDAO(db);
+
         if (cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow("ID_HM"));
@@ -143,7 +147,7 @@ public class LimitDAO {
                 long soTien = cursor.getLong(cursor.getColumnIndexOrThrow("SoTien"));
                 String ngayBD = cursor.getString(cursor.getColumnIndexOrThrow("NgayBD"));
                 String ngayKT = cursor.getString(cursor.getColumnIndexOrThrow("NgayKT"));
-                List<Integer> listDM = getDMByHM(id);
+                List<Integer> listDM =limitCateDAO.getDMByHM(id);
 
                 limits.add(new Limit(id, tenHM, soTien, ngayBD, ngayKT, listDM));
             } while (cursor.moveToNext());
@@ -153,18 +157,6 @@ public class LimitDAO {
         db.close();
         return limits;
     }
-    public List<Integer> getDMByHM(int idHM) {
-        List<Integer> listDM = new ArrayList<>();
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        Cursor cursor = db.rawQuery("select ID_DM from HANMUC_DANHMUC where ID_HM =?", new String[]{String.valueOf(idHM)});
-        while (cursor.moveToNext()) {
-            listDM.add(cursor.getInt(0));
-        }
-        cursor.close();
-        db.close();
-        return listDM;
-    }
 
 
 
@@ -172,6 +164,9 @@ public class LimitDAO {
         SQLiteDatabase db =dbHelper.getReadableDatabase();
         String query = "Select * from HANMUC where ID_HM =?";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(limitId)});
+
+        Limit_CateDAO limitCateDAO = new Limit_CateDAO(db);
+
         if (cursor != null && cursor.moveToFirst()) {
             Limit limit = new Limit();
             limit.setID_HM(cursor.getInt(cursor.getColumnIndexOrThrow("ID_HM")));
@@ -180,7 +175,7 @@ public class LimitDAO {
             limit.setNgayGD(cursor.getString(cursor.getColumnIndexOrThrow("NgayBD")));
             limit.setNgayKetThuc(cursor.getString(cursor.getColumnIndexOrThrow("NgayKT")));
 
-            limit.setListDanhMuc(getDMByHM(limitId));
+            limit.setListDanhMuc(limitCateDAO.getDMByHM(limitId));
 
             cursor.close();
             return limit;
@@ -240,111 +235,9 @@ public class LimitDAO {
         return tongtien;
     }
 
-    public ArrayList<Integer> getCategoryIdsByLimitId(int limitId) {
-        ArrayList<Integer> categoryIds = new ArrayList<>();
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("Select ID_DM from HANMUC_DANHMUC where ID_HM =?", new String[]{String.valueOf(limitId)});
-        if (cursor.moveToFirst()) {
-            do {
-                categoryIds.add(cursor.getInt(0));
 
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return categoryIds;
-    }
-    public List<category> getCategoriesForLimit(int idHM) {
-        List<category> categories = new ArrayList<>();
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        String query = "SELECT dm.ID_DM, dm.TenDM, dm.HinhAnh " +
-                "FROM HANMUC_DANHMUC lc " +
-                "INNER JOIN DANHMUC dm ON lc.ID_DM = dm.ID_DM " +
-                "WHERE lc.ID_HM = ?";
-
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(idHM)});
-
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                int id = cursor.getInt(cursor.getColumnIndexOrThrow("ID_DM"));
-                String name = cursor.getString(cursor.getColumnIndexOrThrow("TenDM"));
-                String iconName = cursor.getString(cursor.getColumnIndexOrThrow("HinhAnh"));
-
-                category cate = new category(id, name, iconName);
-                categories.add(cate);
-            }
-            cursor.close();
-        }
-        return categories;
-    }
-
-   // Lấy tổng số tiền đã chi theo từng danh mục trong 1 hạn mức cụ thể.
-
-    public List<spendingsummary> getSpendingsByLimit(int limitID, String startDate, String endDate,int userId) {
-        List<spendingsummary> list = new ArrayList<>();
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        String sql = "SELECT dm.ID_DM AS ID_DM, dm.TenDM,dm.HinhAnh,  IFNULL(SUM(gd.SoTien), 0) AS TongChi " +
-                "FROM HANMUC_DANHMUC hmdm " +
-                "JOIN DANHMUC dm ON hmdm.ID_DM = dm.ID_DM " +
-                "LEFT JOIN GIAODICH gd ON gd.ID_DM = dm.ID_DM " +
-                "    AND gd.ThoiGian BETWEEN ? AND ? " +
-                " AND gd.ID_TK = ? " +
-                "WHERE hmdm.ID_HM = ? " +
-                "GROUP BY dm.ID_DM, dm.TenDM";
-
-        Cursor cursor = db.rawQuery(sql, new String[]{
-                startDate,
-                endDate,
-                String.valueOf(userId),
-                String.valueOf(limitID)
-        });
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                spendingsummary summary = new spendingsummary();
-                summary.setIdDM(cursor.getInt(cursor.getColumnIndexOrThrow("ID_DM")));
-                summary.setTenDM(cursor.getString(cursor.getColumnIndexOrThrow("TenDM")));
-                summary.setTongChi(cursor.getLong(cursor.getColumnIndexOrThrow("TongChi")));
-                summary.setHinhAnh(cursor.getString(cursor.getColumnIndexOrThrow("HinhANh")));
-                list.add(summary);
-
-            } while (cursor.moveToNext());
-            cursor.close();
-        }
-        return list;
-    }
-   // Lấy danh sách giao dịch chi tiết thuộc một danh mục cụ thể, nằm trong 1 hạn mức.
-    public List<GIAODICH> getTransactionsByCategoryAndLimit(int categoryId, String startDate, String endDate, int limitId,int userId) {
-        List<GIAODICH> list = new ArrayList<>();
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        String sql = "SELECT gd.ID_GD, gd.ID_DM, gd.SoTien, gd.ThoiGian, gd.GhiChu " +
-                "FROM GIAODICH gd " +
-                "INNER JOIN HANMUC_DANHMUC hm ON gd.ID_DM = hm.ID_DM " +
-                "WHERE gd.ID_DM = ? AND hm.ID_HM = ? AND gd.ThoiGian BETWEEN ? AND ? AND gd.ID_TK = ?";
-
-        Cursor cursor = db.rawQuery(sql, new String[]{
-                String.valueOf(categoryId),
-                String.valueOf(limitId),
-                startDate, endDate,
-                String.valueOf(userId)
-        });
-
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                GIAODICH g = new GIAODICH();
-                g.setID_GD(cursor.getInt(cursor.getColumnIndexOrThrow("ID_GD")));
-                g.setID_DM(cursor.getInt(cursor.getColumnIndexOrThrow("ID_DM")));
-                g.setSoTien(cursor.getLong(cursor.getColumnIndexOrThrow("SoTien")));
-                g.setThoiGian(cursor.getString(cursor.getColumnIndexOrThrow("ThoiGian")));
-                g.setGhiChu(cursor.getString(cursor.getColumnIndexOrThrow("GhiChu")));
-                list.add(g);
-            } while (cursor.moveToNext());
-            cursor.close();
-        }
-        return list;
-    }
    // Tính tổng số tiền đã chi của toàn bộ hạn mức (gộp tất cả danh mục bên trong).
     public long getTotalSpentInLimit(int limitId,int userId, String startDate, String endDate) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -378,6 +271,7 @@ public class LimitDAO {
                 "WHERE hmdm.ID_DM = ?";
 
         Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(categoryId)});
+        Limit_CateDAO limitCateDAO = new Limit_CateDAO(db);
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
@@ -386,7 +280,7 @@ public class LimitDAO {
                 long soTien = cursor.getLong(cursor.getColumnIndexOrThrow("SoTien"));
                 String ngayBD = cursor.getString(cursor.getColumnIndexOrThrow("NgayBD"));
                 String ngayKT = cursor.getString(cursor.getColumnIndexOrThrow("NgayKT"));
-                List<Integer> listDM = getDMByHM(id);
+                List<Integer> listDM = limitCateDAO.getDMByHM(id);
 
                 limits.add(new Limit(id, tenHM, soTien, ngayBD, ngayKT, listDM));
             } while (cursor.moveToNext());

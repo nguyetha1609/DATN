@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -44,10 +45,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         //Lay ID TK
-       SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
         int userId = prefs.getInt("ID_TK", -1);
 
-       if (userId != -1) {
+        if (userId != -1) {
             CategoryDAO db = new CategoryDAO(this);
             db.insertDefaultCategoriesIfNeeded(userId);
         }
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 } else if (itemId == R.id.nav_more) {
 
-                     selectedFragment = new AccountFragment();
+                    selectedFragment = new AccountFragment();
 
                 }
 
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        }
+    }
 
     @Override
     public void onBackPressed() {
@@ -124,4 +125,25 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .show();
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        handleIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+
+
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (intent != null && "transaction".equals(intent.getStringExtra("navigateTo"))) {
+            bottomNav.setSelectedItemId(R.id.nav_home); // mở TransactionFragment
+        }
+    }
+
 }

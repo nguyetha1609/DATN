@@ -9,12 +9,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -49,7 +52,14 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
     private static final int REQUEST_EDIT_TRANSACTION = 1002;
     private RecyclerView recyclerView;
     private List<GIAODICH> listGiaoDich;
-    private Map<Integer, category> mapDanhMuc;
+    private static final int REQUEST_ADD_CATEGORY = 1003;
+    private ActivityResultLauncher<Intent> transactionLauncher;
+
+
+    private int userId;
+    private Map<Integer, category> mapDanhMuc; // Map chứa danh mục
+
+
     private TransactionAdapter transactionAdapter;
 
     private String currentTransactionType = "all";
@@ -72,31 +82,48 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
         updateFilterTabColors(filterAll); // Cập nhật màu tab lọc tất cả
     }
 
-    private void loadTransactions() {
-        listGiaoDich = new ArrayList<>();
+    private void loadDanhMuc() {
         mapDanhMuc = new HashMap<>();
-
         DBHelper dbHelper = new DBHelper(getContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursorCategory = null;
-        Cursor cursorGiaoDich = null;
 
         try {
-            cursorCategory = db.rawQuery("SELECT ID_DM, TenDM, HinhAnh, LoaiDM FROM DANHMUC", null);
+            cursorCategory = db.rawQuery(
+                    "SELECT ID_DM, TenDM, HinhANh, LoaiDM, DMMacDinh FROM DANHMUC WHERE ID_TK = ? OR DMMacDinh = 1",
+                    new String[]{String.valueOf(userId)}
+            );
             while (cursorCategory.moveToNext()) {
                 int idDm = cursorCategory.getInt(0);
                 String tenDm = cursorCategory.getString(1);
                 String hinhAnh = cursorCategory.getString(2);
                 String loaiDm = cursorCategory.getString(3);
-                category cat = new category(idDm, tenDm, loaiDm, hinhAnh, 0);
+                int dmMacDinh = cursorCategory.getInt(4);
+
+                category cat = new category(idDm, tenDm, loaiDm, hinhAnh, dmMacDinh);
                 mapDanhMuc.put(idDm, cat);
             }
+        } finally {
+            if (cursorCategory != null) cursorCategory.close();
+            db.close();
+        }
+    }
 
+
+    private void loadTransactions() {
+        loadDanhMuc();
+        listGiaoDich = new ArrayList<>();
+        DBHelper dbHelper = new DBHelper(getContext());
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursorGiaoDich = null;
+
+        try {
             String query = "SELECT ID_GD, ID_DM, SoTien, ThoiGian, GhiChu FROM GIAODICH";
             String orderBy = " ORDER BY ThoiGian DESC";
             List<String> whereClauses = new ArrayList<>();
             List<String> selectionArgs = new ArrayList<>();
 
+            // Lọc loại giao dịch
             if ("expense".equals(currentTransactionType)) {
                 List<Integer> expenseCategoryIds = new ArrayList<>();
                 for (Map.Entry<Integer, category> entry : mapDanhMuc.entrySet()) {
@@ -129,7 +156,7 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
                 }
             }
 
-            // Lọc theo thời gian dựa trên selectedFilterDate và currentFilterPeriod
+            // Lọc thời gian
             if (selectedFilterDate != null) {
                 if ("day".equals(currentFilterPeriod)) {
                     String today = selectedFilterDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -146,12 +173,16 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
                 }
             }
 
+            whereClauses.add("ID_TK = ?");
+            selectionArgs.add(String.valueOf(userId));
+
             String finalWhereClause = "";
             if (!whereClauses.isEmpty()) {
                 finalWhereClause = " WHERE " + TextUtils.join(" AND ", whereClauses);
             }
 
             cursorGiaoDich = db.rawQuery(query + finalWhereClause + orderBy, selectionArgs.toArray(new String[0]));
+
             while (cursorGiaoDich.moveToNext()) {
                 int idGd = cursorGiaoDich.getInt(0);
                 int idDm = cursorGiaoDich.getInt(1);
@@ -166,7 +197,6 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
             if (transactionAdapter == null) {
                 transactionAdapter = new TransactionAdapter(getContext(), listGiaoDich, mapDanhMuc);
                 recyclerView.setAdapter(transactionAdapter);
-
                 transactionAdapter.setOnItemClickListener(this::openEditTransaction);
 
                 ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -183,21 +213,16 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
                     }
                 });
                 itemTouchHelper.attachToRecyclerView(recyclerView);
-
             } else {
+                transactionAdapter.setMapDanhMuc(mapDanhMuc);
                 transactionAdapter.updateData(listGiaoDich);
             }
+
             updateBudgetUI();
+
         } finally {
-            if (cursorCategory != null) {
-                cursorCategory.close();
-            }
-            if (cursorGiaoDich != null) {
-                cursorGiaoDich.close();
-            }
-            if (db != null) {
-                db.close();
-            }
+            if (cursorGiaoDich != null) cursorGiaoDich.close();
+            db.close();
         }
     }
 
@@ -227,14 +252,17 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == REQUEST_ADD_TRANSACTION || requestCode == REQUEST_EDIT_TRANSACTION) && resultCode == Activity.RESULT_OK) {
-            loadTransactions();
-            updateBudgetUI();
-        }
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if ((requestCode == REQUEST_ADD_TRANSACTION || requestCode == REQUEST_EDIT_TRANSACTION || requestCode == REQUEST_ADD_CATEGORY)
+//                && resultCode == Activity.RESULT_OK) {
+//
+//            // Luôn gọi loadTransactions(), vì nó tự load lại cả mapDanhMuc + giao dịch
+//            loadTransactions();
+//            updateBudgetUI();
+//        }
+//    }
 
     @Nullable
     @Override
@@ -256,7 +284,12 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
 
         recyclerView = view.findViewById(R.id.rvTransactions);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        SharedPreferences preferences = getContext().getSharedPreferences("LOGIN_PREF", getContext().MODE_PRIVATE);
+         userId = preferences.getInt("ID_TK", -1);
+        loadDanhMuc();
         loadTransactions();
+
 
         // Thêm HomeFragment vào fragment_container
         if (getChildFragmentManager().findFragmentById(R.id.fragment_container) == null) {
@@ -265,9 +298,10 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
                     .commit();
         }
 
+
         btnAdd.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), AddTransactionActivity.class);
-            startActivityForResult(intent, REQUEST_ADD_TRANSACTION);
+            transactionLauncher.launch(intent);
         });
 
         tabExpense.setOnClickListener(v -> {
@@ -320,6 +354,18 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
             updateFilterTabColors(filterAll);
         });
 
+        transactionLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+
+                        loadDanhMuc();
+                        loadTransactions();
+                        updateBudgetUI();
+                    }
+                }
+        );
+
         return view;
     }
 
@@ -340,8 +386,7 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
         intent.putExtra("time", giaoDich.getThoiGian());
         intent.putExtra("note", giaoDich.getGhiChu());
 
-        SharedPreferences preferences = getContext().getSharedPreferences("LOGIN_PREF", getContext().MODE_PRIVATE);
-        int userId = preferences.getInt("ID_TK", -1);
+
         intent.putExtra("ID_TK", userId);
 
         category selectedCategory = mapDanhMuc.get(giaoDich.getID_DM());
@@ -350,7 +395,7 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
             intent.putExtra("selectedCategoryIcon", selectedCategory.getHinhAnh());
         }
 
-        startActivityForResult(intent, REQUEST_EDIT_TRANSACTION);
+        transactionLauncher.launch(intent);
     }
 
     private void updateBudgetUI() {
@@ -404,5 +449,11 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
 
     private String formatCurrency(long value) {
         return String.format(Locale.getDefault(), "%,d", value).replace(',', '.');
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadDanhMuc();
+        loadTransactions();  // Luôn reload lại khi Fragment hiển thị lại
     }
 }

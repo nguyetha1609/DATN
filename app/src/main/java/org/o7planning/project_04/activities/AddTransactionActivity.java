@@ -2,6 +2,7 @@ package org.o7planning.project_04.activities;
 
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -302,12 +303,13 @@ public class AddTransactionActivity extends AppCompatActivity {
         values.put("GhiChu", note);
         values.put("ID_TK", userId);
 
+        checkAndNotifyLimitExceeded(selectedCategoryId, amount, datetime);
+
         long newId = db.insert("GIAODICH", null, values);
         db.close();
 
         // 3. Thông báo & đóng
         if (newId > 0) {
-            checkAndNotifyLimitExceeded(selectedCategoryId, amount, datetime);
             Toast.makeText(this, "Lưu thành công", Toast.LENGTH_SHORT).show();
             setResult(RESULT_OK);
             finish();
@@ -389,11 +391,10 @@ public class AddTransactionActivity extends AppCompatActivity {
                     datetime.compareTo(limit.getNgayKetThuc()) <= 0) {
 
                 long totalSpent = limitDAO.getTotalSpentInLimit(limit.getID_HM(), userId, limit.getNgayGD(), limit.getNgayKetThuc());
-                long totalAfter = totalSpent + amount;
 
-                if (totalAfter > limit.getSoTien()) {
-                    // Gửi thông báo vượt hạn mức
-                    sendLimitExceededNotification(limit.getID_HM(), limit.getTenHM(), totalAfter - limit.getSoTien());
+
+                if (totalSpent + amount > limit.getSoTien()) {
+                    sendLimitExceededNotification(limit.getID_HM(), limit.getTenHM(), (totalSpent + amount) - limit.getSoTien());
                 }
             }
         }
@@ -403,13 +404,23 @@ public class AddTransactionActivity extends AppCompatActivity {
     private void sendLimitExceededNotification(int limitId, String tenHM, long vuotTien) {
         String channelId = "limit_warning_channel";
         String channelName = "Vượt hạn mức";
-        NotificationHelper.createNotificationChannel(this, channelId, channelName); // helper tách riêng
+        NotificationHelper.createNotificationChannel(this, channelId, channelName);
 
-        Intent intent = new Intent(this, LimitDetailActivity.class);
-        intent.putExtra(LimitDetailActivity.EXTRA_LIMIT_ID, limitId);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, limitId, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        Intent detailIntent = new Intent(this, LimitDetailActivity.class);
+        detailIntent.putExtra(LimitDetailActivity.EXTRA_LIMIT_ID, limitId);
+        detailIntent.putExtra("source", "notification");
 
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntent(new Intent(this, MainActivity.class).putExtra("navigateTo", "transaction"));
+        stackBuilder.addNextIntent(detailIntent);
+
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(
+                limitId,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+
+        // 4. Gửi Notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.drawable.ic_warning)
                 .setContentTitle("⚠️ Vượt hạn mức: " + tenHM)
@@ -424,12 +435,10 @@ public class AddTransactionActivity extends AppCompatActivity {
             notificationManager.notify(limitId, builder.build());
         } else {
             Toast.makeText(this, "Bạn chưa cấp quyền thông báo", Toast.LENGTH_SHORT).show();
-            // Mở cài đặt thông báo cho app
-            Intent settingsIntent = new Intent(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-                    .putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, getPackageName());
-            startActivity(settingsIntent);
         }
     }
+
+
     private String formatCurrency(long amount) {
         return NumberFormat.getNumberInstance(Locale.getDefault()).format(amount);
     }
