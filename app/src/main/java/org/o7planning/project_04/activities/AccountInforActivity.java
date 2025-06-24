@@ -23,12 +23,9 @@ public class AccountInforActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_PICK_IMAGE = 2000;
 
-    private ImageView ivLogoForgot;
-    private EditText edtForgotEmail;
-    private EditText edtOldPassword;
-    private EditText edtNewPassword;
-    private Button btnExit;
-    private Button btnSave;
+    private ImageView ivLogo;
+    private EditText edtEmail, edtOldPassword, edtNewPassword, etdUserName;
+    private Button btnExit, btnSave;
 
     private PrepopulatedDBHelper dbHelper;
     private SQLiteDatabase database;
@@ -46,21 +43,38 @@ public class AccountInforActivity extends AppCompatActivity {
         database = dbHelper.openDatabase();
 
         // Ánh xạ View (bây giờ là EditText thay cho TextInputEditText)
-        ivLogoForgot    = findViewById(R.id.ivLogoForgot);
-//        edtForgotEmail  = findViewById(R.id.edtForgotEmail);
-//        edtOldPassword  = findViewById(R.id.editTextText);
-//        edtNewPassword  = findViewById(R.id.editTextText2);
+        ivLogo    = findViewById(R.id.ivLogo);
+        edtEmail  = findViewById(R.id.edtEmail);
+        edtOldPassword  = findViewById(R.id.edtOldPassword);
+        edtNewPassword  = findViewById(R.id.edtNewPassword);
+        etdUserName = findViewById(R.id.edtUserName);
         btnExit         = findViewById(R.id.btnexit);
         btnSave         = findViewById(R.id.btnsave);
 
         // Xử lý đổi ảnh
-        ivLogoForgot.setOnClickListener(view -> confirmChangeLogo());
+        ivLogo.setOnClickListener(view -> confirmChangeLogo());
 
         // Nút thoát → finish()
         btnExit.setOnClickListener(view -> finish());
 
         // Nút lưu → kiểm tra và update DB
         btnSave.setOnClickListener(view -> attemptSaveChanges());
+        int idTk = getIntent().getIntExtra("ID_TK", -1);
+        if (idTk != -1) {
+            Cursor cursor = database.query("TAIKHOAN", null, "ID_TK = ?",
+                    new String[]{String.valueOf(idTk)}, null, null, null);
+            if (cursor.moveToFirst()) {
+                String email = cursor.getString(cursor.getColumnIndexOrThrow("Email"));
+                String hinhAnh = cursor.getString(cursor.getColumnIndexOrThrow("HinhAnh"));
+                edtEmail.setText(email);
+                if (hinhAnh != null && !hinhAnh.isEmpty()) {
+                    ivLogo.setImageURI(Uri.parse(hinhAnh));
+                    newImageUriString = hinhAnh;
+                }
+            }
+            cursor.close();
+        }
+
     }
 
     private void confirmChangeLogo() {
@@ -88,7 +102,7 @@ public class AccountInforActivity extends AppCompatActivity {
             Uri uri = data.getData();
             if (uri != null) {
                 // Hiển thị ảnh lên ivLogoForgot
-                ivLogoForgot.setImageURI(uri);
+                ivLogo.setImageURI(uri);
                 // Lưu tạm URI
                 newImageUriString = uri.toString();
             }
@@ -96,13 +110,13 @@ public class AccountInforActivity extends AppCompatActivity {
     }
 
     private void attemptSaveChanges() {
-        String email   = edtForgotEmail.getText().toString().trim();
+        String email   = edtEmail.getText().toString().trim();
         String oldPass = edtOldPassword.getText().toString();
         String newPass = edtNewPassword.getText().toString();
 
         if (email.isEmpty()) {
-            edtForgotEmail.setError("Email không được để trống");
-            edtForgotEmail.requestFocus();
+            edtEmail.setError("Email không được để trống");
+            edtEmail.requestFocus();
             return;
         }
         if (oldPass.isEmpty()) {
@@ -154,8 +168,8 @@ public class AccountInforActivity extends AppCompatActivity {
             }
         } else {
             if (cursor != null) cursor.close();
-            edtForgotEmail.setError("Email không tồn tại");
-            edtForgotEmail.requestFocus();
+            edtEmail.setError("Email không tồn tại");
+            edtEmail.requestFocus();
         }
     }
 
