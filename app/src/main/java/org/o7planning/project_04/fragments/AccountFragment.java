@@ -64,6 +64,8 @@ public class AccountFragment extends Fragment {
                 }
             });
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.account_fragment, container, false);
@@ -97,7 +99,13 @@ public class AccountFragment extends Fragment {
         loadAmountFromDB();
 
         imgProfile.setOnClickListener(v -> confirmChangeProfileImage());
-        layoutAccount.setOnClickListener(v -> startActivity(new Intent(getActivity(), AccountInforActivity.class)));
+//        layoutAccount.setOnClickListener(v -> startActivity(new Intent(getActivity(), AccountInforActivity.class)));
+        layoutAccount.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), AccountInforActivity.class);
+            intent.putExtra("ID_TK", currentUserId);
+            startActivity(intent);
+        });
+
         layoutChangePassword.setOnClickListener(v -> startActivity(new Intent(getActivity(), ChangePasswordActivity.class)));
         layoutLimit.setOnClickListener(v -> startActivity(new Intent(getActivity(), SpendingLimitActivity.class)));
         btnLogout.setOnClickListener(v -> confirmLogout());
@@ -188,5 +196,17 @@ public class AccountFragment extends Fragment {
         if (database != null && database.isOpen()) {
             database.close();
         }
+    }
+
+    //Cập nhật lại ảnh
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (database == null || !database.isOpen()) {
+            dbHelper = new PrepopulatedDBHelper(requireContext());
+            database = dbHelper.openDatabase();
+        }
+        loadProfileImageFromDB();
+        loadUserNameFromDB();
     }
 }
