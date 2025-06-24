@@ -31,39 +31,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <EditText
-        android:id="@+id/edtOldPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:drawableStart="@drawable/ic_lock"
-        android:drawablePadding="8dp"
-        android:hint="@string/enter_password"
-        android:inputType="text"
-        app:layout_constraintTop_toBottomOf="@id/edtEmail"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <EditText
-        android:id="@+id/edtNewPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:drawableStart="@drawable/ic_lock"
-        android:drawablePadding="8dp"
-        android:hint="@string/enter_new_password"
-        android:inputType="text"
-        app:layout_constraintTop_toBottomOf="@id/edtOldPassword"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <LinearLayout
         android:id="@+id/llLinkschange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/edtNewPassword"
+        app:layout_constraintTop_toBottomOf="@id/edtEmail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -78,7 +52,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnsave"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/llLinkschange" />
+        app:layout_constraintTop_toBottomOf="@id/llLinkschange"
+        app:layout_constraintVertical_bias="0.196" />
 
     <Button
         android:id="@+id/btnsave"
@@ -88,15 +63,17 @@
         android:text="@string/save"
         android:textColor="@color/colorLink"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/llLinkschange"
-        app:layout_constraintStart_toEndOf="@id/btnexit"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btnexit"
+        app:layout_constraintTop_toBottomOf="@id/llLinkschange"
+        app:layout_constraintVertical_bias="0.196" />
 
     <EditText
         android:id="@+id/edtUserName"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:layout_marginBottom="28dp"
         android:ems="10"
         android:inputType="text"

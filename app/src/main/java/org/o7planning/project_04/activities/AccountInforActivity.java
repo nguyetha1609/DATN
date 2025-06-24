@@ -4,9 +4,11 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,9 +24,10 @@ import org.o7planning.project_04.R;
 public class AccountInforActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_PICK_IMAGE = 2000;
+    private static final String TAG = "AccountInforActivity"; // Tag cho Logcat
 
     private ImageView ivLogo;
-    private EditText edtEmail, edtOldPassword, edtNewPassword, etdUserName;
+    private EditText edtEmail, etdUserName; // Đổi tên biến để khớp với XML
     private Button btnExit, btnSave;
 
     private PrepopulatedDBHelper dbHelper;
@@ -32,6 +35,7 @@ public class AccountInforActivity extends AppCompatActivity {
 
     // Lưu tạm URI ảnh mới
     private String newImageUriString = null;
+    private int currentUserId = -1; // Để lưu ID của người dùng hiện tại
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,16 +44,34 @@ public class AccountInforActivity extends AppCompatActivity {
 
         // Khởi tạo DBHelper
         dbHelper = new PrepopulatedDBHelper(this);
-        database = dbHelper.openDatabase();
+        try {
+            dbHelper.checkAndCopyDatabase(); // Đảm bảo database tồn tại và được copy
+            database = dbHelper.openDatabase();
+            if (database == null || !database.isOpen()) {
+                Toast.makeText(this, "Không thể mở cơ sở dữ liệu. Vui lòng thử lại.", Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Database is null or not open after openDatabase()");
+                finish();
+                return;
+            }
+        } catch (SQLiteException e) {
+            Toast.makeText(this, "Lỗi cơ sở dữ liệu: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e(TAG, "SQLiteException when opening database: " + e.getMessage(), e);
+            finish();
+            return;
+        } catch (Exception e) { // Bắt các lỗi khác có thể xảy ra trong quá trình mở DB
+            Toast.makeText(this, "Lỗi không xác định khi mở DB: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e(TAG, "General Exception when opening database: " + e.getMessage(), e);
+            finish();
+            return;
+        }
 
-        // Ánh xạ View (bây giờ là EditText thay cho TextInputEditText)
-        ivLogo    = findViewById(R.id.ivLogo);
-        edtEmail  = findViewById(R.id.edtEmail);
-        edtOldPassword  = findViewById(R.id.edtOldPassword);
-        edtNewPassword  = findViewById(R.id.edtNewPassword);
+
+        // Ánh xạ View
+        ivLogo      = findViewById(R.id.ivLogo);
+        edtEmail    = findViewById(R.id.edtEmail);
         etdUserName = findViewById(R.id.edtUserName);
-        btnExit         = findViewById(R.id.btnexit);
-        btnSave         = findViewById(R.id.btnsave);
+        btnExit     = findViewById(R.id.btnexit);
+        btnSave     = findViewById(R.id.btnsave);
 
         // Xử lý đổi ảnh
         ivLogo.setOnClickListener(view -> confirmChangeLogo());
@@ -59,22 +81,49 @@ public class AccountInforActivity extends AppCompatActivity {
 
         // Nút lưu → kiểm tra và update DB
         btnSave.setOnClickListener(view -> attemptSaveChanges());
-        int idTk = getIntent().getIntExtra("ID_TK", -1);
-        if (idTk != -1) {
-            Cursor cursor = database.query("TAIKHOAN", null, "ID_TK = ?",
+
+        // Lấy ID_TK từ Intent và load dữ liệu
+        currentUserId = getIntent().getIntExtra("ID_TK", -1);
+        if (currentUserId != -1) {
+            loadAccountInformation(currentUserId);
+        } else {
+            Toast.makeText(this, "Không tìm thấy thông tin tài khoản", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "ID_TK not found in Intent.");
+            finish(); // Thoát nếu không có ID người dùng
+        }
+    }
+
+    private void loadAccountInformation(int idTk) {
+        Cursor cursor = null;
+        try {
+            cursor = database.query("TAIKHOAN", null, "ID_TK = ?",
                     new String[]{String.valueOf(idTk)}, null, null, null);
-            if (cursor.moveToFirst()) {
+            if (cursor != null && cursor.moveToFirst()) {
                 String email = cursor.getString(cursor.getColumnIndexOrThrow("Email"));
                 String hinhAnh = cursor.getString(cursor.getColumnIndexOrThrow("HinhAnh"));
+                String username = cursor.getString(cursor.getColumnIndexOrThrow("Username"));
+
                 edtEmail.setText(email);
+                etdUserName.setText(username);
                 if (hinhAnh != null && !hinhAnh.isEmpty()) {
                     ivLogo.setImageURI(Uri.parse(hinhAnh));
-                    newImageUriString = hinhAnh;
+                    newImageUriString = hinhAnh; // Set URI ban đầu nếu ảnh tồn tại
                 }
+                Log.d(TAG, "Account info loaded for ID_TK: " + idTk);
+            } else {
+                Log.e(TAG, "No account found in DB for ID_TK: " + idTk);
             }
-            cursor.close();
+        } catch (SQLiteException e) {
+            Log.e(TAG, "SQLiteException loading account info: " + e.getMessage(), e);
+            Toast.makeText(this, "Lỗi khi tải thông tin tài khoản: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Log.e(TAG, "General Exception loading account info: " + e.getMessage(), e);
+            Toast.makeText(this, "Lỗi không xác định khi tải thông tin tài khoản.", Toast.LENGTH_SHORT).show();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
-
     }
 
     private void confirmChangeLogo() {
@@ -101,75 +150,59 @@ public class AccountInforActivity extends AppCompatActivity {
                 && data != null) {
             Uri uri = data.getData();
             if (uri != null) {
-                // Hiển thị ảnh lên ivLogoForgot
                 ivLogo.setImageURI(uri);
-                // Lưu tạm URI
-                newImageUriString = uri.toString();
+                newImageUriString = uri.toString(); // Lưu tạm URI
+                Log.d(TAG, "New image URI selected: " + newImageUriString);
             }
         }
     }
 
     private void attemptSaveChanges() {
-        String email   = edtEmail.getText().toString().trim();
-        String oldPass = edtOldPassword.getText().toString();
-        String newPass = edtNewPassword.getText().toString();
+        String email    = edtEmail.getText().toString().trim();
+        String userName = etdUserName.getText().toString().trim(); // Lấy username
 
         if (email.isEmpty()) {
             edtEmail.setError("Email không được để trống");
             edtEmail.requestFocus();
             return;
         }
-        if (oldPass.isEmpty()) {
-            edtOldPassword.setError("Mật khẩu cũ không được để trống");
-            edtOldPassword.requestFocus();
-            return;
-        }
-        if (newPass.isEmpty()) {
-            edtNewPassword.setError("Mật khẩu mới không được để trống");
-            edtNewPassword.requestFocus();
+
+        if (userName.isEmpty()) {
+            etdUserName.setError("Tên người dùng không được để trống");
+            etdUserName.requestFocus();
             return;
         }
 
-        Cursor cursor = database.query(
-                "TAIKHOAN",
-                new String[]{ "ID_TK", "PassWord" },
-                "Email = ?",
-                new String[]{ email },
-                null, null, null);
+        ContentValues cv = new ContentValues();
+        cv.put("Email", email);
+        cv.put("Username", userName); // Cập nhật username
+        if (newImageUriString != null) {
+            cv.put("HinhAnh", newImageUriString);
+        }
+        Log.d(TAG, "Attempting to save changes for ID_TK: " + currentUserId + ", Email: " + email + ", Username: " + userName);
 
-        if (cursor != null && cursor.moveToFirst()) {
-            String currentPassInDB = cursor.getString(cursor.getColumnIndexOrThrow("PassWord"));
-            int userId = cursor.getInt(cursor.getColumnIndexOrThrow("ID_TK"));
-            cursor.close();
-
-            if (!currentPassInDB.equals(oldPass)) {
-                edtOldPassword.setError("Mật khẩu cũ không đúng");
-                edtOldPassword.requestFocus();
-                return;
-            }
-
-            ContentValues cv = new ContentValues();
-            cv.put("PassWord", newPass);
-            if (newImageUriString != null) {
-                cv.put("HinhAnh", newImageUriString);
-            }
-
+        try {
             int rowsAffected = database.update(
                     "TAIKHOAN",
                     cv,
                     "ID_TK = ?",
-                    new String[]{ String.valueOf(userId) }
+                    new String[]{ String.valueOf(currentUserId) }
             );
+            Log.d(TAG, "Rows affected by update: " + rowsAffected);
+
             if (rowsAffected > 0) {
-                Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Cập nhật thông tin tài khoản thành công", Toast.LENGTH_SHORT).show();
                 finish();
             } else {
-                Toast.makeText(this, "Cập nhật thất bại", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Cập nhật thông tin tài khoản thất bại", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Update account info failed, 0 rows affected.");
             }
-        } else {
-            if (cursor != null) cursor.close();
-            edtEmail.setError("Email không tồn tại");
-            edtEmail.requestFocus();
+        } catch (SQLiteException e) {
+            Toast.makeText(this, "Lỗi cơ sở dữ liệu khi cập nhật: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e(TAG, "SQLiteException during account info update: " + e.getMessage(), e);
+        } catch (Exception e) {
+            Toast.makeText(this, "Đã xảy ra lỗi khi cập nhật thông tin: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e(TAG, "General Exception during account info update: " + e.getMessage(), e);
         }
     }
 
@@ -178,6 +211,7 @@ public class AccountInforActivity extends AppCompatActivity {
         super.onDestroy();
         if (database != null && database.isOpen()) {
             database.close();
+            Log.d(TAG, "Database closed.");
         }
     }
 }
