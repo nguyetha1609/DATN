@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class EditLimitActivity extends AppCompatActivity {
@@ -161,7 +162,7 @@ public class EditLimitActivity extends AppCompatActivity {
         String endDate = tvEndDate.getText().toString().trim();
 
         if(name.isEmpty() || amountStr.isEmpty() || startDate.isEmpty() || endDate.isEmpty() || selectedCategoryIds.isEmpty()){
-            Toast.makeText(this,"Vui lòng nhập đầy đủ thông tin",Toast.LENGTH_SHORT).show();
+            showAlert("Thiếu thông tin", "Vui lòng nhập đầy đủ thông tin và chọn danh mục");
             return;
         }
 
@@ -169,11 +170,11 @@ public class EditLimitActivity extends AppCompatActivity {
         try {
             amount = Long.parseLong(amountStr);
             if (amount < 0) {
-                Toast.makeText(this, "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
+                showAlert("Lỗi", "Số tiền không hợp lệ");
                 return;
             }
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
+            showAlert("Lỗi", "Số tiền không hợp lệ");
             return;
         }
 
@@ -182,11 +183,33 @@ public class EditLimitActivity extends AppCompatActivity {
             Date start = sdf.parse(startDate);
             Date end = sdf.parse(endDate);
             if (start != null && end != null && end.before(start)) {
-                Toast.makeText(this, "Ngày kết thúc phải sau ngày bắt đầu", Toast.LENGTH_SHORT).show();
+                showAlert("Lỗi", "Ngày kết thúc phải sau ngày bắt đầu");
                 return;
             }
         } catch (ParseException e) {
-            Toast.makeText(this, "Lỗi định dạng ngày", Toast.LENGTH_SHORT).show();
+            showAlert("Lỗi", "Lỗi định dạng ngày");
+            return;
+        }
+// Kiểm tra trùng danh mục trong khoảng thời gian
+        List<Integer> danhMucTrung = dblimit.getDanhMucTrungTrongUpdate(
+                limiId, startDate + " 00:00:00", endDate + " 23:59:59", idTK, selectedCategoryIds
+        );
+
+        if (!danhMucTrung.isEmpty()) {
+            StringBuilder message = new StringBuilder("Các danh mục sau đã được sử dụng trong hạn mức khác:\n");
+
+            for (int id : danhMucTrung) {
+                category cate = dbcate.getCategoryById(id, idTK);
+                if (cate != null) {
+                    message.append("• ").append(cate.getTenDM()).append("\n");
+                }
+            }
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Trùng danh mục")
+                    .setMessage(message.toString())
+                    .setPositiveButton("OK", null)
+                    .show();
             return;
         }
 
@@ -280,5 +303,12 @@ public class EditLimitActivity extends AppCompatActivity {
         }
     }
 
+    private void showAlert(String title, String message) {
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("OK", null)
+                .show();
+    }
 
 }

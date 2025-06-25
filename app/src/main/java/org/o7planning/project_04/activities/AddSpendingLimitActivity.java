@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.Button;
@@ -61,6 +62,7 @@ private int idTK;
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_spendinglimit);
+
         dbcate = new CategoryDAO(this);
         dblimit = new LimitDAO(this);
 
@@ -114,18 +116,18 @@ private int idTK;
 
             //validate du lieu
             if(tenHM.isEmpty() || sotien.isEmpty() || ngayBD.isEmpty() || ngayKT.isEmpty()){
-                Toast.makeText(this,"Vui long dien du thong tin",Toast.LENGTH_SHORT).show();
+                showAlert("Thiếu thông tin", "Vui lòng điền đầy đủ thông tin.");
                 return;
             }
             long soTien;
             try {
                 soTien = Long.parseLong(sotien);
                 if (soTien <= 0) {
-                    Toast.makeText(this, "Số tiền phải lớn hơn 0", Toast.LENGTH_SHORT).show();
+                    showAlert("Lỗi số tiền", "Số tiền phải lớn hơn 0.");
                     return;
                 }
             } catch (NumberFormatException e) {
-                Toast.makeText(this, "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
+                showAlert("Lỗi", "Số tiền không hợp lệ");
                 return;
             }
            // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -133,15 +135,15 @@ private int idTK;
                 Date dateStart = sdf.parse(ngayBD);
                 Date dateEnd = sdf.parse(ngayKT);
                 if(dateStart !=null && dateEnd !=null &&dateEnd.before(dateStart)){
-                    Toast.makeText(this,"Ngay ket thuc phai sau ngay bat dau",Toast.LENGTH_SHORT).show();
+                    showAlert("Lỗi ngày", "Ngày kết thúc phải sau ngày bắt đầu.");
                     return;
                 }
             }catch (ParseException e){
-                Toast.makeText(this,"Loi dinh dang ngay",Toast.LENGTH_SHORT).show();
+                showAlert("Lỗi Ngày", "Định dạng ngày không hợp lệ");
                 return;
             }
             if(listDM == null || listDM.isEmpty()){
-                Toast.makeText(this,"Vui long chon it nhat 1 danh muc",Toast.LENGTH_SHORT).show();
+                showAlert("Thiếu thông tin", "Vui lòng chọn ít nhất 1 danh mục");
                 return;
             }
             String startTime = formatToStartOfDay(ngayBD);
@@ -155,7 +157,29 @@ private int idTK;
             limit.setListDanhMuc(listDM);
             limit.setID_TK(idTK);
 
+            List<Integer> danhMucTrung = dblimit.getDanhMucTrongCacLimitTrongKhoang(startTime, endTime, idTK);
+            // Lọc các danh mục bị trùng trong listDM hiện tại
+            List<String> tenDanhMucTrung = new ArrayList<>();
+            for (Integer idDM : listDM) {
+                if (danhMucTrung.contains(idDM)) {
+                    category cate = dbcate.getCategoryById(idDM, idTK);
+                    if (cate != null) {
+                        tenDanhMucTrung.add(cate.getTenDM());
+                    }
+                }
+            }
 
+            if (!tenDanhMucTrung.isEmpty()) {
+                // Ghép các tên danh mục bị trùng thành chuỗi
+                StringBuilder message = new StringBuilder("Không thể lưu hạn mức vì các danh mục sau đã nằm trong hạn mức khác trong khoảng thời gian này:\n\n");
+                for (String ten : tenDanhMucTrung) {
+                    message.append("• ").append(ten).append("\n");
+                }
+
+                showAlert("Trùng danh mục", message.toString().trim());
+
+                return; // Dừng lại, không cho lưu
+            }
 
             boolean result = dblimit.insertLimit(limit,idTK);
             if(result){
@@ -223,6 +247,13 @@ private int idTK;
                 year,month,day
         );
             datePickerDialog.show();
+    }
+    private void showAlert(String title, String message) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("OK", null)
+                .show();
     }
 
 

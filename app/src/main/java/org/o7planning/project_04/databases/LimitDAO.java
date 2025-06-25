@@ -289,6 +289,67 @@ public class LimitDAO {
 
         return limits;
     }
+    public List<Integer> getDanhMucTrongCacLimitTrongKhoang(String startDate, String endDate, int id_tk) {
+        List<Integer> danhMucIds = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String query = "SELECT DISTINCT ID_DM FROM HANMUC_DANHMUC " +
+                "WHERE ID_HM IN (" +
+                " SELECT ID_HM FROM HANMUC " +
+                " WHERE ID_TK = ? AND (" +
+                "  NgayBD <= ? AND NgayKT >= ?" + // kiểm tra giao nhau
+                "))";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(id_tk), endDate, startDate});
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                danhMucIds.add(cursor.getInt(0));
+            }
+            cursor.close();
+        }
+
+        return danhMucIds;
+    }
+    //Kiểm tra xem các danh mục đang chọn có bị trùng với hạn mức khác (ngoại trừ chính nó) trong cùng khoảng thời gian không.
+    public List<Integer> getDanhMucTrungTrongUpdate(int limitId, String start, String end, int idTK, List<Integer> selectedDMs) {
+        List<Integer> result = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        StringBuilder placeholders = new StringBuilder();
+        for (int i = 0; i < selectedDMs.size(); i++) {
+            placeholders.append("?");
+            if (i < selectedDMs.size() - 1) placeholders.append(",");
+        }
+
+        String sql = "SELECT DISTINCT ld.id_dm FROM HANMUC_DANHMUC ld " +
+                "JOIN HANMUC l ON ld.ID_HM = l.ID_HM " +
+                "WHERE l.ID_HM != ? AND l.ID_TK = ? " +
+                "AND (" +
+                "(? BETWEEN l.NgayBD AND l.NgayKT) OR " +
+                "(? BETWEEN l.NgayBD AND l.NgayKT) OR " +
+                "(l.NgayBD BETWEEN ? AND ?) " +
+                ") " +
+                "AND ld.ID_DM IN (" + placeholders + ")";
+
+        List<String> args = new ArrayList<>();
+        args.add(String.valueOf(limitId));
+        args.add(String.valueOf(idTK));
+        args.add(start);
+        args.add(end);
+        args.add(start);
+        args.add(end);
+        for (Integer id : selectedDMs) args.add(String.valueOf(id));
+
+        Cursor cursor = db.rawQuery(sql, args.toArray(new String[0]));
+        if (cursor.moveToFirst()) {
+            do {
+                result.add(cursor.getInt(0));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return result;
+    }
 
 
 }
