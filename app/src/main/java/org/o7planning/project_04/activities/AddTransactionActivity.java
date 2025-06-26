@@ -79,6 +79,8 @@ public class AddTransactionActivity extends AppCompatActivity {
         tvDateLabel = findViewById(R.id.tvDateLabel);
         tvTimeLabel = findViewById(R.id.tvTimeLabel);
         calendar = Calendar.getInstance();
+        SharedPreferences preferences = getSharedPreferences("LOGIN_PREF", MODE_PRIVATE);
+        userId = preferences.getInt("ID_TK", -1);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -96,10 +98,10 @@ public class AddTransactionActivity extends AppCompatActivity {
             loadTransactionData(); // Tải dữ liệu giao dịch đã có
         } else {
             // Đặt giá trị mặc định cho ngày và giờ khi tạo giao dịch mới
-            SimpleDateFormat sdfDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             tvDateLabel.setText(sdfDate.format(calendar.getTime()));
 
-            SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
             tvTimeLabel.setText(sdfTime.format(calendar.getTime()));
         }
 
@@ -116,7 +118,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                         calendar.set(Calendar.DAY_OF_MONTH, selectedDayOfMonth);
 
                         // Format và hiển thị
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                         String selectedDate = sdf.format(calendar.getTime());
                         tvDateLabel.setText(selectedDate);
                     },
@@ -215,32 +217,33 @@ public class AddTransactionActivity extends AppCompatActivity {
         edtAmount.setText(String.valueOf(amount));
         edtNoteHint.setText(note);
 
-        if (time != null && time.contains(" ")) {
-            String[] dateTimeParts = time.split(" ");
-            if (dateTimeParts.length == 2) {
-                tvDateLabel.setText(dateTimeParts[0]);
-                tvTimeLabel.setText(dateTimeParts[1]);
-
-                // Cập nhật Calendar object
-                try {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-                    Date date = sdf.parse(time);
-                    calendar.setTime(date);
-                } catch (ParseException e) {
-                    e.printStackTrace();
+        if (time != null) {
+            try {
+                // Hỗ trợ cả định dạng có hoặc không có giây
+                SimpleDateFormat sdfInput;
+                if (time.trim().length() == 16) {
+                    sdfInput = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+                } else {
+                    sdfInput = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
                 }
+                Date parsedDate = sdfInput.parse(time);
+                calendar.setTime(parsedDate);
+
+                SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+                tvDateLabel.setText(sdfDate.format(parsedDate));
+                tvTimeLabel.setText(sdfTime.format(parsedDate));
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Không thể phân tích ngày/giờ", Toast.LENGTH_SHORT).show();
             }
         }
 
-
-        // Cập nhật icon danh mục
         if (categoryIcon != null) {
             int resId = getResources().getIdentifier(categoryIcon, "drawable", getPackageName());
-            if (resId != 0) {
-                imgCategory.setImageResource(resId);
-            } else {
-                imgCategory.setImageResource(R.drawable.ic_default); // Icon mặc định nếu không tìm thấy
-            }
+            imgCategory.setImageResource(resId != 0 ? resId : R.drawable.ic_default);
         }
     }
 
@@ -279,11 +282,14 @@ public class AddTransactionActivity extends AppCompatActivity {
         long amount;
         try {
             amount = Long.parseLong(amountStr);
+            if (amount <= 0) {
+                Toast.makeText(this, "Vui lòng nhập số tiền hợp lệ", Toast.LENGTH_SHORT).show();
+                return;
+            }
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng nhập số tiền hợp lệ", Toast.LENGTH_SHORT).show();
             return;
         }
-
         SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         String datetime = dbFormat.format(calendar.getTime());
 
@@ -334,8 +340,12 @@ public class AddTransactionActivity extends AppCompatActivity {
         long amount;
         try {
             amount = Long.parseLong(amountStr);
+            if (amount <= 0) {
+                Toast.makeText(this, "Vui lòng nhập số tiền hợp lệ", Toast.LENGTH_SHORT).show();
+                return;
+            }
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Số tiền không hợp lệ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng nhập số tiền hợp lệ", Toast.LENGTH_SHORT).show();
             return;
         }
 
