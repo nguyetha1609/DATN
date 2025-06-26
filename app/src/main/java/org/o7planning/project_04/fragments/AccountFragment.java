@@ -107,7 +107,29 @@ public class AccountFragment extends Fragment {
             startActivity(intent);
         });
 
-        layoutChangePassword.setOnClickListener(v -> startActivity(new Intent(getActivity(), ChangePasswordActivity.class)));
+        //layoutChangePassword.setOnClickListener(v -> startActivity(new Intent(getActivity(), ChangePasswordActivity.class)));
+        layoutChangePassword.setOnClickListener(v -> {
+            Cursor cursor = database.query(
+                    "TAIKHOAN",
+                    new String[]{"Email"},
+                    "ID_TK = ?",
+                    new String[]{String.valueOf(currentUserId)},
+                    null, null, null
+            );
+
+            if (cursor != null && cursor.moveToFirst()) {
+                String email = cursor.getString(cursor.getColumnIndexOrThrow("Email"));
+                cursor.close();
+
+                Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
+                intent.putExtra("Email", email); // ✅ TRUYỀN EMAIL VÀO
+                startActivity(intent);
+            } else {
+                Toast.makeText(getContext(), "Không tìm thấy email người dùng", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
         layoutLimit.setOnClickListener(v -> startActivity(new Intent(getActivity(), SpendingLimitActivity.class)));
         btnLogout.setOnClickListener(v -> confirmLogout());
 

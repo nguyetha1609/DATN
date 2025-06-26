@@ -1,7 +1,6 @@
 package org.o7planning.project_04.activities;
 
 import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -25,40 +24,40 @@ public class ChangePasswordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
+
         etdOldPassword = findViewById(R.id.etdOldPassword);
-        etNew     = findViewById(R.id.etNewPassword);
+        etNew = findViewById(R.id.etNewPassword);
         etConfirm = findViewById(R.id.etConfirmPassword);
-        btnExit   = findViewById(R.id.btnexit);
-        btnSave   = findViewById(R.id.btnsave);
+        btnExit = findViewById(R.id.btnexit);
+        btnSave = findViewById(R.id.btnsave);
 
-        // Lấy email từ Intent
         email = getIntent().getStringExtra("Email");
-
-        // Mở DB
         dbHelper = new PrepopulatedDBHelper(this);
         database = dbHelper.openDatabase();
 
         btnExit.setOnClickListener(v -> finish());
+
         btnSave.setOnClickListener(v -> {
-            String oldPass = etdOldPassword.getText().toString();
-            String p1 = etNew.getText().toString();
-            String p2 = etConfirm.getText().toString();
+            String oldPass = etdOldPassword.getText().toString().trim();
+            String newPass = etNew.getText().toString().trim();
+            String confirmPass = etConfirm.getText().toString().trim();
 
-            Log.d("ChangePassword", "Email: " + email); // Log the email
-            Log.d("ChangePassword", "Old Pass Entered: " + oldPass); // Log old password
-            Log.d("ChangePassword", "New Pass: " + p1); // Log new password
-
-            if (oldPass.isEmpty() || p1.isEmpty() || p2.isEmpty()) {
+            if (oldPass.isEmpty() || newPass.isEmpty() || confirmPass.isEmpty()) {
                 Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (!p1.equals(p2)) {
+            if (!newPass.equals(confirmPass)) {
                 etConfirm.setError("Xác nhận mật khẩu không khớp");
                 return;
             }
 
-            Cursor cursor = null; // Declare cursor outside try-finally for scope
+            if (newPass.length() < 8) {
+                etNew.setError("Mật khẩu phải tối thiểu 8 ký tự");
+                return;
+            }
+
+            Cursor cursor = null;
             try {
                 cursor = database.query(
                         "TAIKHOAN",
@@ -69,43 +68,32 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 );
 
                 if (cursor != null && cursor.moveToFirst()) {
-                    String currentPassInDB = cursor.getString(cursor.getColumnIndexOrThrow("PassWord"));
-                    Log.d("ChangePassword", "Current Pass in DB: " + currentPassInDB); // Log DB password
+                    String currentPassword = cursor.getString(cursor.getColumnIndexOrThrow("PassWord"));
 
-                    if (!currentPassInDB.equals(oldPass)) {
+                    if (!currentPassword.equals(oldPass)) {
                         etdOldPassword.setError("Mật khẩu cũ không đúng");
                         etdOldPassword.requestFocus();
                         return;
                     }
 
-                    ContentValues cv = new ContentValues();
-                    cv.put("PassWord", p1);
-                    int rowsAffected = database.update(
-                            "TAIKHOAN",
-                            cv,
-                            "Email = ?",
-                            new String[]{email}
-                    );
-                    Log.d("ChangePassword", "Rows Affected: " + rowsAffected); // Log rows affected
+                    ContentValues values = new ContentValues();
+                    values.put("PassWord", newPass);
+                    int rows = database.update("TAIKHOAN", values, "Email = ?", new String[]{email});
 
-                    if (rowsAffected > 0) {
+                    if (rows > 0) {
                         Toast.makeText(this, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
-                        // ... (rest of your success code)
+                        finish();
                     } else {
                         Toast.makeText(this, "Đổi mật khẩu thất bại", Toast.LENGTH_SHORT).show();
                     }
-
                 } else {
                     Toast.makeText(this, "Email không tồn tại", Toast.LENGTH_SHORT).show();
-                    Log.e("ChangePassword", "Email not found in database."); // Log error
                 }
             } catch (Exception e) {
-                Log.e("ChangePassword", "Database error: " + e.getMessage(), e); // Log any exceptions
+                Log.e("ChangePassword", "Database error: " + e.getMessage(), e);
                 Toast.makeText(this, "Đã xảy ra lỗi cơ sở dữ liệu", Toast.LENGTH_SHORT).show();
             } finally {
-                if (cursor != null) {
-                    cursor.close(); // Ensure cursor is closed
-                }
+                if (cursor != null) cursor.close();
             }
         });
     }
