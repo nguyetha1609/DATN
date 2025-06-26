@@ -27,7 +27,7 @@ public class AccountInforActivity extends AppCompatActivity {
     private static final String TAG = "AccountInforActivity"; // Tag cho Logcat
 
     private ImageView ivLogo;
-    private EditText edtEmail, etdUserName; // Đổi tên biến để khớp với XML
+    private EditText edtEmail, etdUserName;
     private Button btnExit, btnSave;
 
     private PrepopulatedDBHelper dbHelper;

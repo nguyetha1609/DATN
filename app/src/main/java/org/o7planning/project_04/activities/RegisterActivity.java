@@ -55,25 +55,38 @@ public class RegisterActivity extends AppCompatActivity {
                 return;
             }
 
-            // 2. Check điều khoản
+            // 2. Kiểm tra mật khẩu tối thiểu 8 ký tự
+            if (pass.length() < 8) {
+                etRegPassword.setError("Mật khẩu phải tối thiểu 8 ký tự");
+                etRegPassword.requestFocus();
+                return;
+            }
+
+            // 3. Check điều khoản
             if (!cbAgree.isChecked()) {
                 Toast.makeText(this, "Bạn phải đồng ý điều khoản", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // 3. Check mật khẩu khớp
+            // 4. Check mật khẩu khớp
             if (!pass.equals(pass2)) {
                 Toast.makeText(this, "Mật khẩu không khớp!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // 4. Kiểm tra username đã tồn tại?
+            // 5. Kiểm tra username đã tồn tại?
             if (checkUserExists(user)) {
-                Toast.makeText(this, "Tên đăng nhập đã tồn tại!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Tên tài khoản đã tồn tại!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // 5. Thêm user mới vào TAIKHOAN, để HinhAnh tạm là chuỗi rỗng
+            // 6. Kiểm tra email đã tồn tại?
+            if (checkEmailExists(email)) {
+                Toast.makeText(this, "Email đã được sử dụng!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // 7. Thêm user mới
             if (insertUser(user, pass, email, "")) {
                 Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, LoginActivity.class));
@@ -100,6 +113,19 @@ public class RegisterActivity extends AppCompatActivity {
         Cursor cursor = db.rawQuery(
                 "SELECT 1 FROM TAIKHOAN WHERE Username = ? LIMIT 1",
                 new String[]{ username }
+        );
+        boolean exist = cursor.moveToFirst();
+        cursor.close();
+        db.close();
+        return exist;
+    }
+
+    //Kiểm tra email đã được đăng ký hay chưa
+    private boolean checkEmailExists(String email) {
+        SQLiteDatabase db = dbHelper.openDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT 1 FROM TAIKHOAN WHERE Email = ? LIMIT 1",
+                new String[]{ email }
         );
         boolean exist = cursor.moveToFirst();
         cursor.close();
