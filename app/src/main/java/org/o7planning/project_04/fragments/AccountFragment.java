@@ -35,6 +35,8 @@ import org.o7planning.project_04.activities.MainActivity;
 import org.o7planning.project_04.activities.SpendingLimitActivity;
 import org.o7planning.project_04.databases.PrepopulatedDBHelper;
 
+import java.util.Locale;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AccountFragment extends Fragment {
@@ -93,11 +95,11 @@ public class AccountFragment extends Fragment {
         btnLogout = view.findViewById(R.id.btnLogout);
         bottomNav = requireActivity().findViewById(R.id.bottomNav); // Nếu dùng chung BottomNav
 
-        // Load dữ liệu
+        // Load dữ liệu ban đầu
         loadProfileImageFromDB();
         loadUserNameFromDB();
         setupIncomeTypeSpinner();
-        loadAmountFromDB();
+        loadAmountFromDB(); //
 
         imgProfile.setOnClickListener(v -> confirmChangeProfileImage());
 //        layoutAccount.setOnClickListener(v -> startActivity(new Intent(getActivity(), AccountInforActivity.class)));
@@ -184,14 +186,27 @@ public class AccountFragment extends Fragment {
     }
 
     private void loadAmountFromDB() {
-        Cursor cursor = database.rawQuery("SELECT SUM(SoTien) AS Total FROM GIAODICH", null);
-        if (cursor != null && cursor.moveToFirst()) {
-            long total = cursor.getLong(cursor.getColumnIndexOrThrow("Total"));
-            tvAmount.setText(String.format("%,d VND", total));
-            cursor.close();
-        } else {
-            tvAmount.setText("0 VND");
+        SharedPreferences sharedPrefs = requireActivity().getSharedPreferences("LOGIN_PREF", Context.MODE_PRIVATE);
+        long currentBalance = sharedPrefs.getLong("currentBalance", 0L); // Lấy giá trị từ SharedPreferences, mặc định là 0
+
+        tvAmount.setText(formatCurrency(currentBalance)); // Sử dụng phương thức formatCurrency để định dạng
+    }
+
+    // Thêm phương thức formatCurrency nếu chưa có (có thể copy từ TransactionFragment)
+    private String formatCurrency(long value) {
+        return String.format(Locale.getDefault(), "%,d VND", value).replace(',', '.');
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (database == null || !database.isOpen()) {
+            dbHelper = new PrepopulatedDBHelper(requireContext());
+            database = dbHelper.openDatabase();
         }
+        loadProfileImageFromDB(); //
+        loadUserNameFromDB(); //
+        loadAmountFromDB(); // Gọi lại loadAmountFromDB để cập nhật tvAmount khi fragment hiển thị lại
     }
 
     private void confirmLogout() {
@@ -219,17 +234,5 @@ public class AccountFragment extends Fragment {
         if (database != null && database.isOpen()) {
             database.close();
         }
-    }
-
-    //Cập nhật lại ảnh
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (database == null || !database.isOpen()) {
-            dbHelper = new PrepopulatedDBHelper(requireContext());
-            database = dbHelper.openDatabase();
-        }
-        loadProfileImageFromDB();
-        loadUserNameFromDB();
     }
 }

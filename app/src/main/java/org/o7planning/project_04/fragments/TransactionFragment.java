@@ -388,6 +388,7 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
         transactionLauncher.launch(intent);
     }
 
+    // TransactionFragment.java - trong phương thức updateBudgetUI()
     private void updateBudgetUI() {
         SharedPreferences preferences = getContext().getSharedPreferences("LOGIN_PREF", Context.MODE_PRIVATE);
         int userId = preferences.getInt("ID_TK", -1);
@@ -463,9 +464,12 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
         btnChiTieu.setText("Chi tiêu:\n " + formatCurrency(totalExpenseInPeriod));
         btnThuNhap.setText("Thu nhập:\n " + formatCurrency(totalIncomeInPeriod));
 
+        long finalBalanceToDisplay; // Biến để lưu giá trị cuối cùng sẽ hiển thị trên tvSoDu và được lưu vào SharedPreferences
+
         // Logic thông báo vượt mức chi tiêu
         if (totalLimitForPeriod > 0) { // Chỉ thông báo nếu có hạn mức được thiết lập
             long remainingBalance = totalLimitForPeriod - totalExpenseInPeriod;
+            finalBalanceToDisplay = remainingBalance; // Lưu giá trị số dư theo hạn mức
 
             if (remainingBalance < 0) {
                 tvNotice.setText("Vượt quá chi tiêu: " + formatCurrency(-remainingBalance));
@@ -482,9 +486,15 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
             tvLimit.setText("Tổng hạn mức: " + formatCurrency(0));
             tvNotice.setText(""); // Xóa thông báo vượt mức chi tiêu
             // Số dư được tính từ thu nhập và chi tiêu trong khoảng thời gian ĐANG LỌC
-            tvSoDu.setText("Số dư: " + formatCurrency(totalIncomeInPeriod - totalExpenseInPeriod));
+            finalBalanceToDisplay = totalIncomeInPeriod - totalExpenseInPeriod; // Lưu giá trị tổng thu nhập - chi tiêu
+            tvSoDu.setText("Số dư: " + formatCurrency(finalBalanceToDisplay));
             tvSoDu.setTextColor(getResources().getColor(R.color.textPrimary));
         }
+
+        // Lưu giá trị finalBalanceToDisplay vào SharedPreferences để AccountFragment có thể đọc
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong("currentBalance", finalBalanceToDisplay); // Lưu giá trị đã được tính toán cuối cùng
+        editor.apply();
     }
 
     private String formatCurrency(long value) {
