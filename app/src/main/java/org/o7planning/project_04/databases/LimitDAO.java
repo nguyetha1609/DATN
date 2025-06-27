@@ -189,7 +189,7 @@ public class LimitDAO {
         SQLiteDatabase db =dbHelper.getReadableDatabase();
 
         // Lay ngay bắt đầu và kết thúc của hạn mức
-        String limitQuery = "Select NgayGD,NgayKetThuc from HANMUC where ID_HM=?";
+        String limitQuery = "Select NgayBD,NgayKT from HANMUC where ID_HM=?";
         Cursor limitCusor = db.rawQuery(limitQuery, new String[]{String.valueOf(limitId)});
 
         if (!limitCusor.moveToFirst()) {
@@ -197,8 +197,8 @@ public class LimitDAO {
             return 0;
         }
 
-        String ngayBD = limitCusor.getString(limitCusor.getColumnIndexOrThrow("NgayGD"));
-        String ngayKT = limitCusor.getString(limitCusor.getColumnIndexOrThrow("NgayKetThuc"));
+        String ngayBD = limitCusor.getString(limitCusor.getColumnIndexOrThrow("NgayBD"));
+        String ngayKT = limitCusor.getString(limitCusor.getColumnIndexOrThrow("NgayKT"));
         limitCusor.close();
 
         // lay cac ID_DM lien ket voi han muc
@@ -238,7 +238,7 @@ public class LimitDAO {
 
 
 
-   // Tính tổng số tiền đã chi của toàn bộ hạn mức (gộp tất cả danh mục bên trong).
+    // Tính tổng số tiền đã chi của toàn bộ hạn mức (gộp tất cả danh mục bên trong).
     public long getTotalSpentInLimit(int limitId,int userId, String startDate, String endDate) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String sql = "SELECT SUM(gd.SoTien) FROM GIAODICH gd " +
@@ -351,5 +351,20 @@ public class LimitDAO {
         return result;
     }
 
+    public long getTotalLimitForPeriod(int userId, String startDate, String endDate) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        long totalLimit = 0;
 
+        String query = "SELECT SoTien FROM HANMUC WHERE ID_TK = ? AND NgayBD <= ? AND NgayKT >= ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), endDate, startDate});
+
+        if (cursor.moveToFirst()) {
+            do {
+                totalLimit += cursor.getLong(0);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return totalLimit;
+    }
 }

@@ -183,11 +183,11 @@ private int idTK;
 
             boolean result = dblimit.insertLimit(limit,idTK);
             if(result){
-                Toast.makeText(this,"Them han muc thanh cong",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"Thêm hạn mức thành công",Toast.LENGTH_SHORT).show();
                 setResult(Activity.RESULT_OK);
                 finish();
             }else {
-                Toast.makeText(this,"Them han muc that bai",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"Thêm hạn mức thất bại",Toast.LENGTH_SHORT).show();
             }
 
 
@@ -255,6 +255,4 @@ private int idTK;
                 .setPositiveButton("OK", null)
                 .show();
     }
-
-
 }

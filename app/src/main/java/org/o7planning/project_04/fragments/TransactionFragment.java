@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class TransactionFragment extends Fragment implements HomeFragment.OnDateSelectedListener { // Triển khai giao diện
+public class TransactionFragment extends Fragment implements HomeFragment.OnDateSelectedListener {
     private Button btnAdd, btnChiTieu, btnThuNhap;
     private TextView tabExpense, tabIncome, filterDay, filterMonth, filterYear, filterAll, tvLimit, tvNotice, tvSoDu;
     private static final int REQUEST_ADD_TRANSACTION = 1001;
@@ -57,29 +57,29 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
 
 
     private int userId;
-    private Map<Integer, category> mapDanhMuc; // Map chứa danh mục
+    private Map<Integer, category> mapDanhMuc;
 
 
     private TransactionAdapter transactionAdapter;
 
     private String currentTransactionType = "all";
     private String currentFilterPeriod = "all";
-    private LocalDate selectedFilterDate = LocalDate.now(); // Thêm biến để lưu ngày đã chọn
+    private LocalDate selectedFilterDate = LocalDate.now();
 
     @Override
     public void onDateSelected(LocalDate date) {
         selectedFilterDate = date;
-        currentFilterPeriod = "day"; // Khi chọn một ngày cụ thể, lọc theo ngày
+        currentFilterPeriod = "day";
         loadTransactions();
-        updateFilterTabColors(filterDay); // Cập nhật màu tab lọc ngày
+        updateFilterTabColors(filterDay);
     }
 
     @Override
     public void onResetToToday() {
         selectedFilterDate = LocalDate.now();
-        currentFilterPeriod = "all"; // Reset về "all" để hiển thị tất cả giao dịch
+        currentFilterPeriod = "all";
         loadTransactions();
-        updateFilterTabColors(filterAll); // Cập nhật màu tab lọc tất cả
+        updateFilterTabColors(filterAll);
     }
 
     private void loadDanhMuc() {
@@ -171,6 +171,8 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
                     whereClauses.add("strftime('%Y', ThoiGian) = ?");
                     selectionArgs.add(currentYear);
                 }
+            } else {
+                // No date filter needed for "all" transactions
             }
 
             whereClauses.add("ID_TK = ?");
@@ -189,6 +191,7 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
                 long soTien = cursorGiaoDich.getLong(2);
                 String thoiGian = cursorGiaoDich.getString(3);
                 String ghiChu = cursorGiaoDich.getString(4);
+
 
                 GIAODICH gd = new GIAODICH(idGd, idDm, soTien, thoiGian, ghiChu);
                 listGiaoDich.add(gd);
@@ -252,18 +255,6 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
         }
     }
 
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if ((requestCode == REQUEST_ADD_TRANSACTION || requestCode == REQUEST_EDIT_TRANSACTION || requestCode == REQUEST_ADD_CATEGORY)
-//                && resultCode == Activity.RESULT_OK) {
-//
-//            // Luôn gọi loadTransactions(), vì nó tự load lại cả mapDanhMuc + giao dịch
-//            loadTransactions();
-//            updateBudgetUI();
-//        }
-//    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
@@ -286,7 +277,7 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         SharedPreferences preferences = getContext().getSharedPreferences("LOGIN_PREF", getContext().MODE_PRIVATE);
-         userId = preferences.getInt("ID_TK", -1);
+        userId = preferences.getInt("ID_TK", -1);
         loadDanhMuc();
         loadTransactions();
 
@@ -328,28 +319,28 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
 
         filterDay.setOnClickListener(v -> {
             currentFilterPeriod = "day";
-            selectedFilterDate = LocalDate.now(); // Đặt lại ngày hiện tại khi chọn lọc theo ngày
+            selectedFilterDate = LocalDate.now();
             loadTransactions();
             updateFilterTabColors(filterDay);
         });
 
         filterMonth.setOnClickListener(v -> {
             currentFilterPeriod = "month";
-            selectedFilterDate = LocalDate.now(); // Đặt lại ngày hiện tại khi chọn lọc theo tháng
+            selectedFilterDate = LocalDate.now();
             loadTransactions();
             updateFilterTabColors(filterMonth);
         });
 
         filterYear.setOnClickListener(v -> {
             currentFilterPeriod = "year";
-            selectedFilterDate = LocalDate.now(); // Đặt lại ngày hiện tại khi chọn lọc theo năm
+            selectedFilterDate = LocalDate.now();
             loadTransactions();
             updateFilterTabColors(filterYear);
         });
 
         filterAll.setOnClickListener(v -> {
             currentFilterPeriod = "all";
-            selectedFilterDate = null; // Đặt selectedFilterDate về null khi chọn lọc tất cả
+            selectedFilterDate = null;
             loadTransactions();
             updateFilterTabColors(filterAll);
         });
@@ -358,7 +349,6 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-
                         loadDanhMuc();
                         loadTransactions();
                         updateBudgetUI();
@@ -403,48 +393,98 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
         int userId = preferences.getInt("ID_TK", -1);
 
         LimitDAO limitDAO = new LimitDAO(getContext());
-        List<Limit> limits = limitDAO.getAllLimits(userId);
 
-        if (limits.isEmpty()) return;
+        // Lấy ngày hiện tại
+        LocalDate today = LocalDate.now();
+        // Định dạng ngày hiện tại để làm tham số cho truy vấn hạn mức
+        String startDateForLimit = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
+        String endDateForLimit = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 23:59:59";
 
-        Limit limit = limits.get(0);
+        // Luôn lấy tổng hạn mức dựa trên ngày hiện tại
+        long totalLimitForPeriod = limitDAO.getTotalLimitForPeriod(userId, startDateForLimit, endDateForLimit);
+        tvLimit.setText("Tổng hạn mức: " + formatCurrency(totalLimitForPeriod));
 
-        long totalLimit = limit.getSoTien();
-        long spentAmount = limitDAO.getTotalSpentInLimit(limit.getID_HM(), userId, limit.getNgayGD(), limit.getNgayKetThuc());
-        long remaining = totalLimit - spentAmount;
 
-        tvLimit.setText("Hạn mức: " + formatCurrency(totalLimit));
-
-        if (remaining < 0) {
-            tvNotice.setText("Vượt quá chi tiêu: " + formatCurrency(-remaining));
-            tvNotice.setTextColor(Color.RED);
-        } else {
-            tvNotice.setText("");
-        }
-
-        tvSoDu.setText("Số dư: " + formatCurrency(Math.max(remaining, 0)));
-
-        long tongChi = 0, tongThu = 0;
+        // --- Phần tính toán tổng chi tiêu và thu nhập theo bộ lọc HIỆN TẠI ---
+        long totalExpenseInPeriod = 0;
+        long totalIncomeInPeriod = 0;
         DBHelper dbHelper = new DBHelper(getContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT ID_DM, SoTien FROM GIAODICH WHERE ID_TK = ?", new String[]{String.valueOf(userId)});
-        while (cursor.moveToNext()) {
-            int idDM = cursor.getInt(0);
-            long soTien = cursor.getLong(1);
-            category cat = mapDanhMuc.get(idDM);
-            if (cat == null) continue;
+        Cursor cursor = null;
 
-            if ("ChiTieu".equals(cat.getLoaiDM())) {
-                tongChi += soTien;
-            } else if ("ThuNhap".equals(cat.getLoaiDM())) {
-                tongThu += soTien;
+        try {
+            String transactionQuery = "SELECT ID_DM, SoTien FROM GIAODICH WHERE ID_TK = ?";
+            List<String> transactionArgs = new ArrayList<>();
+            transactionArgs.add(String.valueOf(userId));
+
+            String currentStartDateFilter = null;
+            String currentEndDateFilter = null;
+
+            // Xác định khoảng thời gian của bộ lọc hiện tại để tính chi tiêu/thu nhập
+            if (selectedFilterDate != null) {
+                if ("day".equals(currentFilterPeriod)) {
+                    currentStartDateFilter = selectedFilterDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
+                    currentEndDateFilter = selectedFilterDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 23:59:59";
+                } else if ("month".equals(currentFilterPeriod)) {
+                    currentStartDateFilter = selectedFilterDate.withDayOfMonth(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
+                    currentEndDateFilter = selectedFilterDate.withDayOfMonth(selectedFilterDate.lengthOfMonth()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 23:59:59";
+                } else if ("year".equals(currentFilterPeriod)) {
+                    currentStartDateFilter = selectedFilterDate.withDayOfYear(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00";
+                    currentEndDateFilter = selectedFilterDate.withDayOfYear(selectedFilterDate.lengthOfYear()).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 23:59:59";
+                }
             }
-        }
-        cursor.close();
-        db.close();
+            // Nếu currentFilterPeriod là "all" hoặc selectedFilterDate là null, không thêm điều kiện thời gian cho giao dịch.
 
-        btnChiTieu.setText("Chi tiêu:\n " + formatCurrency(tongChi));
-        btnThuNhap.setText("Thu nhập:\n " + formatCurrency(tongThu));
+            if (currentStartDateFilter != null && currentEndDateFilter != null) {
+                transactionQuery += " AND ThoiGian BETWEEN ? AND ?";
+                transactionArgs.add(currentStartDateFilter);
+                transactionArgs.add(currentEndDateFilter);
+            }
+
+            cursor = db.rawQuery(transactionQuery, transactionArgs.toArray(new String[0]));
+
+            while (cursor.moveToNext()) {
+                int idDM = cursor.getInt(0);
+                long soTien = cursor.getLong(1);
+                category cat = mapDanhMuc.get(idDM);
+                if (cat == null) continue;
+
+                if ("ChiTieu".equals(cat.getLoaiDM())) {
+                    totalExpenseInPeriod += soTien;
+                } else if ("ThuNhap".equals(cat.getLoaiDM())) {
+                    totalIncomeInPeriod += soTien;
+                }
+            }
+        } finally {
+            if (cursor != null) cursor.close();
+            db.close();
+        }
+
+        btnChiTieu.setText("Chi tiêu:\n " + formatCurrency(totalExpenseInPeriod));
+        btnThuNhap.setText("Thu nhập:\n " + formatCurrency(totalIncomeInPeriod));
+
+        // Logic thông báo vượt mức chi tiêu
+        if (totalLimitForPeriod > 0) { // Chỉ thông báo nếu có hạn mức được thiết lập
+            long remainingBalance = totalLimitForPeriod - totalExpenseInPeriod;
+
+            if (remainingBalance < 0) {
+                tvNotice.setText("Vượt quá chi tiêu: " + formatCurrency(-remainingBalance));
+                tvNotice.setTextColor(Color.RED);
+                tvSoDu.setText("Số dư: " + formatCurrency(remainingBalance)); // Display negative balance
+                tvSoDu.setTextColor(Color.RED);
+            } else {
+                tvNotice.setText(""); // Clear notice if no overspending
+                tvSoDu.setText("Số dư: " + formatCurrency(remainingBalance));
+                tvSoDu.setTextColor(getResources().getColor(R.color.textPrimary)); // Reset color
+            }
+        } else {
+            // Nếu không có hạn mức nào cho ngày hiện tại
+            tvLimit.setText("Tổng hạn mức: " + formatCurrency(0));
+            tvNotice.setText(""); // Xóa thông báo vượt mức chi tiêu
+            // Số dư được tính từ thu nhập và chi tiêu trong khoảng thời gian ĐANG LỌC
+            tvSoDu.setText("Số dư: " + formatCurrency(totalIncomeInPeriod - totalExpenseInPeriod));
+            tvSoDu.setTextColor(getResources().getColor(R.color.textPrimary));
+        }
     }
 
     private String formatCurrency(long value) {
@@ -454,6 +494,6 @@ public class TransactionFragment extends Fragment implements HomeFragment.OnDate
     public void onResume() {
         super.onResume();
         loadDanhMuc();
-        loadTransactions();  // Luôn reload lại khi Fragment hiển thị lại
+        loadTransactions();
     }
 }
